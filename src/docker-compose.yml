@@ -1,0 +1,58 @@
+version: '3.0'
+
+services:
+  django:
+    build:
+      context: backend/
+      dockerfile: Dockerfile
+    container_name: backend
+    ports:
+      - "8000:8000"
+    networks:
+      - local_network
+    depends_on:
+      - db
+    restart: always
+    volumes:
+      - ./backend:/app
+      - shared_static_data:/frontend/static
+      - ./ssl:/etc/nginx/ssl:ro
+  db:
+    image: postgres
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    networks:
+      - local_network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  frontend:
+    image: nginx:alpine
+    build:
+      context: frontend/
+      dockerfile: Dockerfile
+    container_name: frontend
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+      - shared_static_data:/path/to/frontend/static/files
+    ports:
+      - "8081:8080"
+      - "443:443"
+    networks:
+      - local_network
+    environment:
+      - BACKEND_URL=http://django:8000
+    depends_on:
+      - django
+    restart: always
+
+volumes:
+  postgres_data:
+  shared_static_data:
+
+
+networks:
+  local_network:
+    driver: bridge

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+</head>
+<body>
+<div class="container">
+    <h1>Register</h1>
+    <form id="register-form" action="/register" method="post">
+        <input type="text" placeholder="Username" name="username" required>
+        <input type="email" placeholder="Email" name="email" required> <!-- Optional based on your backend -->
+        <input type="password" placeholder="Password" name="password" required>
+        <button type="submit">Register</button>
+    </form>
+    <!-- Assuming you have an endpoint to redirect to 42's OAuth page -->
+    <button onclick="location.href='/auth/42'">Register with 42</button>
+</div>
+<script>
+document.getElementById('register-form').onsubmit = async function(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const data = Object.fromEntries(formData.entries());
+    try {
+        const response = await fetch(event.target.action, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+        const result = await response.json();
+        if (response.ok) {
+            alert('Registration successful');
+            // Redirect or update UI accordingly
+        } else {
+            alert(`Registration failed: ${result.error}`);
+        }
+    } catch (error) {
+        console.error('Registration error:', error);
+    }
+};
+</script>
+</body>
+</html>

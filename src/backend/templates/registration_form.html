@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration</title>
+    <!-- Include Bootstrap CSS or your custom styles here -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <script src="{% static 'js/register.js' %}"></script>
+</head>
+<body>
+    <div id="spa-root">
+
+        <!-- Registration Form -->
+        <form id="registration-form" method="post" style="display: none;">
+            {% csrf_token %}
+            <h2>Register</h2>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="password1">Password</label>
+                <input type="password" id="password1" name="password1" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="password2">Confirm Password</label>
+                <input type="password" id="password2" name="password2" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Register</button>
+        </form>
+
+        <!-- Login Form -->
+        <form id="login-form" method="post">
+            {% csrf_token %}
+            <h2>Sign In</h2>
+            <div class="form-group">
+                <label for="login-username">Username</label>
+                <input type="text" id="login-username" name="login-username" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="login-password">Password</label>
+                <input type="password" id="login-password" name="login-password" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Sign In</button>
+        </form>
+    </div>
+
+    <!-- Link to your Vanilla JS file for SPA behavior -->
+    <script src="{% static 'js/register.js' %}"></script>
+    <!-- Script for toggling between Sign In and Register -->
+</body>
+</html>

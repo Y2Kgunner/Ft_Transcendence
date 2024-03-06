@@ -1,0 +1,57 @@
+<!-- Login Form -->
+<div id="login-form">
+    <h2>Login</h2>
+    <form id="loginForm">
+        <!-- Your existing login form fields -->
+        <div class="form-group">
+            <label for="LoginUserName">User Name</label>
+            <input type="username" class="form-control" id="LoginUserName" required>
+        </div>
+        <div class="form-group">
+            <label for="loginPassword">Password</label>
+            <input type="password" class="form-control" id="loginPassword" required>
+        </div>
+        <button type="submit" class="btn btn-primary" id="loginButton">Log In</button>
+        <!-- Your existing login form buttons and links -->
+    </form>
+</div>
+
+<!-- OTP Verification Modal -->
+<div class="modal fade" id="otpModal" tabindex="-1" role="dialog" aria-labelledby="otpModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="otpModalLabel">Enter OTP</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- OTP input fields -->
+                <div class="form-group">
+                    <input type="text" class="form-control" id="otpInput1" maxlength="1" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="otpInput2" maxlength="1" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="otpInput3" maxlength="1" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="otpInput4" maxlength="1" required>
+                </div>
+                <!-- Resend OTP link -->
+                <p class="text-muted text-center">Didn't get the code? <a href="#" class="text-success" id="resendOTP">Click to resend.</a></p>
+            </div>
+            <div class="modal-footer">
+                <!-- OTP verification buttons -->
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success" id="verifyOTP">Verify</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap and jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
