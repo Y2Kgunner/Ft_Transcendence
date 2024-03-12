@@ -14,6 +14,7 @@ urlpatterns = [
     path('disable_2fa', disable_2fa_api),
     path('send_otp_email', send_otp_email_api),
     path('verify_otp', verify_otp_api),
+    path('check_2fa_status', check_2fa_status),
     path('profile', UserProfileView.as_view(),name='profile'),
     path('fortytwo', fortytwo),
     path('oauth_callback', oauth_callback, name='oauth_callback'),

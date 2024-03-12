@@ -8,7 +8,8 @@ from django.conf import settings
 import ssl
 import smtplib
 from email.message import EmailMessage
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_http_methods
+from django.contrib.auth import get_user_model
 
 def generate_otp(length=6):
     """Generate a random OTP of specified length."""
@@ -67,7 +68,7 @@ def verify_otp_api(request):
     else:
         return JsonResponse({'error': 'Method not allowed'}, status=405)
 
-
+@csrf_exempt
 def send_otp_email(user, otp):
     em = EmailMessage()
     em['From'] = settings.EMAIL_HOST_USER
@@ -82,6 +83,16 @@ def send_otp_email(user, otp):
         server.quit()
 
 @csrf_exempt
-@require_GET
+@require_http_methods(["GET"])
 def check_2fa_status(request):
-    return JsonResponse({'2fa': request.user.twofa_enabled})
+    user_identifier = request.GET.get('user_identifier')
+    if not user_identifier:
+        return JsonResponse({'error': 'User identifier not provided.'}, status=400)
+
+    User = get_user_model()
+    try:
+        user = User.objects.get(username=user_identifier)  # Or email=user_identifier based on your identifier
+    except User.DoesNotExist:
+        return JsonResponse({'error': 'User not found.'}, status=404)
+
+    return JsonResponse({'twofa_enabled': user.twofa_enabled})

@@ -38,42 +38,25 @@
 <body>
 
 <div class="container mt-5">
-    <!-- otp -->
-    <div class="container p-5" style="display:none;">
-        <div class="row">
-            <div class="col-md-3"></div>
-            <div class="col-md-5 mt-5">
-                <div class="bg-white p-5 rounded-3 shadow-sm border">
-                    <div>
-                        <p class="text-center text-success" style="font-size: 5.5rem;"><i class="fa-solid fa-envelope-circle-check"></i></p>
-                        <p class="text-center text-center h5 ">Please check your email</p>
-                        <p class="text-muted text-center">We've sent a code to contact@curfcode.com</p>
-                        <div class="row pt-4 pb-2">
-                            <div class="col-3">
-                                <input class="otp-letter-input" type="text">
-                            </div>
-                            <div class="col-3">
-                                <input class="otp-letter-input" type="text">
-                            </div>
-                            <div class="col-3">
-                                <input class="otp-letter-input" type="text">
-                            </div>
-                            <div class="col-3">
-                                <input class="otp-letter-input" type="text">
-                            </div>
-                        </div>
-                        <p class="text-muted text-center">Didn't get the code? <a href="#" class="text-success">Click to resend.</a></p>
-                        <div class="row pt-5">
-                            <div class="col-6">
-                                <button class="btn btn-outline-secondary w-100">Cancel</button>
-                            </div>
-                            <div class="col-6">
-                                <button class="btn btn-success w-100">Verify</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<!-- OTP Modal -->
+    <div class="modal fade" id="otpModal" tabindex="-1" aria-labelledby="otpModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="otpModalLabel">Enter OTP</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+            <div class="modal-body">
+            <form id="otpForm">
+                <div class="mb-3">
+                <label for="otpInput" class="form-label">OTP</label>
+                <input type="number" class="form-control" id="otpInput" max="999999" placeholder="Enter OTP">
+                <div id="otpHelp" class="form-text">Check your email for the OTP. Valid for 5 minutes.</div>
+                </div>
+                <button type="submit" class="btn btn-primary">Verify OTP</button>
+            </form>
+            </div>
+        </div>
         </div>
     </div>
     <!-- login Form -->
