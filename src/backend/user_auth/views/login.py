@@ -68,6 +68,7 @@ def verify_otp(request):
     else:
         return JsonResponse({'error': 'Method not allowed'}, status=405)
 
+@csrf_exempt
 def finalize_login(request, user):
     django_login(request, user)
     token = JWTHandler.generate_jwt(user)
