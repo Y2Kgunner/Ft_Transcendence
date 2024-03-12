@@ -12,7 +12,7 @@ class JWTAuthenticationMiddleware(MiddlewareMixin):
     def __init__(self, get_response):
         self.get_response = get_response
         self.excluded_paths = ['/api/login', '/api/register','/api/login','/api/fortytwo',\
-                               '/api/oauth_callback','/api/auth_status','/api/proceed_with_login','/api/finalize_login']
+                               '/api/oauth_callback','/api/auth_status','/api/proceed_with_login','/api/finalize_login','/api/check_2fa_status', 'api/verify_otp']
 
     # def __call__(self, request):
     #     print("JWT Middleware called")  # debugging
