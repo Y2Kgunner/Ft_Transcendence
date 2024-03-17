@@ -1,2 +1,47 @@
 # Ft_Transcendence
-Pong website
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+
+<h2>Project Task Tracker</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Team Member</th>
+      <th>Module</th>
+      <th>Task</th>
+      <th>Progress Status</th>
+      <th>Deadline</th>
+      <th>Tested By</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Team Member 1</td>
+      <td>Module A</td>
+      <td>Implement feature X</td>
+      <td><span class="status-in-progress">In Progress</span></td>
+      <td>YYYY-MM-DD</td>
+      <td>Team Member 3</td>
+    </tr>
+    <tr>
+      <td>Team Member 2</td>
+      <td>Module B</td>
+      <td>Fix bug Y</td>
+      <td><span class="status-not-started">Not Started</span></td>
+      <td class="deadline-passed">YYYY-MM-DD</td>
+      <td>Team Member 4</td>
+    </tr>
+    <!-- Add more rows by makeing new TR  not TD -->
+  </tbody>
+</table>
+
+</body>
+</html>
