@@ -14,8 +14,9 @@
 <table>
   <thead>
     <tr>
-      <th>Team Member</th>
+      <th>Task</th>
       <th>Module</th>
+      <th>Team Member</th>
       <th>Task</th>
       <th>Progress Status</th>
       <th>Deadline</th>
@@ -39,7 +40,31 @@
       <td class="deadline-passed">YYYY-MM-DD</td>
       <td>Team Member 4</td>
     </tr>
-    <!-- Add more rows by makeing new TR  not TD -->
+    <!-- Add more rows by makeing new TR -->
+  </tbody>
+</table>
+
+
+<h2>Module tracker </h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Module</th>
+      <th>Type</th>
+      <th>Progress Status</th>
+      <th>Tested By</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Use a Framework as backend</td>
+      <td>Major</td>
+      <td>compeleted</td>
+      <td><span class="status-in-progress">In Progress</span></td>
+      <td> **** </td>
+    </tr>
+    <!-- Add more rows by makeing new TR  -->
   </tbody>
 </table>
 
