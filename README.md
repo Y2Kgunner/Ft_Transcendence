@@ -61,7 +61,6 @@
       <td>Use a Framework as backend</td>
       <td>Major</td>
       <td>compeleted</td>
-      <td><span class="status-in-progress">In Progress</span></td>
       <td> **** </td>
     </tr>
     <!-- Add more rows by makeing new TR  -->
