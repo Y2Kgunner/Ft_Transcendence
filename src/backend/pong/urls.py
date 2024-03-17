@@ -9,4 +9,6 @@ urlpatterns = [
     path('list_all_matches', list_all_matches, name='list_all_matches'),
     path('player_match_history', player_match_history, name='player_match_history'),
     path('update_match', update_match, name='update_match'),
+    path('leaderboard_by_scored', leaderboard_by_scored, name='leaderboard_by_scored'),
+    path('leaderboard_by_wins', leaderboard_by_wins, name='leaderboard_by_wins'),
 ]

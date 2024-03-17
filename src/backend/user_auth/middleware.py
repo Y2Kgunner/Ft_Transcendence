@@ -14,9 +14,8 @@ class JWTAuthenticationMiddleware(MiddlewareMixin):
         self.excluded_paths = ['/api/login', '/api/register','/api/login','/api/fortytwo',\
                                '/api/oauth_callback','/api/auth_status','/api/proceed_with_login','/api/finalize_login','/api/check_2fa_status', '/api/verify_otp',\
                                #to be removed for test only 
-                               '/pong/create' , '/pong/delete', '/pong/list', '/pong/finish_and_update_match']
+                               '/pong/create' , '/pong/delete', '/pong/list', '/pong/finish_and_update_match','/pong/leaderboard' ,'/pong/leaderboard_by_wins' ,'/pong/leaderboard_by_scored']
         
-
     # def __call__(self, request):
     #     print("JWT Middleware called")  # debugging
 
@@ -34,13 +33,10 @@ class JWTAuthenticationMiddleware(MiddlewareMixin):
     def authenticate_request(self, request):
         auth_header = request.headers.get('Authorization', '')
         token = None
-
         if auth_header.startswith('Bearer '):
             token = auth_header.split(' ')[1]
-
         if not token:
             token = request.COOKIES.get('jwt', None)
-
         if token:
             payload = JWTHandler.decode_jwt(token)
             if 'error' not in payload:
