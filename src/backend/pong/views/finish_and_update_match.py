@@ -27,13 +27,13 @@ def update_match(request):
         match.score_guest_player2 = score_guest_player2
         match.winner = winner_name
         match.save()
-
         if match.player:
             update_player_stats(winner_name, match.player.id, match)
         if match.guest_player1 and winner_name == match.guest_player1:
-            update_guest_stats(winner_name, match.guest_player1, match)
+            update_player_stats(winner_name, match.guest_player1.id, match)
+
         if match.guest_player2 and winner_name == match.guest_player2:
-            update_guest_stats(winner_name, match.guest_player2, match)
+            update_player_stats(winner_name, match.guest_player2.id, match)
 
     except Match.DoesNotExist:
         return JsonResponse({'error': 'Match not found'}, status=404)

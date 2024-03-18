@@ -9,7 +9,6 @@ class Match(models.Model):
     score_player = models.IntegerField(default=0)
     score_guest_player1 = models.IntegerField(default=0)
     score_guest_player2 = models.IntegerField(default=0, null=True, blank=True) 
-    # result = models.CharField(max_length=10) 
     winner = models.CharField(max_length=10, null=True, blank=True)
     is_deleted = models.BooleanField(default=False)
     deleted_at = models.DateTimeField(null=True, blank=True)
@@ -25,17 +24,15 @@ class GuestGameStats(models.Model):
     scored = models.IntegerField(default=0)
 
 def update_player_stats(winner_name, player_id, match):
-    try:
-        player = WebUser.objects.get(id=player_id)
-        player.pong_games_played += 1
-        player.pong_scored += match.score_player
-        if player.username == winner_name:
-            player.pong_wins += 1
-        else:
-            player.pong_losses += 1
-        player.save()
-    except WebUser.DoesNotExist:
-        pass
+    player = WebUser.objects.get(id=player_id)
+    player.pong_games_played += 1
+    player.pong_scored += match.score_player
+    if player.username == winner_name:
+        player.pong_wins += 1
+    else:
+        player.pong_losses += 1
+    player.save()
+
 
 def update_guest_stats(winner_name, guest_name, match):
     guest, created = GuestGameStats.objects.get_or_create(guest_name=guest_name)

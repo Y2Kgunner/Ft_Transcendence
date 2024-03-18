@@ -7,6 +7,7 @@ from itertools import chain
 from django.db.models import Value, CharField, F
 from pong.models import WebUser, GuestGameStats
 from django.db.models.functions import Cast
+from django.db.models.functions import Coalesce
 
 def generate_leaderboard(sort_key):
     user_stats = WebUser.objects.annotate(
@@ -19,21 +20,18 @@ def generate_leaderboard(sort_key):
     ).values('name', 'category', 'games_played', 'wins', 'losses', 'scored')
 
     guest_stats = GuestGameStats.objects.annotate(
-        name=F('guest_name'),
-        category=Value('Guest', output_field=CharField()),
-        games_played=F('games_played'),  
-        wins=F('wins'),  
-        losses=F('losses'),  
-        scored=F('scored'),  
-    ).values('name', 'category', 'games_played', 'wins', 'losses', 'scored')
+        guest_games_played=Coalesce(F('games_played'), 0),
+        guest_wins=Coalesce(F('wins'), 0),
+        guest_losses=Coalesce(F('losses'), 0),
+        guest_scored=Coalesce(F('scored'), 0),
+    ).values('guest_name', 'guest_games_played', 'guest_wins', 'guest_losses', 'guest_scored')
 
     combined_stats = list(user_stats) + list(guest_stats)
 
     if sort_key == 'wins':
-        sorted_stats = sorted(combined_stats, key=lambda x: (-x['wins'], -x['scored']))
+        sorted_stats = sorted(combined_stats, key=lambda x: (-x.get('guest_wins', 0), -x.get('scored', 0), x.get('guest_name', '')))
     elif sort_key == 'scored':
-        sorted_stats = sorted(combined_stats, key=lambda x: (-x['scored'], -x['wins']))
-
+        sorted_stats = sorted(combined_stats, key=lambda x: (-x.get('guest_scored', 0), -x.get('guest_wins', 0), x.get('guest_name', '')))
     return sorted_stats
 
 
