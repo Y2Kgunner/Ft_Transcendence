@@ -1,5 +1,5 @@
 from django.urls import path, include
-from pong.views.__init__ import *
+from pongApp.views.__init__ import *
 
 
 urlpatterns = [

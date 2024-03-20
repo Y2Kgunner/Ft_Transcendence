@@ -2,9 +2,9 @@ from django.utils.timezone import now
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-from pong.models import Match
+from pongApp.models import Match
 import json
-from pong.models import Match, update_guest_stats, update_player_stats
+from pongApp.models import Match, update_guest_stats, update_player_stats
 
 @csrf_exempt
 @require_http_methods(["POST"])
@@ -29,6 +29,7 @@ def update_match(request):
         match.score_guest_player1 = score_guest_player1
         match.score_guest_player2 = score_guest_player2
         match.winner = winner_name
+        match.completed = True
         match.save()
 
         match.save_guest_scores(match.guest_player1, score_guest_player1)

@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 import json
-from pong.models import Match
+from pongApp.models import Match
 from user_auth.models import WebUser
 
 @csrf_exempt
