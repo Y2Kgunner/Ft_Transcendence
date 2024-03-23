@@ -234,13 +234,12 @@ function setCookie(name, value, days, secure = false, sameSite = 'Lax') {
 // }
 
 
-// Handling the OAuth callback without directly accessing the token
 async function handleOAuthCallback(code) {
     const url = `https://127.0.0.1:443/api/oauth_callback?code=${encodeURIComponent(code)}`;
     try {
         const response = await fetch(url, {
             method: 'GET',
-            credentials: 'include',  // Necessary for cookies, especially HttpOnly cookies
+            credentials: 'include',
         });
 
         if (!response.ok) {
@@ -251,7 +250,6 @@ async function handleOAuthCallback(code) {
 
         if (data.success) {
             console.log('OAuth callback handled successfully:', data.message);
-            // Proceed assuming the user is authenticated. The server should have set an HttpOnly cookie.
             await navigateBasedOnAuth(true);
         } else {
             console.error('Authentication failed after OAuth callback:', data.message);
