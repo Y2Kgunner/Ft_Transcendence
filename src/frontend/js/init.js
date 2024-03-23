@@ -5,7 +5,7 @@ async function initApp() {
     try {
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
-
+        console.log('Code:', code);
         if (code) {
             const authenticated = await handleOAuthCallback(code);
             if (authenticated) {
@@ -28,6 +28,7 @@ async function navigateBasedOnAuth(isAuthenticated) {
     if (isAuthenticated) {
         console.log('Performing authenticated user tasks');
         let path = window.location.pathname;
+        console.log('Current path:', path);
         path = appRouter.routes[path] ? path : '/';
         await appRouter.navigate(path);
     } else {
