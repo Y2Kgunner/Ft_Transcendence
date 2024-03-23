@@ -1,27 +1,46 @@
 import { navigateBasedOnAuth } from './init.js';
 import { appRouter } from './router.js';
 
+// async function isAuthenticated() {
+//     try {
+//         const response = await fetch('https://127.0.0.1:443/api/auth_status', {
+//             method: 'GET',
+//             credentials: 'include'
+//         });
+//         if (response.ok) {
+//             const data = await response.json();
+//             if (data.authenticated) {
+//                 console.log('User is authenticated', data);
+//                 return true;
+//             } else {
+//                 console.log('User is not authenticated');
+//                 return false;
+//             }
+//         }}
+//     catch (error){
+//             console.error('Failed to check authentication status');
+//             return false;
+//         }
+//     }
+
 async function isAuthenticated() {
     try {
         const response = await fetch('https://127.0.0.1:443/api/auth_status', {
             method: 'GET',
-            credentials: 'include'
+            credentials: 'include',
         });
         if (response.ok) {
             const data = await response.json();
-            if (data.authenticated) {
-                console.log('User is authenticated', data);
-                return true;
-            } else {
-                console.log('User is not authenticated');
-                return false;
-            }
-        }}
-    catch (error){
-            console.error('Failed to check authentication status');
+            return data.authenticated;
+        } else {
             return false;
         }
+    } catch (error) {
+        console.error('Error checking authentication status:', error);
+        return false;
     }
+}
+
 
 function getAuthToken() {
     const token = localStorage.getItem('authToken');
@@ -158,7 +177,6 @@ function setupEventListeners() {
     document.getElementById('registerForm')?.addEventListener('submit', register);
 }
 
-// auth.js
 export async function setupAuthPage() {
 
     window.showRegisterForm = function() {
@@ -185,33 +203,65 @@ function setCookie(name, value, days, secure = false, sameSite = 'Lax') {
     document.cookie = `${name}=${value || ''}${expires}; path=/${secureFlag}${sameSitePolicy}`;
 }
 
+// async function handleOAuthCallback(code) {
+//     const url = `https://127.0.0.1:443/api/oauth_callback?code=${encodeURIComponent(code)}`;
+
+//     try {
+//         const response = await fetch(url, {
+//             method: 'GET',
+//             credentials: 'include', 
+//         });
+
+//         if (!response.ok) {
+//             throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`);
+//         }
+
+//         const data = await response.json();
+
+//         if (data.success) {
+//             console.log(data.message);
+//             navigateBasedOnAuth(true); 
+//         } else {
+//             console.error('Authentication failed:', data.message);
+//             alert('Authentication failed: ' + data.message); 
+//             navigateBasedOnAuth(false); 
+//         }
+//     } catch (error) {
+//         console.error('Error processing the OAuth callback:', error);
+//         alert('Error processing the OAuth callback: ' + error);
+//         navigateBasedOnAuth(false); 
+//     }
+// }
+
+
+// Handling the OAuth callback without directly accessing the token
 async function handleOAuthCallback(code) {
     const url = `https://127.0.0.1:443/api/oauth_callback?code=${encodeURIComponent(code)}`;
-
     try {
         const response = await fetch(url, {
             method: 'GET',
-            credentials: 'include', 
+            credentials: 'include',  // Necessary for cookies, especially HttpOnly cookies
         });
 
         if (!response.ok) {
-            throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`);
+            throw new Error(`OAuth callback failed: ${response.status} ${response.statusText}`);
         }
 
         const data = await response.json();
 
         if (data.success) {
-            console.log(data.message);
-            navigateBasedOnAuth(true); 
+            console.log('OAuth callback handled successfully:', data.message);
+            // Proceed assuming the user is authenticated. The server should have set an HttpOnly cookie.
+            await navigateBasedOnAuth(true);
         } else {
-            console.error('Authentication failed:', data.message);
-            alert('Authentication failed: ' + data.message); 
-            navigateBasedOnAuth(false); 
+            console.error('Authentication failed after OAuth callback:', data.message);
+            alert('Authentication failed: ' + data.message);
+            await navigateBasedOnAuth(false);
         }
     } catch (error) {
         console.error('Error processing the OAuth callback:', error);
-        alert('Error processing the OAuth callback: ' + error);
-        navigateBasedOnAuth(false); 
+        alert('Error processing the OAuth callback: ' + error.message);
+        await navigateBasedOnAuth(false);
     }
 }
 

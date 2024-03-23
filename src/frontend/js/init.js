@@ -7,35 +7,37 @@ async function initApp() {
         const code = urlParams.get('code');
         console.log('Code:', code);
         if (code) {
-            const authenticated = await handleOAuthCallback(code);
-            if (authenticated) {
-                console.log('OAuth callback handled successfully, user is authenticated');
-            } else {
-                console.log('Failed to handle OAuth callback, redirecting to login');
-                appRouter.navigate('/login');
-            }
+            await handleOAuthCallback(code);
+            checkAndNavigateBasedOnAuth();
         } else {
-            const authStatus = await isAuthenticated();
-            console.log('User Authenticated:', authStatus);
-            navigateBasedOnAuth(authStatus);
+            checkAndNavigateBasedOnAuth();
         }
     } catch (error) {
         console.error('Failed to initialize the application:', error);
     }
 }
 
+async function checkAndNavigateBasedOnAuth() {
+    const authStatus = await isAuthenticated();
+    console.log('User Authenticated:', authStatus);
+    navigateBasedOnAuth(authStatus);
+}
+
 async function navigateBasedOnAuth(isAuthenticated) {
     if (isAuthenticated) {
         console.log('Performing authenticated user tasks');
-        let path = window.location.pathname;
-        console.log('Current path:', path);
-        path = appRouter.routes[path] ? path : '/';
+        let path = normalizePath(window.location.pathname);
+        console.log('Normalized path:', path);
         await appRouter.navigate(path);
     } else {
         console.log('User is not authenticated, redirecting to login');
         await appRouter.navigate('/login');
     }
     updateMainContentVisibility(isAuthenticated);
+}
+
+function normalizePath(path) {
+    return appRouter.routes[path] ? path : '/';
 }
 
 function updateMainContentVisibility(isAuthenticated) {
