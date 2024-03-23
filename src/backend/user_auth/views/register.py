@@ -21,7 +21,7 @@ def get_data(request):
     return username, password, email
 
 def is_username_valid(username):
-    username_policy = re.compile(r'^[a-zA-Z0-9._-]{4,}$')
+    username_policy = re.compile(r'^[a-zA-Z]{4,}$')
     if not username_policy.match(username):
         return 'Username must be at least 4 characters long and can only contain alphanumeric characters, dots, underscores, or hyphens.'
     return None
