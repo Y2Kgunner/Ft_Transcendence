@@ -203,36 +203,6 @@ function setCookie(name, value, days, secure = false, sameSite = 'Lax') {
     document.cookie = `${name}=${value || ''}${expires}; path=/${secureFlag}${sameSitePolicy}`;
 }
 
-// async function handleOAuthCallback(code) {
-//     const url = `https://127.0.0.1:443/api/oauth_callback?code=${encodeURIComponent(code)}`;
-
-//     try {
-//         const response = await fetch(url, {
-//             method: 'GET',
-//             credentials: 'include', 
-//         });
-
-//         if (!response.ok) {
-//             throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`);
-//         }
-
-//         const data = await response.json();
-
-//         if (data.success) {
-//             console.log(data.message);
-//             navigateBasedOnAuth(true); 
-//         } else {
-//             console.error('Authentication failed:', data.message);
-//             alert('Authentication failed: ' + data.message); 
-//             navigateBasedOnAuth(false); 
-//         }
-//     } catch (error) {
-//         console.error('Error processing the OAuth callback:', error);
-//         alert('Error processing the OAuth callback: ' + error);
-//         navigateBasedOnAuth(false); 
-//     }
-// }
-
 
 async function handleOAuthCallback(code) {
     const url = `https://127.0.0.1:443/api/oauth_callback?code=${encodeURIComponent(code)}`;
