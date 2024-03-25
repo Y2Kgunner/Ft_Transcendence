@@ -36,7 +36,35 @@ Pong website
     </tr>
     <tr>
       <td>login, register , 42 Auth</td>
-      <td>implementing a remote authentication<</td>
+      <td>Standard user management, authentication, users across tournaments && implementing a remote authentication</td>
+      <td>Amro</td>
+      <td>completed ✅</td>
+      <td> - </td>
+      <td></td>
+      <td></td>
+    </tr>
+      <tr>
+      <td>game (PONG) </td>
+      <td>Main object && Multiplayers (more than 2 in the same game) </td>
+      <td>Yash</td>
+      <td>in progress</td>
+      <td> - </td>
+      <td></td>
+      <td></td>
+    </tr>
+        </tr>
+      <tr>
+      <td>game (tic tac toe) </td>
+      <td>Add Another Game with User History and Matchmaking </td>
+      <td>Omar</td>
+      <td>in progress</td>
+      <td> - </td>
+      <td></td>
+      <td></td>
+    </tr>
+        <tr>
+      <td>OTP / JWT </td>
+      <td>Implement Two-Factor Authentication (2FA) and JWT</td>
       <td>Amro</td>
       <td>completed ✅</td>
       <td> - </td>
@@ -46,6 +74,7 @@ Pong website
     <!-- Add more rows by makeing new TR -->
   </tbody>
 </table>
+
 
 
 <h2>Modules index</h2>
@@ -64,17 +93,17 @@ Pong website
     <tr>
       <td>Use a Framework as backend</td>
       <td>Major</td>
-      <td>compeleted ✅</td>
+      <td>completed ✅</td>
     </tr>
     <tr>
       <td>Standard user management, authentication, users across tournaments</td>
       <td>Major</td>
-      <td>compeleted ✅</td>
+      <td>completed ✅</td>
     </tr>
     <tr>
       <td>implementing a remote authentication</td>
       <td>Major</td>
-      <td>compeleted ✅</td>
+      <td>completed ✅</td>
     </tr>
         <tr>
       <td>Multiplayers (more than 2 in the same game)</td>
@@ -94,12 +123,12 @@ Pong website
         <tr>
       <td>Implement Two-Factor Authentication (2FA) and JWT</td>
       <td>Major</td>
-      <td>compeleted ✅</td>
+      <td>completed ✅</td>
     </tr>
     <tr>
       <td>Use a database for the backend</td>
       <td>Minor</td>
-      <td>compeleted ✅</td>
+      <td>completed ✅</td>
     </tr>
         <tr>
       <td>Multiple language supports</td>
