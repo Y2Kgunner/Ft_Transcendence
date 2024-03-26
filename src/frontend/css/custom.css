@@ -1,0 +1,22 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+@font-face {
+  font-family: 'PixelatedFont';
+  src: url('../asessts/Pixelated/pix/pix.ttf') format('truetype'); /* Update the path to your font file */
+}
+
+body {
+  font-family: 'PixelatedFont', sans-serif; /* Use the custom font as the default font */
+}
+
+#floatingPassword {
+  font-family: sans-serif, 'Arial'; /* Change the font family to Arial or any other system font */
+}
+
+.secForm {
+  max-width: 650px;
+}
