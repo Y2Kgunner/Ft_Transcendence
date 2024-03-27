@@ -8,18 +8,21 @@ class Router {
     async init() {
         window.addEventListener('popstate', () => this.handleLocationChange());
         this.setupLinks();
-        await this.handleLocationChange(); 
+        await this.handleLocationChange();
     }
 
-    async navigate(path) {
+    async navigate(path, { replace = false } = {}) {
         console.log(`Navigating to: ${path}`);
-        if (path === '/logout') 
-        {
+        if (path === '/logout') {
             logoutUser();
+            this.navigate('/login', { replace: true });
             return;
         }
         const route = this.routes[path] || this.routes['/login'];
         await this.loadRoute(route.path, route.method);
+        if (!replace) {
+            window.history.pushState({}, '', path);
+        }
     }
 
     async loadRoute(htmlPath, callback = null) {
@@ -36,25 +39,36 @@ class Router {
         }
     }
 
-    setupLinks() {
-        document.body.addEventListener('click', event => {
-            if (event.target.matches('[data-route]')) {
+    // setupLinks() {
+    //     document.body.addEventListener('click', event => {
+    //         const link = event.target.closest('a[data-route]');
+    //         if (link) {
+    //             console.log('Link clicked:', link.href);
+    //             event.preventDefault();
+    //             const path = new URL(link.href).pathname;
+    //             console.log('Extracted path:', path);
+    //             this.navigate(path);
+    //         } else {
+    //             console.log('Clicked element is not a router link.');
+    //         }
+    //     });
+    // }
+    
+        setupLinks() {
+        document.addEventListener('click', event => {
+            const routeLink = event.target.closest('[data-route]');
+            if (routeLink) {
                 event.preventDefault();
-                if(event.target.href) {
-                    const path = new URL(event.target.href).pathname;
-                    window.history.pushState({}, '', path);
-                    this.navigate(path);
-                }else {
-                    console.log('No href found', event.target);
-                }
+                const path = routeLink.getAttribute('href');
+                window.history.pushState({}, '', path);
+                this.navigate(path);
             }
-        }
-        );
+        });
     }
-
+    
     handleLocationChange() {
         const path = window.location.pathname;
-        this.navigate(path).catch(console.error);
+        this.navigate(path, { replace: true }).catch(console.error); 
     }
 }
 
@@ -67,6 +81,5 @@ const routes = {
     '/tournament': { path: 'pages/tournament.html', method: null },
     '/logout': { path: '', method: null },
 };
-
 
 export const appRouter = new Router(routes);

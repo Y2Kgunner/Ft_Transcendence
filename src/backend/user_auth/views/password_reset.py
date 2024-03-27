@@ -1,12 +1,3 @@
-
-# send_mail(
-#     "Subject here",
-#     "Here is the message.",
-#     "from@example.com",
-#     ["to@example.com"],
-#     fail_silently=False,
-# )
-
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.core.mail import send_mail
 from user_auth.models import WebUser

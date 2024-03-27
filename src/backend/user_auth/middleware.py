@@ -11,42 +11,32 @@ class JWTAuthenticationMiddleware(MiddlewareMixin):
 
     def __init__(self, get_response):
         self.get_response = get_response
-        self.excluded_paths = ['/api/login', '/api/register','/api/login','/api/fortytwo',\
-                               '/api/oauth_callback','/api/auth_status','/api/proceed_with_login','/api/finalize_login','/api/check_2fa_status', '/api/verify_otp']
-
+        self.excluded_paths = ['/api/login', '/api/register','/api/login','/api/fortytwo','api/logout'\
+                               '/api/oauth_callback','/api/auth_status','/api/proceed_with_login','/api/finalize_login','/api/check_2fa_status', '/api/verify_otp',\
+                               #to be removed for test only 
+                               '/pong/create' , '/pong/delete', '/pong/list', '/pong/finish_and_update_match','/pong/leaderboard' ,'/pong/leaderboard_by_wins' ,'/pong/leaderboard_by_scored']
+        
     # def __call__(self, request):
     #     print("JWT Middleware called")  # debugging
 
     def process_request(self, request):
-        # Skip middleware for excluded paths
         if request.path_info in self.excluded_paths:
-            #keep this to bypass auth call 
             if request.path_info == '/api/auth_status':
                 return self.get_response(request)
             return None
         return self.authenticate_request(request)
     
     def process_view(self, request, view_func, view_args, view_kwargs):
-        # in case server side rendering is used
+        # in case server side rendering is used - check with the team 
         pass
-
-    # def process_view(self, request, view_func, view_args, view_kwargs):
-    #     # Skip middleware for excluded paths
-    #     if request.path_info in self.excluded_paths:
-    #         if request.path_info == '/api/auth_status':
-    #             return view_func(request)
-    #         return None
 
     def authenticate_request(self, request):
         auth_header = request.headers.get('Authorization', '')
         token = None
-
         if auth_header.startswith('Bearer '):
             token = auth_header.split(' ')[1]
-
         if not token:
             token = request.COOKIES.get('jwt', None)
-
         if token:
             payload = JWTHandler.decode_jwt(token)
             if 'error' not in payload:
