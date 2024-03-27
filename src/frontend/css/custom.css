@@ -24,12 +24,8 @@ body {
   min-width: 40px;
 }
 
-.secForm {
-  max-width: 650px;
-}
-
 .secHome {
-  margin-top: 200px;
+  margin-top: 700px;
 }
 
 .navbar-toggler {
@@ -81,4 +77,13 @@ body {
     width: 100%;
     visibility: visible;
   }
+}
+
+.hero-section {
+  margin-top: 30vh;
+}
+
+.player-button {
+  width: 30vw;
+  /* min-width: 300px; */
 }
