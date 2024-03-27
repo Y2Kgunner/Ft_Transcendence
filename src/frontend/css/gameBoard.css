@@ -1,0 +1,5 @@
+.main-content {
+  min-height: calc(100vh - 71px); /* Subtract navbar height */
+  margin-top: 71px; /* Start after the navbar */
+  padding-top: 10vh;
+}
