@@ -24,8 +24,12 @@ body {
   min-width: 40px;
 }
 
-.secHome {
+/* .secHome {
   margin-top: 700px;
+} */
+
+.secForm {
+  max-width: 650px;
 }
 
 .navbar-toggler {
