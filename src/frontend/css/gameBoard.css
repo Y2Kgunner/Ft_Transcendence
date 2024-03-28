@@ -3,3 +3,14 @@
   margin-top: 71px; /* Start after the navbar */
   padding-top: 10vh;
 }
+
+#pongCanvas {
+  background-color: aqua;
+}
+
+.one {
+  width: 425px;
+  height: 150px;
+  background-color: #efb762;
+  margin: 20px auto;
+}
