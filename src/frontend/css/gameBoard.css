@@ -1,16 +1,57 @@
-.main-content {
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.mainContext {
   min-height: calc(100vh - 71px); /* Subtract navbar height */
+  max-width: 100vw;
   margin-top: 71px; /* Start after the navbar */
   padding-top: 10vh;
 }
 
-#pongCanvas {
-  background-color: aqua;
+.pseudoCanvas {
+  background-color: #212121;
+  width: 55vw;
+  height: 55vh;
 }
 
-.one {
-  width: 425px;
-  height: 150px;
-  background-color: #efb762;
-  margin: 20px auto;
+.dottedLine {
+  width: 3px;
+  height: 55vh;
+  left: 50vw;
+  position: absolute;
+  border-style: dashed;
+  border-color: #DBFFD2;
+  background-color: #212121;
+}
+
+.paddle {
+  width: 10px;
+  height: 80px;
+  background-color: #DBFFD2;
+}
+
+#paddle1 {
+  bottom: 50vh;
+  position: absolute;
+}
+
+#paddle2 {
+  left: 77vw;
+  bottom: 50vh;
+  position: absolute;
+}
+
+.ball {
+  width: 25px;
+  height: 25px;
+  background-color: #972342;
+  box-shadow: 0 0 10px 2px #DBFFD2;
+  border-radius: 50%;
+  position: absolute;
+  top: 47%;
+  left: 50vw;
+  transform: translate(-50%, -50%);
 }
