@@ -1,0 +1,88 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.mainContext {
+  min-height: calc(100vh - 71px); /* Subtract navbar height */
+  max-width: 100vw;
+  margin-top: 71px; /* Start after the navbar */
+  padding-top: 3vh;
+}
+
+.pseudoCanvas {
+  background-color: #212121;
+  width: 55vw;
+  height: 75vh;
+}
+
+/* .dottedLine {
+  width: 3px;
+  height: calc(38vh + 1px);
+  left: calc(50vw - 1px);
+  position: absolute;
+  border-style: dashed;
+  border-color: #DBFFD2;
+  background-color: #212121;
+}
+
+.dottedDiagLine {
+  left: calc(36vw + 9px);
+  bottom: calc(-4vh + 8px);
+  position: absolute;
+  width: 3px;
+  height: calc(65vh - 5px);
+  border-style: dashed;
+  border-color: #DBFFD2;
+  background-color: #212121;
+  transform: rotate(56deg);
+}
+
+.dottedDiagLine1 {
+  right: calc(36vw + 8px);
+  bottom: calc(-4vh + 8px);
+  position: absolute;
+  width: 3px;
+  height: calc(65vh - 5px);
+  border-style: dashed;
+  border-color: #DBFFD2;
+  background-color: #212121;
+  transform: rotate(124deg);
+} */
+
+.paddle {
+  width: 10px;
+  height: 80px;
+  background-color: #DBFFD2;
+}
+
+#paddle1 {
+  bottom: 45vh;
+  position: absolute;
+}
+
+#paddle2 {
+  left: 77vw;
+  bottom: 45vh;
+  position: absolute;
+}
+
+#paddle3 {
+  position: absolute;
+  bottom: 8vh; /* Adjust positioning as needed */
+  left: 50vw;
+  transform: rotate(90deg);
+}
+
+.ball {
+  width: 25px;
+  height: 25px;
+  background-color: #972342;
+  box-shadow: 0 0 10px 2px #DBFFD2;
+  border-radius: 50%;
+  position: absolute;
+  top: calc(53vh + 1px);
+  left: 50vw;
+  transform: translate(-50%, -50%);
+}
