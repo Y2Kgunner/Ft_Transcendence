@@ -71,6 +71,15 @@ Pong website
       <td></td>
       <td></td>
     </tr>
+     <tr>
+      <td>frontend / pong website</td>
+      <td>make the website suitable for all screen sizes</td>
+      <td>aikram</td>
+      <td>in progress</td>
+      <td> - </td>
+      <td></td>
+      <td></td>
+    </tr>
     <!-- Add more rows by makeing new TR -->
   </tbody>
 </table>
