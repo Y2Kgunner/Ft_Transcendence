@@ -77,7 +77,8 @@ const routes = {
     '/login': { path: 'pages/login.html', method: setupAuthPage },
     '/profile': { path: 'pages/profile.html', method: null }, 
     '/about': { path: 'pages/about.html', method: null },
-    '/pong': { path: 'pages/pong.html', method: null },
+    '/game': { path: 'pages/game.html', method: null },
+    '/multiplayer': { path: 'pages/multiGame.html', method: null },
     '/tournament': { path: 'pages/tournament.html', method: null },
     '/logout': { path: '', method: null },
 };
