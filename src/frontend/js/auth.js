@@ -242,9 +242,4 @@ function showOtpForm(show) {
     }
 }
 
-<<<<<<< HEAD
 export { isAuthenticated, getAuthToken, login, register , handleOAuthCallback, logoutUser  };
-=======
-export { isAuthenticated, getAuthToken, login, register , handleOAuthCallback, logoutUser  };
-
->>>>>>> 3827c4208c48cf2724519c4169f2bb3413cbeec4
