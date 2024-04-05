@@ -26,4 +26,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('user_auth.urls')),
     path('tournament_api/', include('tournament.urls')),
+    path('pongApp/', include('pongApp.urls')),
     ]

@@ -24,13 +24,6 @@ fclean: clean
 flush:
 	docker-compose run django python manage.py flush --no-input
 
-# makemigrations:
-# 	cd $(SRC_DIR) && docker exec -it backend python manage.py makemigrations
-
-# migrate:
-# 	cd $(SRC_DIR) && docker exec -it backend python manage.py migrate
-
-# make-and-apply-migrations: makemigrations migrate
 makemigrations:
 	cd $(SRC_DIR) && docker-compose run --rm django python manage.py makemigrations
 
