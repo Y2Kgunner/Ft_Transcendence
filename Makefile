@@ -4,7 +4,7 @@ SRC_DIR=src
 
 build:
 	cd $(SRC_DIR) && docker-compose build --no-cache
-
+	
 up:
 	cd $(SRC_DIR) && docker-compose up -d
 

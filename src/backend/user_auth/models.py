@@ -78,7 +78,7 @@ class WebUser(AbstractBaseUser, PermissionsMixin):
     # additional info
     first_name = models.CharField(_('first name'), max_length=20, blank=True)
     last_name = models.CharField(_('last name'), max_length=20, blank=True)
-    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message=_("Phone number must be entered in the format: '+971-XX-XXX-XXXX'. Up to 15 digits allowed."))
+    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message=_("Phone number must be entered in the format: '+971-XX-XXX-XXXX'."))
     # phone_number = models.CharField(_('phone number'), validators=[phone_regex], max_length=17, blank=True)
     phone_number = models.CharField(_('phone number'), validators=[phone_regex], max_length=17, blank=True, null=True)
     address = models.CharField(_('address'), max_length=100, blank=True)
@@ -101,7 +101,18 @@ class WebUser(AbstractBaseUser, PermissionsMixin):
     twofa_enabled = models.BooleanField(default=False)
     twofa_secret = models.CharField(max_length=255, blank=True, null=True)
 
+    #game_manager 
+    pong_games_played = models.IntegerField(default=0)
+    pong_wins = models.IntegerField(default=0)
+    pong_losses = models.IntegerField(default=0)
+    pong_scored = models.IntegerField(default=0)
 
+    
+    ttt_games_played = models.IntegerField(default=0)
+    ttt_wins = models.IntegerField(default=0)
+    ttt_losses = models.IntegerField(default=0)
+    ttt_draws = models.IntegerField(default=0)
+    
     objects = WebUserManager()
     
     USERNAME_FIELD = 'username'

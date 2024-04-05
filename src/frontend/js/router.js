@@ -83,4 +83,8 @@ const routes = {
     '/logout': { path: '', method: null },
 };
 
+<<<<<<< HEAD
 export const appRouter = new Router(routes);
+=======
+export const appRouter = new Router(routes);
+>>>>>>> 3827c4208c48cf2724519c4169f2bb3413cbeec4

@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'tournament',
+    'pongApp',
     'user_auth',
     'django_otp',
     'pongApp',
