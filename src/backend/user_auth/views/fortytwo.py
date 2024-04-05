@@ -69,17 +69,6 @@ def oauth_callback(request):
         samesite='None' 
     )
     return response
-    # response = redirect('https://127.0.0.1:443')
-    # response.set_cookie(
-    #     key='jwt',
-    #     value=jwt_token,
-    #     httponly=True,
-    #     max_age=3600,  
-    #     samesite='None',  
-    #     secure=True
-    # )
-    # return response
-
 
 @csrf_exempt
 @require_http_methods(["POST"])

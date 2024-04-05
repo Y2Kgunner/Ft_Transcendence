@@ -148,7 +148,7 @@ JWT_EXPIRATION_DELTA = timedelta(hours=1)
 
 # 42 OAuth settings
 CLIENT_ID_42 = 'u-s4t2ud-d0c4077a43cbefbff3d67add430fbc7edaadbc4522099efc1eb7a28773e0037a'
-CLIENT_SECRET_42 = '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'
+CLIENT_SECRET_42 = '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'
 CALLBACK_URL_42 = 'https://127.0.0.1:443/oauth_callback'
 
 # SSL Settings

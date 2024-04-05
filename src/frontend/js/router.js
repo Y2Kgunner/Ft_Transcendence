@@ -1,4 +1,4 @@
-import { setupAuthPage, logoutUser } from './auth.js';
+import { setupAuthPage, logoutUser , isAuthenticated} from './auth.js';
 
 class Router {
     constructor(routes) {
@@ -10,25 +10,35 @@ class Router {
         this.setupLinks();
         await this.handleLocationChange();
     }
-
-    async navigate(path, { replace = false } = {}) {
+    
+    async navigate(path, { replace = false, force = false } = {}) {
         console.log(`Navigating to: ${path}`);
-        if (path === '/logout') {
-            logoutUser();
-            this.navigate('/login', { replace: true });
+        if (!force && this.lastPath === path && !replace) {
+            console.log(`Already navigated to: ${path}`);
             return;
         }
+        this.lastPath = path;
+    
+        if (path === '/logout') {
+            logoutUser();
+            return this.loadRoute('/logout');
+        } else if (path === '/login') {
+            return this.loadRoute('pages/login.html', setupAuthPage);
+        }
+    
         const route = this.routes[path] || this.routes['/login'];
         await this.loadRoute(route.path, route.method);
         if (!replace) {
             window.history.pushState({}, '', path);
         }
     }
-
+    
     async loadRoute(htmlPath, callback = null) {
-        console.log(`Loading route: ${htmlPath}`);
         try {
             const response = await fetch(htmlPath);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch ${htmlPath}: ${response.status}`);
+            }
             const content = await response.text();
             document.getElementById('page-content').innerHTML = content;
             if (callback && typeof callback === 'function') {
@@ -38,21 +48,6 @@ class Router {
             console.error('Failed to load the route:', error);
         }
     }
-
-    // setupLinks() {
-    //     document.body.addEventListener('click', event => {
-    //         const link = event.target.closest('a[data-route]');
-    //         if (link) {
-    //             console.log('Link clicked:', link.href);
-    //             event.preventDefault();
-    //             const path = new URL(link.href).pathname;
-    //             console.log('Extracted path:', path);
-    //             this.navigate(path);
-    //         } else {
-    //             console.log('Clicked element is not a router link.');
-    //         }
-    //     });
-    // }
     
         setupLinks() {
         document.addEventListener('click', event => {
@@ -66,12 +61,18 @@ class Router {
         });
     }
     
-    handleLocationChange() {
+    async handleLocationChange() {
         const path = window.location.pathname;
-        this.navigate(path, { replace: true }).catch(console.error); 
+        const authStatus = await isAuthenticated();
+    
+        if (!authStatus && path !== '/login') {
+            this.navigate('/login', { replace: true });
+        } else {
+            this.navigate(path, { replace: true });
+        }
     }
 }
-
+    
 const routes = {
     '/': { path: 'pages/home.html', method: null }, 
     '/login': { path: 'pages/login.html', method: setupAuthPage },
