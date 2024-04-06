@@ -25,11 +25,10 @@ flush:
 	docker-compose run django python manage.py flush --no-input
 
 makemigrations:
-	cd $(SRC_DIR) && docker-compose run --rm django python manage.py makemigrations
-
+	cd $(SRC_DIR) && docker-compose exec django python manage.py makemigrations
 migrate:
-	cd $(SRC_DIR) && docker-compose run --rm django python manage.py migrate
-
+	cd $(SRC_DIR) && docker-compose exec django python manage.py migrate
+	
 make-and-apply-migrations: makemigrations migrate
 
 inspect:
