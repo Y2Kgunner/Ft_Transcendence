@@ -1,27 +1,5 @@
-import { navigateBasedOnAuth } from './init.js';
+import { navigateBasedOnAuth , updateMainContentVisibility} from './init.js';
 import { appRouter } from './router.js';
-
-// async function isAuthenticated() {
-//     try {
-//         const response = await fetch('https://127.0.0.1:443/api/auth_status', {
-//             method: 'GET',
-//             credentials: 'include'
-//         });
-//         if (response.ok) {
-//             const data = await response.json();
-//             if (data.authenticated) {
-//                 console.log('User is authenticated', data);
-//                 return true;
-//             } else {
-//                 console.log('User is not authenticated');
-//                 return false;
-//             }
-//         }}
-//     catch (error){
-//             console.error('Failed to check authentication status');
-//             return false;
-//         }
-//     }
 
 async function isAuthenticated() {
     try {
@@ -40,7 +18,6 @@ async function isAuthenticated() {
         return false;
     }
 }
-
 
 function getAuthToken() {
     const token = localStorage.getItem('authToken');
@@ -66,6 +43,7 @@ async function login(event) {
         const data = await response.json();
         console.log('Login successful:', data);
         setCookie('authToken', data.token, 1, true, 'None');
+        updateMainContentVisibility(true);
         appRouter.navigate('/');
     }
     else 
@@ -103,7 +81,6 @@ async function loginOtpUser(event) {
     }
 }
 
-
 async function register(event) {
     event.preventDefault();
     const email = document.getElementById('registerEmail').value;
@@ -127,7 +104,7 @@ async function register(event) {
     if (response.ok) {
         const data = await response.json();
         console.log('Registration successful:', data);
-        appRouter.navigate('/login');
+        await appRouter.navigate('/login', { force: true });
     } else {
         const error = await response.json();
         console.error('Registration failed:', error);
@@ -203,7 +180,6 @@ function setCookie(name, value, days, secure = false, sameSite = 'Lax') {
     document.cookie = `${name}=${value || ''}${expires}; path=/${secureFlag}${sameSitePolicy}`;
 }
 
-
 async function handleOAuthCallback(code) {
     const url = `https://127.0.0.1:443/api/oauth_callback?code=${encodeURIComponent(code)}`;
     try {
@@ -220,18 +196,22 @@ async function handleOAuthCallback(code) {
 
         if (data.success) {
             console.log('OAuth callback handled successfully:', data.message);
-            await navigateBasedOnAuth(true);
+            updateMainContentVisibility(true);
+            await appRouter.navigate('/'); 
         } else {
             console.error('Authentication failed after OAuth callback:', data.message);
             alert('Authentication failed: ' + data.message);
+            updateMainContentVisibility(false);
             await navigateBasedOnAuth(false);
         }
     } catch (error) {
         console.error('Error processing the OAuth callback:', error);
         alert('Error processing the OAuth callback: ' + error.message);
+        updateMainContentVisibility(false);
         await navigateBasedOnAuth(false);
     }
 }
+
 
 async function logoutUser() {
     try {
@@ -245,6 +225,7 @@ async function logoutUser() {
         if (!response.ok) {
             throw new Error('Logout failed');
         }
+        updateMainContentVisibility(false);
         await appRouter.navigate('/login');
     } catch (error) {
         console.error('Logout error:', error);
@@ -261,6 +242,4 @@ function showOtpForm(show) {
     }
 }
 
-
-export { isAuthenticated, getAuthToken, login, register , handleOAuthCallback, logoutUser };
-
+export { isAuthenticated, getAuthToken, login, register , handleOAuthCallback, logoutUser  };

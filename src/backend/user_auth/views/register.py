@@ -81,4 +81,3 @@ def register(request):
         return JsonResponse({'error': 'Could not create user due to an integrity error.'}, status=500)
     except Exception as e:
         return JsonResponse({'error': 'Internal server error. Please try again later.'}, status=500)
-

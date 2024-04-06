@@ -11,7 +11,7 @@ class JWTAuthenticationMiddleware(MiddlewareMixin):
 
     def __init__(self, get_response):
         self.get_response = get_response
-        self.excluded_paths = ['/api/login', '/api/register','/api/login','/api/fortytwo','api/logout'\
+        self.excluded_paths = ['/api/login', '/api/register','/api/login','/api/fortytwo','api/logout',
                                '/api/oauth_callback','/api/auth_status','/api/proceed_with_login','/api/finalize_login','/api/check_2fa_status', '/api/verify_otp',\
                                #to be removed for test only 
                                '/pong/create' , '/pong/delete', '/pong/list', '/pong/finish_and_update_match','/pong/leaderboard' ,'/pong/leaderboard_by_wins' ,'/pong/leaderboard_by_scored']
