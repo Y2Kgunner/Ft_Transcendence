@@ -1,29 +1,38 @@
-<!-- profile.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile Page</title>
-    <link href="../bootstrap-5.3.3-dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/profile.css"> <!-- Link to your CSS file -->
 </head>
 <body>
-    <!-- profile.html -->
-    <div class="container mt-5">
-        <div class="row">
-            <div class="col-md-4">
-                <!-- Profile Picture Placeholder -->
-                <img src="src/frontend/asessts/profile_pictures/default.png" alt="Profile Picture" class="img-thumbnail" id="profilePic">
-            </div>
-            <div class="col-md-8">
-                <h2 id="username">Username</h2>
-                <p><strong>Email:</strong> <span id="email">user@example.com</span></p>
-                <p><strong>Games Played:</strong> <span id="gamesPlayed">0</span></p>
-                <p><strong>Wins:</strong> <span id="wins">0</span></p>
-                <p><strong>Losses:</strong> <span id="losses">0</span></p>
-                <p><strong>Win Rate:</strong> <span id="winRate">0%</span></p>
-            </div>
+    <div id="profile-page">
+        <div class="tab-buttons">
+            <button class="tab-button" onclick="changeTab('profile')">Profile</button>
+            <button class="tab-button" onclick="changeTab('match-history')">Match History</button>
+            <button class="tab-button" onclick="changeTab('leaderboard')">Leaderboard</button>
+        </div>
+        <div id="profile" class="tab-content">
+            <!-- Profile content here -->
+        </div>
+        <div id="match-history" class="tab-content" style="display: none;">
+            <!-- Match history content here -->
+        </div>
+        <div id="leaderboard" class="tab-content" style="display: none;">
+            <!-- Leaderboard content here -->
         </div>
     </div>
+    <script>
+      function changeTab(tabId) {
+          var tabs = document.getElementsByClassName('tab-content');
+          for (var i = 0; i < tabs.length; i++) {
+              tabs[i].style.display = 'none';
+          }
+          document.getElementById(tabId).style.display = 'block';
+      }
+  </script>
+  </body>
 </body>
 </html>
+
+
+<!-- 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 -->

@@ -1,57 +1,60 @@
-<!-- Login Form -->
-<div id="login-form">
-    <h2>Login</h2>
-    <form id="loginForm">
-        <!-- Your existing login form fields -->
-        <div class="form-group">
-            <label for="LoginUserName">User Name</label>
-            <input type="username" class="form-control" id="LoginUserName" required>
-        </div>
-        <div class="form-group">
-            <label for="loginPassword">Password</label>
-            <input type="password" class="form-control" id="loginPassword" required>
-        </div>
-        <button type="submit" class="btn btn-primary" id="loginButton">Log In</button>
-        <!-- Your existing login form buttons and links -->
-    </form>
-</div>
-
-<!-- OTP Verification Modal -->
-<div class="modal fade" id="otpModal" tabindex="-1" role="dialog" aria-labelledby="otpModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="otpModalLabel">Enter OTP</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <!-- OTP input fields -->
-                <div class="form-group">
-                    <input type="text" class="form-control" id="otpInput1" maxlength="1" required>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ft_transcendence</title>
+    <!-- Custom CSS -->
+    <link href="css/styles.css" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="bootstrap-5.3.3-dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="mainContent">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Main content -->
+                <div class="col-md-9">
+                    <!-- Top navigation bar -->
+                    <nav id="navbar" class="navbar navbar-expand-lg navbar-light" style="display:none;">
+                        <div class="container-fluid">
+                            <div class="collapse navbar-collapse" id="navbarNav">
+                                <ul class="navbar-nav">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/profile" data-route>Profile</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/pong" data-route>Pong Game</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/tournament" data-route>Tournament</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/about" data-route>About</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/logout" data-route>Logout</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </nav>
+                    <!-- Page content -->
+                    <div id="page-content">
+                        <!-- Content that changes based on navigation goes here -->
+                    </div>
                 </div>
-                <div class="form-group">
-                    <input type="text" class="form-control" id="otpInput2" maxlength="1" required>
-                </div>
-                <div class="form-group">
-                    <input type="text" class="form-control" id="otpInput3" maxlength="1" required>
-                </div>
-                <div class="form-group">
-                    <input type="text" class="form-control" id="otpInput4" maxlength="1" required>
-                </div>
-                <!-- Resend OTP link -->
-                <p class="text-muted text-center">Didn't get the code? <a href="#" class="text-success" id="resendOTP">Click to resend.</a></p>
-            </div>
-            <div class="modal-footer">
-                <!-- OTP verification buttons -->
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-success" id="verifyOTP">Verify</button>
             </div>
         </div>
     </div>
-</div>
-
-<!-- Bootstrap and jQuery -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="../bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript for SPA routing and functionality -->
+    <script type="module" src="js/router.js"></script>
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/init.js"></script>
+</body>
+</html>

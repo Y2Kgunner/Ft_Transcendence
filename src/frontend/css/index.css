@@ -1,0 +1,30 @@
+body.bg-black {
+    background-color: #000000;
+    min-height: 100vh; /* Make sure the page takes minimum full height */
+}
+
+/* Override Bootstrap's navbar styles with custom colors and shadow */
+#navbar {
+    background: transparent;
+    padding-top: 34px; /* Adjusted to fit the Figma design */
+}
+
+#navbar .navbar-brand {
+    color: #DBFFD2;
+    text-shadow: 0px 4px 10px #52FF00;
+}
+
+#navbar .navbar-nav .nav-item {
+    margin-right: 30px; /* Spacing between nav items */
+}
+
+#navbar .navbar-nav .nav-link {
+    color: #DBFFD2;
+    text-shadow: 0px 4px 10px #52FF00;
+    font-family: 'Pixelated', 'Press Start 2P', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 28px;
+    text-align: center;
+}

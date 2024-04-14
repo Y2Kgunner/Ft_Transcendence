@@ -23,7 +23,7 @@ class Router {
             logoutUser();
             return this.loadRoute('/logout');
         } else if (path === '/login') {
-            return this.loadRoute('pages/login.html', setupAuthPage);
+            return this.loadRoute('pages/newLogin.html', setupAuthPage);
         }
     
         const route = this.routes[path] || this.routes['/login'];
@@ -72,15 +72,19 @@ class Router {
         }
     }
 }
-    
+
 const routes = {
     '/': { path: 'pages/home.html', method: null }, 
     '/login': { path: 'pages/login.html', method: setupAuthPage },
     '/profile': { path: 'pages/profile.html', method: null }, 
     '/about': { path: 'pages/about.html', method: null },
     '/pong': { path: 'pages/pong.html', method: null },
+    '/game': { path: 'pages/game.html', method: null },
+    '/multiplayer': { path: 'pages/multiGame.html', method: null },
     '/tournament': { path: 'pages/tournament.html', method: null },
-    '/logout': { path: '', method: null },
+    '/logout': { path: '', method: null }
 };
 
 export const appRouter = new Router(routes);
+
+

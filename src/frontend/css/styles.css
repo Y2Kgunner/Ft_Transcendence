@@ -27,7 +27,18 @@
     margin: 0 auto; 
 }
 
-/* 
+body {
+    font-family: 'Press Start 2P', cursive;
+  }
+  
 
-*/
+.nav-link {
+    font-family: 'Press Start 2P', cursive;
+  }
+  
+
+  #page-content {
+    font-family: 'Press Start 2P', cursive;
+  }
+  
 

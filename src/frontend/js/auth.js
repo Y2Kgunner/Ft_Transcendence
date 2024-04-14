@@ -133,6 +133,7 @@ function setupEventListeners() {
         event.preventDefault();
         console.log('Switching to register form...'); 
         showRegisterForm();
+        // appRouter.navigate('/register')
     });
 
     document.getElementById('showLoginForm')?.addEventListener('click', function(event) {
