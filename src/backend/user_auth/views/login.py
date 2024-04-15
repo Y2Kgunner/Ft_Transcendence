@@ -76,7 +76,7 @@ def finalize_login(request, user):
     response.set_cookie(
         key='jwt',
         value=token,
-        httponly=True,
+        # httponly=True, this only for testing to prevent XXS attacks - NEED TO FIND ANOTHER WAY AROUND IT 
         max_age=3600,
         samesite='None',
         secure=True

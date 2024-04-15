@@ -43,7 +43,7 @@ def send_otp_email_api(request):
         if request.user.twofa_enabled:
             otp = generate_otp()
             request.session['otp'] = otp
-            request.session.set_expiry(300)  # 5 minutes
+            request.session.set_expiry(300)
             send_otp_email(request.user, otp)  
             return JsonResponse({'message': 'OTP sent successfully', 'expires_in': 300, 'otp': otp}, status=200)
         else:

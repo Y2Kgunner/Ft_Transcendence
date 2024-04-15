@@ -4,12 +4,6 @@ from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 import uuid
 from django.contrib.auth import get_user_model
-#OTP
-import pyotp
-from django_otp.plugins.otp_totp.models import TOTPDevice
-from django_otp.plugins.otp_totp.models import TOTPDevice
-from django_otp.plugins.otp_static.models import StaticDevice
-from django_otp.plugins.otp_email.models import EmailDevice
 
 
 class WebUserManager(BaseUserManager):
@@ -125,36 +119,13 @@ class WebUser(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.username
 
-    def enable_totp(self):
-        existing_device = TOTPDevice.objects.filter(user=self, confirmed=True).first()
-        if not existing_device:
-            totp_device = TOTPDevice(user=self, name="default", confirmed=False)
-            totp_device.save()
-        self.twofa_enabled = True
-        self.save()
-
-    def disable_totp(self):
-        """Disable TOTP for the user."""
-        TOTPDevice.objects.filter(user=self).delete()
-        self.twofa_enabled = False
-        self.save()
-
     def anonymize_user(self):
         unique_suffix = uuid.uuid4().hex[:8] 
         self.username = f'anonymous_{unique_suffix}'
-        self.email = f'anonymous_{unique_suffix}@example.com'
+        # self.email = f'anonymous_{unique_suffix}@example.com'
         self.first_name = ''
         self.last_name = ''
         self.phone_number = None
         self.address = ''
         self.profile_picture = None
         self.save()
-
-
-class UserOTP(models.Model):
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='otp_codes')
-    otp = models.CharField(max_length=6)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        ordering = ['-created_at']

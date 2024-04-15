@@ -1,27 +1,205 @@
-.tab-buttons {
-  display: flex;
-  justify-content: space-around;
-  background: #2D3748;
-  border-radius: 10px;
+.profile-picture {
+  width: 150px;  /* Set the width of the image */
+  height: 150px; /* Set the height of the image */
+  border-radius: 50%; /* Makes the image circular */
+  border: 3px solid #fff; /* Optional: adds a white border around the image */
+  object-fit: cover; /* Ensures the image covers the frame without distorting the aspect ratio */
+  display: block; /* Ensures the image is properly blocked */
+  margin: 10px auto; /* Centers the image horizontally and adds margin */
+  background-position: center; /* Centers the background image */
+  background-size: cover; /* Ensures the background covers the area without repeating */
 }
 
-.tab-button {
-  background: none;
-  border: none;
-  color: #BDBDBD;
-  font-family: 'Pixelated';
-  font-size: 14px;
+.profile-table {
+  font-family: 'Pixelated', 'Press Start 2P', sans-serif;
+  margin-top: 20px;
+  color: #ffffff; 
+  background-color: transparent; 
+  border: 2px solid #00ff00; 
+  border-radius: 20px;
+}
+
+.action-buttons {
+  margin-top: 20px;
+  font-family: 'Pixelated', 'Press Start 2P', sans-serif ;
+}
+
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  font-family: 'Pixelated', 'Press Start 2P', sans-serif ;
+}
+
+.modal-content {
+  background-color: #fefefe;
+  font-family: 'Pixelated', 'Press Start 2P', sans-serif ;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 30%; /* Could be more or less, depending on screen size */
+  border-radius: 10px; /* Optional: Rounded corners */
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
   cursor: pointer;
 }
 
-.tab-button:hover {
-  color: #FFFFFF;
+.modal-header {
+  padding: 2px 16px;
+  background-color: #5cb85c;
+  color: white;
+  border-top-left-radius: 10px; 
+  border-top-right-radius: 10px;
+  font-family: 'Pixelated', 'Press Start 2P', sans-serif ;
+
 }
 
-.tab-content {
-  background: #2D3748;
-  border-radius: 100px;
-  padding: 200px;
+.modal-footer {
+  padding: 2px 16px;
+  background-color: #5cb85c;
+  color: white;
+  border-bottom-left-radius: 10px; 
+  border-bottom-right-radius: 10px; 
+  font-family: 'Pixelated', 'Press Start 2P', sans-serif ;
+
 }
 
-/* Additional styles for your content */
+#deleteOtpInput {
+  width: 80%; 
+  margin: 0 auto; 
+}
+
+.leaderboard-table {
+  width: 100%; /* Making the table full-width */
+  margin: 20px auto; /* Centering the table and adding some space around it */
+  color: #ffffff; /* White text color for readability */
+  background-color: transparent; /* Transparent background for the table */
+  border-collapse: collapse; /* Merging borders between cells */
+  font-family: 'Pixelated', 'Press Start 2P', sans-serif; /* Retro gaming font */
+}
+
+.leaderboard-table th,/* Ensures the text aligns to the left */
+
+.leaderboard-table tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.05); /* Lighter zebra striping for rows */
+}
+
+.leaderboard-table tr:hover {
+  background-color: rgba(255, 255, 255, 0.2); /* Highlighting rows on mouse-over */
+}
+
+.leaderboard-table thead {
+  position: sticky;
+  top: 0; /* Keeping the header at the top while scrolling */
+  z-index: 10;
+}
+
+#matchHistoryTable {
+  width: 390%; /* Making the table wider */
+  margin: 20px 0 20px -100%; /* Centering the table and adding space around it */
+  border-collapse: collapse; /* Ensures that borders between cells are merged */
+  font-family: 'Pixelated', 'Press Start 2P', sans-serif; /* Matching the theme font */
+  color: white; /* White font color */
+  background-color: transparent; /* Transparent background */
+  table-layout: fixed; /* Add this line */
+}
+
+#matchHistoryTable th,
+#matchHistoryTable td {
+  border: 1px solid #ddd; /* Light grey border for readability */
+  padding: 20px; /* Padding inside cells for better text alignment */
+  text-align: left; /* Aligning text to the left, modify as needed */
+}
+
+#matchHistoryTable th {
+  background-color: rgba(0, 0, 0, 0.2); /* Semi-transparent black background for headers */
+  color: white; /* White text for headers */
+  font-weight: bold; /* Making header text bold */
+}
+
+#matchHistoryTable tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.1); /* Light transparent for even rows */
+}
+
+#matchHistoryTable tr:hover {
+  background-color: rgba(255, 255, 255, 0.2); /* Highlighting rows on mouse-over */
+}
+
+#matchHistoryTable thead {
+  position: sticky;
+  top: 0; 
+  z-index: 10;
+}
+
+#matchHistoryTitle {
+  font-family: 'Pixelated', 'Press Start 2P', sans-serif; /* Sets the specific font style */
+  color: white; /* Sets the text color to white */
+  text-align: left; /* Ensures the text aligns to the left */
+  padding-left: 0; /* Removes any left padding */
+  margin-top: 20px; /* Space above the header */
+  margin-bottom: 10px; /* Space below the header */
+}
+
+/* Optional: Add a margin for better spacing */
+#matchHistoryTitle {
+  margin-top: -2px; /* Adds space above the header */
+  margin-bottom: 10px; /* Adds space below the header, before the table starts */
+  margin-left: 0px;
+}
+
+/* .slider.round {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #e40b0b;
+  -webkit-transition: .4s;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: rgb(222, 16, 16);
+  -webkit-transition: .4s;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+} */

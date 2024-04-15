@@ -1,4 +1,6 @@
 import { setupAuthPage, logoutUser , isAuthenticated} from './auth.js';
+import { fetchUserProfile , setupAnonymizeButton , setupDeleteProfileButton, setupCloseButton, setUpVerifyDeleteOtpButton, setupUploadProfilePictureButton} from './profile.js';
+import { setupTournamentPage } from './tournament.js';
 
 class Router {
     constructor(routes) {
@@ -71,19 +73,35 @@ class Router {
             this.navigate(path, { replace: true });
         }
     }
+    
 }
 
 const routes = {
     '/': { path: 'pages/home.html', method: null }, 
     '/login': { path: 'pages/login.html', method: setupAuthPage },
-    '/profile': { path: 'pages/profile.html', method: null }, 
+    '/profile': { path: 'pages/profile.html', method: setupProfilePage },
     '/about': { path: 'pages/about.html', method: null },
     '/pong': { path: 'pages/pong.html', method: null },
     '/game': { path: 'pages/game.html', method: null },
     '/multiplayer': { path: 'pages/multiGame.html', method: null },
-    '/tournament': { path: 'pages/tournament.html', method: null },
+    '/tournament': { path: 'pages/tournament.html', method: setupTournamentPage },
     '/logout': { path: '', method: null }
 };
+
+async function setupProfilePage() {
+    const authStatus = await isAuthenticated();
+    if (authStatus) {
+        fetchUserProfile();
+        setupAnonymizeButton();
+        setupDeleteProfileButton();
+        setupCloseButton();
+        setUpVerifyDeleteOtpButton();
+        setupUploadProfilePictureButton();
+    } else {
+        console.log('User is not authenticated, redirecting to login');
+        appRouter.navigate('/login', { replace: true });
+    }
+}
 
 export const appRouter = new Router(routes);
 

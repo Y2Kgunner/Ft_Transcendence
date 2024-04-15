@@ -17,6 +17,7 @@ services:
       - ./backend:/app
       - shared_static_data:/frontend/static
       - ./ssl:/etc/nginx/ssl:ro
+      - media_volume:/code/media
   db:
     image: postgres
     container_name: postgres
@@ -36,7 +37,7 @@ services:
     container_name: frontend
     volumes:
       - ./frontend:/usr/share/nginx/html:ro
-      - shared_static_data:/path/to/frontend/static/files
+      - media_volume:/code/media
     ports:
       - "8081:8080"
       - "443:443"
@@ -51,7 +52,7 @@ services:
 volumes:
   postgres_data:
   shared_static_data:
-
+  media_volume:
 
 networks:
   local_network:

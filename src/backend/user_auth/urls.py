@@ -21,6 +21,9 @@ urlpatterns = [
     path('set_password/<int:user_id>/', set_password, name='set_password'),
     path('anonymize', anonymize_user_data),
     path('init_delete', initiate_delete_account),
+    path('initiate_delete_account', initiate_delete_account),
     path('delete_account', delete_user_account),
     path('auth_status', check_auth_status, name='check_auth_status'),
+    path('get_profile_picture/', get_profile_picture, name='get_profile_picture'),
+    path('upload_profile_picture/', upload_profile_picture, name='upload_profile_picture')
 ]

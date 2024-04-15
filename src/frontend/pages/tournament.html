@@ -4,12 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tournament Page</title>
-        <link href="../bootstrap-5.3.3-dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="../css/tournament.css" rel="stylesheet">
 </head>
 <body>
-<div class="container mt-3">
-    <h1>Tournament Page</h1>
-    <p>Welcome to the tournament page. Here you can find information about upcoming tournaments.</p>
-</div>
+    <div id="tournament-content" class="pong-container">
+        <div id="startNewTournament" class="players-button">
+            <span>Start New Tournament</span>
+        </div>
+        <div id="continueTournament" class="players-button">
+            <span>Continue</span>
+        </div>
+    </div>
+    <div id="newTournamentContainer" class="container" style="display: none;">
+        <h2 class="text-center mb-4">Create New Tournament</h2>
+        <form id="newTournamentForm" class="mb-3">
+            <div class="form-group mb-3">
+                <label for="tournamentName">Tournament Name:</label>
+                <input type="text" class="form-control" id="tournamentName" required>
+            </div>
+            <div class="form-group mb-3">
+                <label for="numParticipants">Number of Participants:</label>
+                <div class="input-group col-md-4 px-0"> 
+                    <div class="input-group-prepend">
+                        <button type="button" class="btn btn-outline-secondary quantity__minus">-</button>
+                    </div>
+                    <input type="text" class="form-control text-center quantity__input" id="numParticipants" value="3" readonly>
+                    <div class="input-group-append">
+                        <button type="button" class="btn btn-outline-secondary quantity__plus">+</button>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 px-0"> 
+                    <button type="submit" class="btn btn-primary w-100">Set Up Participants</button>
+                </div>
+            </div>
+            <div class="row mt-3"> 
+                <div class="col-md-4 px-0"> 
+                    <button id="backToTournamentMain" class="btn btn-secondary w-100">Back</button>
+                </div>
+            </div>
+        </form>
+    
+        <div id="participantDetailsContainer"></div>
+    </div>
+    <div id="participantDetailsForm" style="display: none;">
+        <form id="participantDetailsFormInner">
+            <button type="submit" class="btn btn-primary mt-3">Submit Tournament</button>
+        </form>
+    </div>
+    
+    
+    <script src="tournament.js"></script> 
 </body>
 </html>

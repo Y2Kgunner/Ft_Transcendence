@@ -1,4 +1,4 @@
-all: build up make-and-apply-migrations
+all: build up make-and-apply-migrations bash
 
 SRC_DIR=src
 
@@ -11,7 +11,7 @@ up:
 down:
 	cd $(SRC_DIR) && docker-compose down
 
-re: down build up make-and-apply-migrations
+re: down build up make-and-apply-migrations bash
 
 restart: down up
 
@@ -23,7 +23,7 @@ fclean: clean
 
 ## WARNING: This will delete all data in the database
 flush:
-	docker-compose run django python manage.py flush --no-input
+	docker-compose run django python manage.py flush
 
 makemigrations:
 	cd $(SRC_DIR) && docker-compose run --rm django python manage.py makemigrations
@@ -39,5 +39,8 @@ inspect:
 clean_db:
 	cd $(SRC_DIR) && docker-compose down -v
 	docker volume rm $(docker volume ls -q --filter name=src_postgres_data) || true
+
+bash:
+	bash dock.sh
 
 .PHONY: all build up down flush fclean clean re makemigrations migrate inspect clean_db make-migrations-apply makemigrations migrate make-and-apply-migrations

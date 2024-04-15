@@ -43,6 +43,7 @@ async function login(event) {
         const data = await response.json();
         console.log('Login successful:', data);
         setCookie('authToken', data.token, 1, true, 'None');
+        setUserId(data.userId);
         updateMainContentVisibility(true);
         appRouter.navigate('/');
     }
@@ -191,6 +192,7 @@ async function handleOAuthCallback(code) {
 
         if (!response.ok) {
             throw new Error(`OAuth callback failed: ${response.status} ${response.statusText}`);
+            return ;
         }
 
         const data = await response.json();
@@ -241,6 +243,14 @@ function showOtpForm(show) {
         document.getElementById('otp-form').style.display = 'none';
         document.getElementById('login-form').style.display = 'block';
     }
+}
+
+function setUserId(userId) {
+    localStorage.setItem('userId', userId);
+}
+
+function getUserId() {
+    return localStorage.getItem('userId');
 }
 
 export { isAuthenticated, getAuthToken, login, register , handleOAuthCallback, logoutUser  };

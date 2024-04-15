@@ -1,38 +1,94 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Profile Page</title>
-    <link rel="stylesheet" href="../css/profile.css"> <!-- Link to your CSS file -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/profile.css">
 </head>
 <body>
-    <div id="profile-page">
-        <div class="tab-buttons">
-            <button class="tab-button" onclick="changeTab('profile')">Profile</button>
-            <button class="tab-button" onclick="changeTab('match-history')">Match History</button>
-            <button class="tab-button" onclick="changeTab('leaderboard')">Leaderboard</button>
-        </div>
-        <div id="profile" class="tab-content">
-            <!-- Profile content here -->
-        </div>
-        <div id="match-history" class="tab-content" style="display: none;">
-            <!-- Match history content here -->
-        </div>
-        <div id="leaderboard" class="tab-content" style="display: none;">
-            <!-- Leaderboard content here -->
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="text-center">
+                    <img id="profilePicture" src="../asessts/profile_pictures/default.png" class="profile-picture"/>
+                    <button id="uploadPicButton" class="btn btn-primary mt-3">Upload Profile Picture</button>
+                    <input type="file" id="profilePictureInput" name="profile_picture" style="display:none;"/>
+                </div>                
+                <table class="table table-bordered profile-table">
+                    <tbody>
+                        <tr>
+                            <th scope="row">Username</th>
+                            <td id = "username">Loading...</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Email</th>
+                            <td id="email">Loading...</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Join Date</th>
+                            <td id="joinDate">Loading...</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Last Activity</th>
+                            <td id="lastActivity">Loading...</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Two-Factor Authentication</th>
+                            <td id="twoFactorAuth">Loading...
+                                <!-- not working // button to trun 2fa on and off  -->
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider round"></span>
+                            </label></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="action-buttons">
+                    <button class="btn btn-secondary btn-block" id="anonymizeButton">Anonymize Profile (GDPR)</button>
+                    <button class="btn btn-danger btn-block" id="deleteProfileButton">Delete Profile</button>
+                </div>
+                <div class="row justify-content-center mt-4">
+                    <div class="col-md-8">
+                        <h3 id="matchHistoryTitle">Match History</h3>
+                            <table class="table table-striped table-dark" id="matchHistoryTable">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Match ID</th>
+                                    <th scope="col">Time</th>
+                                    <th scope="col">Player 1</th>
+                                    <th scope="col">Player 2</th>
+                                    <th scope="col">Player 3</th>
+                                    <th scope="col">Winner</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Rows will be added here dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <script>
-      function changeTab(tabId) {
-          var tabs = document.getElementsByClassName('tab-content');
-          for (var i = 0; i < tabs.length; i++) {
-              tabs[i].style.display = 'none';
-          }
-          document.getElementById(tabId).style.display = 'block';
-      }
-  </script>
-  </body>
+    <div class="modal" id="deleteOtpModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" id="closeDeleteOtpModal">&times;</span>
+                <h2>OTP Verification</h2>
+            </div>
+            <div class="modal-body">
+                <p>Please enter the OTP sent to your email:</p>
+                <input type="text" id="deleteOtpInput" placeholder="Enter OTP">
+            </div>
+            <div class="modal-footer">
+                <button id="verifyDeleteOtpButton">Verify OTP</button>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="../js/profile.js"></script>  
 </body>
 </html>
-
-
-<!-- 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 -->

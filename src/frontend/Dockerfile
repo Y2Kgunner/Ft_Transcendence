@@ -1,25 +1,3 @@
-# FROM nginx:latest
-# RUN rm /etc/nginx/conf.d/default.conf
-# COPY nginx.conf /etc/nginx/nginx.conf
-# COPY pages/*.html /usr/share/nginx/html/
-
-# COPY ssl/127.0.0.1.crt /etc/nginx/ssl/certs/127.0.0.1.pem
-# COPY ssl/127.0.0.1.key /etc/nginx/ssl/private/127.0.0.1.key
-# RUN mkdir -p /etc/nginx/ssl
-
-# EXPOSE 433
-# CMD ["nginx", "-g", "daemon off;"]
-
-# FROM nginx:latest
-# RUN rm /etc/nginx/conf.d/default.conf
-# COPY nginx.conf /etc/nginx/nginx.conf
-# COPY ssl/* /etc/nginx/ssl/
-# RUN mkdir -p /etc/nginx/ssl
-# COPY pages/*.html /usr/share/nginx/html/
-# EXPOSE 443
-
-# CMD ["nginx", "-g", "daemon off;"]
-
 FROM nginx:latest
 RUN mkdir -p /etc/nginx/ssl
 COPY ssl/* /etc/nginx/ssl/
@@ -30,5 +8,11 @@ COPY ssl/nginx-selfsigned.crt /etc/nginx/ssl/nginx-selfsigned.crt
 COPY ssl/nginx-selfsigned.key /etc/nginx/ssl/nginx-selfsigned.key
 RUN update-ca-certificates
 COPY pages/*.html /usr/share/nginx/html/
+RUN ln -sf /dev/stdout /var/log/nginx/access.log \
+    && ln -sf /dev/stderr /var/log/nginx/error.log
+RUN mkdir -p /code/media/profile_pictures
+RUN chown -R www-data:www-data /code/media
+RUN chmod -R 775 /code/media
+    
 EXPOSE 443
 CMD ["nginx", "-g", "daemon off;"]

@@ -38,6 +38,7 @@ def oauth_callback(request):
     except requests.RequestException as e:
         error_detail = e.response.text if e.response else str(e)
         return JsonResponse({'error': 'Failed to retrieve access token', 'detail': error_detail}, status=500)
+
     try:
         user_info = requests.get(
             'https://api.intra.42.fr/v2/me',
@@ -45,14 +46,13 @@ def oauth_callback(request):
         ).json()
     except requests.RequestException:
         return JsonResponse({'error': 'Failed to retrieve user information'}, status=500)
-    user, created = WebUser.objects.get_or_create(
-        email=user_info['email'],
-        defaults={
-            'username': user_info['login'],
-            'first_name': user_info.get('first_name', ''),
-            'last_name': user_info.get('last_name', '')
-        }
-    )
+
+    try:
+        user = WebUser.objects.get(email=user_info['email'])
+        
+    except WebUser.DoesNotExist:
+        return JsonResponse({'error': 'No account found for this user. Please register first.'}, status=404)
+
     jwt_token = JWTHandler.generate_jwt(user)
     response_data = {
         'success': True,
@@ -63,10 +63,10 @@ def oauth_callback(request):
     response.set_cookie(
         key='jwt',
         value=jwt_token,
-        max_age=3600,  
+        max_age=3600,
         httponly=True,
-        secure=True,  
-        samesite='None' 
+        secure=True,
+        samesite='None'
     )
     return response
 
@@ -90,3 +90,4 @@ def set_password(request, user_id):
 # u-s4t2ud-d0c4077a43cbefbff3d67add430fbc7edaadbc4522099efc1eb7a28773e0037a
 # Secret
 # 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
+

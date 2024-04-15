@@ -1,5 +1,5 @@
 from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.core.exceptions import ValidationError
 from user_auth.jwt_utils import JWTHandler
 from django.http import JsonResponse
@@ -7,46 +7,10 @@ from django.views import View
 from functools import wraps
 import json
 import logging
+from django.views.decorators.http import require_http_methods
+from user_auth.forms import ProfilePictureForm
 
 logger = logging.getLogger(__name__)
-
-# def require_jwt_auth(view_func):
-#     @wraps(view_func)
-#     def _wrapped_view(request, *args, **kwargs):
-#         auth_header = request.headers.get('Authorization', '')
-#         token = auth_header.split(' ')[1] if auth_header.startswith('Bearer ') else None
-#         if not token:
-#             token = request.COOKIES.get('auth_token', None)
-#             print("this is the token")
-#             print(token)
-#         logger.info(f"JWT Token: {token}")
-#         if token:
-#             user = JWTHandler.get_user_from_token(token)
-#             if user and user.is_active:  # Ensure user is active
-#                 request.user = user  # Manually set the user
-#                 return view_func(request, *args, **kwargs)
-#         return JsonResponse({'error': 'Authentication required'}, status=401)
-#     return _wrapped_view
-
-# def require_jwt_auth(view_func):
-#     @wraps(view_func)
-#     def _wrapped_view(request, *args, **kwargs):
-#         # Try extracting the JWT token from cookies directly
-#         token = request.COOKIES.get('jwt', None)
-
-#         if token:
-#             try:
-#                 user = JWTHandler.get_user_from_token(token)
-#                 if user and user.is_active:
-#                     request.user = user
-#                     return view_func(request, *args, **kwargs)
-#             except Exception as e:
-#                 # Log the error or handle it as per your requirement
-#                 print("from e" , e)
-#                 pass
-#         # Respond with an error if authentication fails
-#         return JsonResponse({'error': 'Authentication required'}, status=401)
-#     return _wrapped_view
 
 
 class UserProfileView(View):
@@ -61,6 +25,7 @@ class UserProfileView(View):
         created_at = user.created_at.strftime('%Y-%m-%d %H:%M:%S') if user.created_at else None
 
         user_data = {
+            'id': user.id,
             'username': user.username,
             'first_name': user.first_name,
             'last_name': user.last_name,
@@ -102,3 +67,36 @@ class UserProfileView(View):
                 return JsonResponse({'error': str(e)}, status=400)
             except json.JSONDecodeError:
                 return JsonResponse({'error': 'Invalid JSON'}, status=400)
+
+@csrf_exempt
+def upload_profile_picture(request):
+    if request.method == 'POST' and request.FILES['profile_picture']:
+        form = ProfilePictureForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            user = form.save()
+            print("Saved profile picture for user:", user.username)  
+            print("New profile picture path:", user.profile_picture.url)
+            return JsonResponse({'message': 'Profile picture updated successfully.', 'profile_picture_url': user.profile_picture.url}, status=200)
+        else:
+            return JsonResponse(form.errors, status=400)
+    return JsonResponse({'error': 'No file uploaded.'}, status=400)
+
+
+@csrf_exempt
+def delete_profile_picture(request):
+    if request.method == 'POST':
+        user = request.user
+        user.profile_picture.delete()
+        return JsonResponse({'message': 'Profile picture deleted successfully.'}, status=200)
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+
+@csrf_exempt
+@require_http_methods(["GET"])
+def get_profile_picture(request):
+    user = request.user
+    if user.profile_picture:
+        picture_url = request.build_absolute_uri(user.profile_picture.url)
+        return JsonResponse({'profile_picture_url': picture_url}, status=200)
+    else:
+        return JsonResponse({'error': 'No profile picture set.'}, status=404)

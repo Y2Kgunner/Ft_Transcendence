@@ -1,0 +1,106 @@
+.team {
+    background: #000;
+    padding: 60px 0;
+}
+
+.team .section-title h2,
+.team .section-title p {
+    color: #fff;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.team .member {
+    margin-bottom: 20px;
+    overflow: hidden;
+    border-radius: 5px;
+    background: #000;
+    box-shadow: 0px 2px 15px rgba(0, 255, 0, 0.1);
+    border: 2px solid green;
+}
+
+.team .member .member-img {
+    position: relative;
+    overflow: hidden;
+}
+
+.team .member .social {
+    position: absolute;
+    left: 50%;
+    bottom: -20px;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: ease-in-out 0.3s;
+    text-align: center;
+}
+
+.team .member .social a {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.2);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    padding: 8px;
+    box-shadow: 0 0 8px green;
+    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+    width: 50px; /* Adjust the size as needed */
+    height: 50px; /* Adjust the size as needed */
+    border-radius: 50%; /* This makes the element circular */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-shadow: 0 0 8px green; /* Apply text shadow for glow effect */
+}
+
+
+.team .member .social a:hover {
+    background: #0f0;
+    box-shadow: 0 0 15px green, 0 0 20px green;
+}
+
+.team .member .social i {
+    font-size: 40px;
+}
+
+.team .member .member-info h4,
+.team .member .member-info span,
+.team .member .member-info p {
+    color: #fff;
+    text-align: center;
+    font-family: 'Press Start 2P', 'Pixelated', sans-serif;
+}
+
+.team .member .member-info h4 {
+    font-weight: 700;
+    margin-bottom: 5px;
+    font-size: 18px;
+}
+
+.team .member .member-info span {
+    display: block;
+    font-size: 13px;
+    font-weight: 400;
+}
+
+.team .member .member-info p {
+    font-style: italic;
+    font-size: 14px;
+    line-height: 26px;
+}
+
+.team .member:hover .social {
+    opacity: 1;
+    bottom: 15px;
+}
+
+.team .member .social a .bi-github {
+    font-size: 40px;
+    color: #fff;
+    text-shadow: 0 0 8px green, 0 0 10px green;
+}
+
+body {
+    font-family: 'Press Start 2P', 'Pixelated', sans-serif;
+    background-color: #000000;
+}

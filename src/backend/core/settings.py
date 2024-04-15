@@ -54,10 +54,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'tournament',
     'pongApp',
-    'user_auth',
-    'django_otp',
-    'django_otp.plugins.otp_totp',
-    'django_otp.plugins.otp_static'
+    'user_auth' 
 ]
 
 MIDDLEWARE = [
@@ -169,3 +166,28 @@ EMAIL_USE_TLS = True
 EMIAL_USE_SSL = False
 
 #SEND_GRID_RECOVER_CODE  = FWHVDD5UD66EDBKHFQUX4CNS
+
+
+# Media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = '/code/media'
+
+
+# curl -X POST https://api.intra.42.fr/oauth/token \
+#      -d grant_type=client_credentials \
+#      -d client_id=u-s4t2ud-d0c4077a43cbefbff3d67add430fbc7edaadbc4522099efc1eb7a28773e0037a\
+#      -d client_secret=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
+
+
+# curl -H "Authorization: Bearer a7661200d7f7133f943b7336f8086a02c712318ad88650343ff0bcaa11feec4d" \
+#      https://api.intra.42.fr/v2/me
+
+# get user by id 
+# curl  -H "Authorization: Bearer a7661200d7f7133f943b7336f8086a02c712318ad88650343ff0bcaa11feec4d" "https://api.intra.42.fr/v2/users/101375"
+
+
+
+# filter by id 
+# curl  -H "Authorization: Bearer a7661200d7f7133f943b7336f8086a02c712318ad88650343ff0bcaa11feec4d" 'https://api.intra.42.fr/v2/users?filter\[login\]=aelsiddi'
+# curl -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+#      "https://api.intra.42.fr/v2/users?filter[id]=101375"
