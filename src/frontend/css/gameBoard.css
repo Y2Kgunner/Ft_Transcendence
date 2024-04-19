@@ -1,0 +1,105 @@
+.mainContext {
+	min-height: calc(100vh - 71px); /* Subtract navbar height */
+	max-width: 100vw;
+	margin-top: 71px; /* Start after the navbar */
+	padding-top: 10vh;
+}
+
+.ball {
+	width: 25px;
+	height: 25px;
+	background-color: #972342;
+	box-shadow: 0 0 10px 2px #DBFFD2;
+	border-radius: 50%;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+body {
+	font-size: 16px;
+    transition: font-size 0.3s;
+	overflow-x: hidden;
+}
+
+.paddle {
+	height: 100px;
+	width: 12px;
+	position: absolute;
+	background-color: #DBFFD2;
+	transition: transform 0.2s ease;
+}
+
+.paddle_r {
+	height: 12px;
+	width: 100px;
+	position: absolute;
+	background-color: #DBFFD2;
+	transition: transform 0.2s ease;
+}
+
+.paddle_1 {
+	left: 10px;
+  	top: calc(50% - 50px);
+}
+
+.paddle_2 {
+	position: absolute;
+	bottom: 0;
+	left: calc(100% - 20px);
+	top: calc(50% - 50px);
+}
+
+.paddle_3 {
+	position: absolute;
+	top: calc(100% - 20px);
+	left: calc(50% - 65px);
+}
+
+@media (min-width: 1400px) {
+	.paddle {
+		height: 150px;
+	}
+	.paddle_r {
+		width: 150px;
+	}
+	.paddle_1 {
+		top: calc(50% - 75px);
+	}
+	.paddle_2 {
+		top: calc(50% - 75px);
+	}
+}
+
+.board {
+	position: relative;
+	height: 70vh;
+	width: 75vw;
+	background: #212121;
+	border-radius: 14px;
+}
+
+.board_multi {
+	position: relative;
+	height: 70vh;
+	width: 70vh;
+	background: #212121;
+	border-radius: 14px;
+}
+
+.player_score {
+	font-size: 50px;
+	color: #ffffff;
+	z-index: 2;
+}
+
+.mid_line {
+	position: fixed;
+	height: 70vh;
+}
+
+.mid_line {
+	position: fixed;
+	height: 70vh;
+}
