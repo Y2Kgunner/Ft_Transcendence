@@ -1,12 +1,14 @@
+@font-face {
+	font-family: 'PixelatedFont';
+	/* src: url('../asessts/Pixelated/pix/pix.ttf') format('truetype'); */
+	src: url('../asessts/Pixelated/pix/pix.ttf');
+}
+
 body {
 	font-family: 'PixelatedFont', sans-serif; /* Use the custom font as the default font */
 	font-size: 20px;
-  }
-  
-  @font-face {
-	font-family: 'PixelatedFont';
-	src: url('../asessts/Pixelated/pix/pix.ttf') format('truetype'); /* Update the path to your font file */
-  }
+}
+
 
 section {
 	top: 150px;
