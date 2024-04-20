@@ -1,0 +1,52 @@
+.navbar-toggler {
+	font-size: 1.25rem;
+	background-color: #c9e9c9;
+	box-shadow: 0 0 3px 3px #037e03;
+  }
+  
+  .navbar-toggler:focus, .btn-close:focus {
+	box-shadow: none;
+  }
+  
+  .pongLogo {
+	width: 10vw;
+	max-width: 65px;
+	min-width: 40px;
+  }
+
+  .nav-link {
+	margin-right: 40px;
+	color: darkgrey;
+	font-weight: 500;
+	position: relative;
+  }
+  
+  .navbar-nav {
+	/* margin-right: 20px; */
+	--bs-nav-link-hover-color: #7ce188;
+  }
+
+.nav-link:hover, .nav-link.active {
+	color: #c3edc4;
+  }
+  
+  @media (min-width: 991px) {
+	.nav-link::before {
+	  content: '';
+	  position: absolute;
+	  bottom: 0;
+	  left: 50%;
+	  transform: translateX(-50%);
+	  width: 0;
+	  height: 2px;
+	  background-color: #738d74;
+	  visibility: hidden;
+	  transition: 0.3s ease-in-out;
+	}
+  
+	.nav-link:hover::before, .nav-line.active::before {
+	  width: 100%;
+	  visibility: visible;
+	}
+  }
+  

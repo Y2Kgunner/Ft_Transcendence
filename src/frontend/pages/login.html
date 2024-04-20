@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login and Registration Form</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+	<link rel="stylesheet" href="../new_css/loginStyle.css">
+    <!-- <style>
         body {
             background-color: #f7f7f7;
         }
@@ -33,9 +34,10 @@
             
         }
 
-    </style>
+    </style> -->
 </head>
-<body>
+
+<body class="bg-black">
 
 <div class="container mt-5">
     <!-- otp -->
@@ -77,7 +79,7 @@
         </div>
     </div>
     <!-- login Form -->
-    <div id="login-form" style="display:block;">
+    <!-- <div id="login-form" style="display:block;">
         <h2>Login</h2>
         <form id="loginForm">
             <div class="form-group">
@@ -95,10 +97,52 @@
                 <img src="../asessts/images/42_Logo.svg.png" alt="" class="logo-img">
             </button>            
         </form>
-    </div>
-
+    </div> -->
+	<div id="login-form" class="container-fluid py-5 my-5">
+		<header class="text-center">
+		  <img src="../asessts/images/42logo.svg" class="img-fluid" alt="42 logo" />
+		  <img src="../asessts/images/PONG.svg" class="img-fluid" alt="42 logo" />
+		</header>
+		<section class="container my-3 w-50 rounded secForm bg-dark">
+		  <form id="loginForm" class="form-floating needs-validation" novalidate>
+			<div class="form-floating mb-4">
+			  <input type="username" class="form-control" id="LoginUserName" placeholder="gae" required/>
+			  <label for="LoginUserName" class="form-label">USERNAME</label>
+			  <div class="invalid-feedback">
+				‎ ‎ ‎ Please enter your username.
+			  </div>
+			</div>
+			<div class="form-floating mb-4">
+			  <input type="password" class="form-control" id="loginPassword" placeholder="Password" required/>
+			  <label for="loginPassword">PASSWORD</label>
+			  <div class="invalid-feedback">
+				‎ ‎ ‎ Please enter your password.
+			  </div>
+			</div>
+			<div class="row">
+			  <div id="showRegisterForm" class="d-grid gap-2 col-lg-6  mb-4 mx-auto">
+				<button type="submit" class="btn btn-info signColor">Sign up</button>
+			  </div>
+			  <div id="loginButton" class="d-grid col-lg-6 col-12 mb-4 mx-auto">
+				<button type="submit" class="btn btn-success logColor">Log in</button>
+			  </div>
+			</div>
+			<div class="row row-cols-1 py-1">
+			  <div class="col d-flex justify-content-center">
+				<span class="text-light">Or</span>
+			  </div>
+			  <div class="col d-flex justify-content-center">
+				<span class="text-light">sign in with</span>
+			  </div>
+			  <div id="fortytwoLoginButton" class="col d-flex justify-content-center text-light py-1">
+				<a href="#"><img src="../asessts/images/42miniLogo.svg" class="img-fluid" alt="42 logo"></a>
+			  </div>
+		   </div>
+		  </form>
+		</section>
+	  </div>
     <!-- registration Form -->
-    <div id="register-form" style="display:none;">
+    <!-- <div id="register-form" style="display:none;">
         <h2>Register</h2>
         <form id="registerForm">
             <div class="form-group">
@@ -120,11 +164,79 @@
             <button type="submit" class="btn btn-primary" id="registerButton">Register</button>
             <p class="mt-3">Have an account? <a href="#" onclick="event.preventDefault(); showLoginForm()">Login Here</a></p>
         </form>
-    </div>
+    </div> -->
+	<div id="register-form" class="container-fluid py-5 my-5">
+		<header class="text-center">
+		  <img src="../asessts/images/42logo.svg" class="img-fluid" alt="42 logo" />
+		  <img src="../asessts/images/PONG.svg" class="img-fluid" alt="42 logo" />
+		</header>
+		<section class="container my-3 bg-dark w-50 rounded secForm">
+		  <form id="loginForm" class="form-floating needs-validation g-3 pb-2" novalidate>
+			<div class="text-light d-flex justify-content-center pb-3">
+			  <h4>SIGN UP</h4>
+			</div>
+			<div class="form-floating mb-4">
+			  <input type="email" class="form-control" id="registerEmail" placeholder="gae" required/>
+			  <label for="registerEmail" class="form-label">EMAIL ID</label>
+			  <div class="invalid-feedback">
+				‎ ‎ ‎ Please enter a valid email.
+			  </div>
+			</div>
+			<div class="form-floating mb-4">
+				<input type="username" class="form-control" id="registerUserName" placeholder="gae" required/>
+				<label for="registerUserName" class="form-label">USERNAME</label>
+				<div class="invalid-feedback">
+				  ‎ ‎ ‎ Please choose a valid username.
+				</div>
+			</div>
+			<div class="form-floating mb-4">
+				<input type="password" class="form-control" id="registerPassword" placeholder="Password" required/>
+				<label for="registerPassword">PASSWORD</label>
+				<div class="invalid-feedback">
+				  ‎ ‎ ‎ Please choose a valid password.
+				</div>
+			</div>
+			<div class="form-floating mb-4">
+				<input type="password" class="form-control" id="confirmPassword" placeholder="Password" required/>
+				<label for="confirmPassword">CONFIRM PASSWORD</label>
+				<div class="invalid-feedback">
+				  ‎ ‎ ‎ Please enter the same passowrd.
+				</div>
+			</div>
+			<div id="loginButton" class="d-grid my-4">
+			  <button id="registerButton" type="submit" class="btn btn-info signColor">Sign in</button>
+			</div>
+			<div id="fortytwoLoginButton" class="d-flex justify-content-center col-12 text-light mb-2">
+				<p>have an account? <a href="#" class="link-success link-underline link-underline-opacity-0" onclick="event.preventDefault(); showLoginForm()">LOGIN HERE</a></p>
+			</div>
+		  </form>
+		</section>
+	  </div>
 </div>
 
 <!-- Bootstrap and jQuery -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+crossorigin="anonymous">
+</script>
+<script>
+(() => {
+  'use strict'
+  const forms = document.querySelectorAll('.needs-validation')
+
+  Array.from(forms).forEach(form => {
+	form.addEventListener('submit', event => {
+	  if (!form.checkValidity()) {
+		event.preventDefault()
+		event.stopPropagation()
+	  }
+
+	  form.classList.add('was-validated')
+	}, false)
+  })
+})()
+</script>
 </body>
 </html>
