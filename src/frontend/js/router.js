@@ -34,7 +34,7 @@ class Router {
             window.history.pushState({}, '', path);
         }
     }
-    
+
     async loadRoute(htmlPath, callback = null) {
         try {
             const response = await fetch(htmlPath);
