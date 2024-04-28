@@ -25,7 +25,7 @@ class Router {
             logoutUser();
             return this.loadRoute('/logout');
         } else if (path === '/login') {
-            return this.loadRoute('pages/newLogin.html', setupAuthPage);
+            return this.loadRoute('pages/login.html', setupAuthPage);
         }
     
         const route = this.routes[path] || this.routes['/login'];
@@ -34,7 +34,7 @@ class Router {
             window.history.pushState({}, '', path);
         }
     }
-
+    
     async loadRoute(htmlPath, callback = null) {
         try {
             const response = await fetch(htmlPath);
@@ -82,7 +82,7 @@ const routes = {
     '/profile': { path: 'pages/profile.html', method: setupProfilePage },
     '/about': { path: 'pages/about.html', method: null },
     '/pong': { path: 'pages/pong.html', method: null },
-    '/game': { path: 'pages/game.html', method: null },
+    '/game': { path: 'pages/old-game.html', method: null },
     '/multiplayer': { path: 'pages/multiGame.html', method: null },
     '/tournament': { path: 'pages/tournament.html', method: setupTournamentPage },
     '/logout': { path: '', method: null }

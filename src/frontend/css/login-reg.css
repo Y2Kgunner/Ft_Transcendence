@@ -5,7 +5,7 @@ body {
 
 @font-face {
   font-family: 'PixelatedFont';
-  src: url('../asessts/Pixelated/pix/pix.ttf') format('truetype'); /* Update the path to your font file */
+  src: url('../assets/Pixelated/pix/pix.ttf') format('truetype'); /* Update the path to your font file */
 }
 
 #loginPassword {

@@ -91,7 +91,7 @@ function updateProfilePage(userData) {
     if (userData.profile_picture) {
       document.querySelector('.profile-picture').style.backgroundImage = `url('${userData.profile_picture}')`;
     }else {
-      document.querySelector('.profile-picture').style.backgroundImage = `url('../asessts/profile_pictures/default.png')`;
+      document.querySelector('.profile-picture').style.backgroundImage = `url('../assets/profile_pictures/default.png')`;
       //console.log('profile picture not found');
     }
 
@@ -266,12 +266,12 @@ function fetchProfilePicture() {
           }
       } else {
           console.error('Profile picture URL is missing in the response data.');
-          document.getElementById('profilePicture').src = '../asessts/profile_pictures/default.png';
+          document.getElementById('profilePicture').src = '../assets/profile_pictures/default.png';
       }
   })
   .catch(error => {
       console.error('Error fetching the profile picture:', error);
-      document.getElementById('profilePicture').src = '../asessts/profile_pictures/default.png';
+      document.getElementById('profilePicture').src = '../assets/profile_pictures/default.png';
   });
 }
 
