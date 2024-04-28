@@ -78,12 +78,13 @@ class Router {
 
 const routes = {
     '/': { path: 'pages/home.html', method: null }, 
+    '/home': { path: 'pages/home.html', method: null }, 
     '/login': { path: 'pages/login.html', method: setupAuthPage },
     '/profile': { path: 'pages/profile.html', method: setupProfilePage },
     '/about': { path: 'pages/about.html', method: null },
-    '/pong': { path: 'pages/pong.html', method: null },
-    '/game': { path: 'pages/old-game.html', method: null },
-    '/multiplayer': { path: 'pages/multiGame.html', method: null },
+    '/pong2': { path: 'pages/pong2.html', method: null },
+    '/pong3': { path: 'pages/pong3.html', method: null },
+    // '/multiplayer': { path: 'pages/multiGame.html', method: null },
     '/tournament': { path: 'pages/tournament.html', method: setupTournamentPage },
     '/logout': { path: '', method: null }
 };
