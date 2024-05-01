@@ -1,4 +1,4 @@
-version: '3.0'
+version: '3.8'
 
 services:
   django:
@@ -17,7 +17,8 @@ services:
       - ./backend:/app
       - shared_static_data:/frontend/static
       - ./ssl:/etc/nginx/ssl:ro
-      - media_volume:/code/media
+      - media_volume:/backend/media
+
   db:
     image: postgres
     container_name: postgres
@@ -29,6 +30,7 @@ services:
       - local_network
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
   frontend:
     image: nginx:alpine
     build:
@@ -36,7 +38,7 @@ services:
       dockerfile: Dockerfile
     container_name: frontend
     volumes:
-      - ./frontend:/usr/share/nginx/html:ro
+      - ./frontend:/usr/share/nginx/html
       - media_volume:/code/media
     ports:
       - "8081:8080"

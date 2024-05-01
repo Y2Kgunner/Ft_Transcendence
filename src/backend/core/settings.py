@@ -13,12 +13,18 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 import os
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-FRONTEND_DIR = BASE_DIR.parent / 'frontend'
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
+
+
+################## path for other files ##################
+BASE_DIR = Path(__file__).resolve().parent.parent
+# FRONTEND_DIR = Path('/app/frontend')  
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = '/backend/media'
+STATIC_URL = '/static/'
+STATIC_ROOT = '/frontend/staticfiles'
 
 # to be removed ==================================================================================
 SECRET_KEY = 'django-insecure-6llr!9x37@9f)m=l-eshn0*65=1=1u#k)=*=6=_llj6p*xtqh1'
@@ -57,17 +63,32 @@ INSTALLED_APPS = [
     'user_auth' 
 ]
 
+# MIDDLEWARE = [
+#     'corsheaders.middleware.CorsMiddleware', #do not change the order 
+#     'django.middleware.common.CommonMiddleware',
+#     'django.middleware.security.SecurityMiddleware',
+#     'django.contrib.sessions.middleware.SessionMiddleware',
+#     'user_auth.middleware.JWTAuthenticationMiddleware',
+#     'django.middleware.csrf.CsrfViewMiddleware',
+#     'django.contrib.auth.middleware.AuthenticationMiddleware',
+#     'django.contrib.messages.middleware.MessageMiddleware',
+#     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+#     'user_auth.middleware.UpdateLastActivityMiddleware']
+
+
+#change the order to allow the middleware to be executed before the authentication middleware
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware', #do not change the order 
-    'django.middleware.common.CommonMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'user_auth.middleware.JWTAuthenticationMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'user_auth.middleware.JWTAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'user_auth.middleware.UpdateLastActivityMiddleware']
+    'user_auth.middleware.UpdateLastActivityMiddleware',
+]
 
 
 ROOT_URLCONF = 'core.urls'
@@ -126,13 +147,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 LOGIN_URL = '/login'
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.0/howto/static-files/
-
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    FRONTEND_DIR / 'static',  # Adjust according to your actual static files directory
-]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -145,7 +159,7 @@ JWT_EXPIRATION_DELTA = timedelta(hours=1)
 
 # 42 OAuth settings
 CLIENT_ID_42 = 'u-s4t2ud-d0c4077a43cbefbff3d67add430fbc7edaadbc4522099efc1eb7a28773e0037a'
-CLIENT_SECRET_42 = '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'
+CLIENT_SECRET_42 = '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'
 CALLBACK_URL_42 = 'https://127.0.0.1:443/oauth_callback'
 
 # SSL Settings
@@ -168,26 +182,21 @@ EMIAL_USE_SSL = False
 #SEND_GRID_RECOVER_CODE  = FWHVDD5UD66EDBKHFQUX4CNS
 
 
-# Media files
-MEDIA_URL = '/media/'
-MEDIA_ROOT = '/code/media'
 
-
+# # genrate oauth token 
 # curl -X POST https://api.intra.42.fr/oauth/token \
 #      -d grant_type=client_credentials \
 #      -d client_id=u-s4t2ud-d0c4077a43cbefbff3d67add430fbc7edaadbc4522099efc1eb7a28773e0037a\
-#      -d client_secret=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
+#      -d client_secret=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\
+#      -d scope=public\
+#      -d resource_owner_id=
 
+# # get the uesr info 
+# curl -H "Authorization: Bearer 12e32f1d1cc53b908cf34704bdc7ed67a3d2b3f0a408b8589408a82905aa7c94" https://api.intra.42.fr/v2/me
 
-# curl -H "Authorization: Bearer a7661200d7f7133f943b7336f8086a02c712318ad88650343ff0bcaa11feec4d" \
-#      https://api.intra.42.fr/v2/me
+# # get user by id 
+# curl  -H "Authorization: Bearer 12e32f1d1cc53b908cf34704bdc7ed67a3d2b3f0a408b8589408a82905aa7c94" "https://api.intra.42.fr/v2/users/101375"
 
-# get user by id 
-# curl  -H "Authorization: Bearer a7661200d7f7133f943b7336f8086a02c712318ad88650343ff0bcaa11feec4d" "https://api.intra.42.fr/v2/users/101375"
-
-
-
-# filter by id 
-# curl  -H "Authorization: Bearer a7661200d7f7133f943b7336f8086a02c712318ad88650343ff0bcaa11feec4d" 'https://api.intra.42.fr/v2/users?filter\[login\]=aelsiddi'
-# curl -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
-#      "https://api.intra.42.fr/v2/users?filter[id]=101375"
+# # filter by id / login
+# curl  -H "Authorization: Bearer 12e32f1d1cc53b908cf34704bdc7ed67a3d2b3f0a408b8589408a82905aa7c94" 'https://api.intra.42.fr/v2/users?filter\[login\]=aelsiddi'
+# # curl  -H "Authorization: Bearer 12e32f1d1cc53b908cf34704bdc7ed67a3d2b3f0a408b8589408a82905aa7c94" 'https://api.intra.42.fr/v2/users?filter\[id\]=101375'

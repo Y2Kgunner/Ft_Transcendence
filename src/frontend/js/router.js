@@ -14,9 +14,9 @@ class Router {
     }
     
     async navigate(path, { replace = false, force = false } = {}) {
-        console.log(`Navigating to: ${path}`);
+       //console.log(`Navigating to: ${path}`);
         if (!force && this.lastPath === path && !replace) {
-            console.log(`Already navigated to: ${path}`);
+           //console.log(`Already navigated to: ${path}`);
             return;
         }
         this.lastPath = path;
@@ -98,7 +98,7 @@ async function setupProfilePage() {
         setUpVerifyDeleteOtpButton();
         setupUploadProfilePictureButton();
     } else {
-        console.log('User is not authenticated, redirecting to login');
+       //console.log('User is not authenticated, redirecting to login');
         appRouter.navigate('/login', { replace: true });
     }
 }

@@ -2,13 +2,14 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.core.exceptions import ValidationError
 from user_auth.jwt_utils import JWTHandler
-from django.http import JsonResponse
+from django.http import JsonResponse,FileResponse
 from django.views import View
 from functools import wraps
 import json
 import logging
 from django.views.decorators.http import require_http_methods
 from user_auth.forms import ProfilePictureForm
+from django.contrib.auth.decorators import login_required
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +21,12 @@ class UserProfileView(View):
         return super(UserProfileView, self).dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        user = request.user
+        print("Type of request.user:", type(request.user)) 
+        print("Is authenticated:", request.user.is_authenticated)  
+        if not request.user.is_authenticated:
+            return JsonResponse({'error': 'User is not authenticated'}, status=401)
+        user = request.user  
+
         updated_at = user.updated_at.strftime('%Y-%m-%d %H:%M:%S') if user.updated_at else None
         created_at = user.created_at.strftime('%Y-%m-%d %H:%M:%S') if user.created_at else None
 
@@ -97,6 +103,14 @@ def get_profile_picture(request):
     user = request.user
     if user.profile_picture:
         picture_url = request.build_absolute_uri(user.profile_picture.url)
-        return JsonResponse({'profile_picture_url': picture_url}, status=200)
+        print(picture_url)
+        print(user.profile_picture.url)
+        img_path = "/backend" + user.profile_picture.url
+        img=open(img_path,'rb')
+        
+        res = FileResponse(img)
+        
+        return res
+        # return JsonResponse({'profile_picture_url': picture_url}, status=200)
     else:
-        return JsonResponse({'error': 'No profile picture set.'}, status=404)
+        return JsonResponse({'error': 'No profile picture set.'}, status=201)

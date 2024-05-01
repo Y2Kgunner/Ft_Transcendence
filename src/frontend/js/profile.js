@@ -4,13 +4,12 @@ let userName = '';
 
 function fetchUserProfile() {
   const jwt = getCookie('jwt');
-  console.log('Token from cookie:', jwt);
+ console.log('Token from cookie:', jwt);
 
   fetch('https://127.0.0.1:443/api/profile', {
       method: 'GET',
       headers: {
           'Authorization': `Bearer ${jwt}`,
-          'Content-Type': 'application/json'
       },
       credentials: 'include'
   })
@@ -32,22 +31,19 @@ function fetchUserProfile() {
   });
 }
 
-  
-  function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-      const cookies = document.cookie.split(';');
-      for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i].trim();
-        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-          break;
+
+function getCookie(name) {
+    const decodedCookies = decodeURIComponent(document.cookie); 
+    const cookies = decodedCookies.split(';');
+    const cookiePrefix = name + '=';
+    for (let cookie of cookies) {
+        cookie = cookie.trim();
+        if (cookie.startsWith(cookiePrefix)) {
+            return cookie.substring(cookiePrefix.length);
         }
-      }
     }
-    console.log('Cookie value:', cookieValue);
-    return cookieValue;
-  }
+    return null;
+}
 
   function fetchAndUpdateProfile() {
     fetchUserProfile(); 
@@ -56,7 +52,7 @@ function fetchUserProfile() {
 // clean up
   
 function updateProfilePage(userData) {
-    console.log('User data:', userData);
+   //console.log('User data:', userData);
     const usernameElement = document.getElementById('username');
     if (userData.username) {
       usernameElement.textContent = userData.username;
@@ -88,14 +84,12 @@ function updateProfilePage(userData) {
     }
 
     document.getElementById('twoFactorAuth').textContent = userData.twofa_enabled ? 'Enabled' : 'Disabled';
-    if (userData.profile_picture) {
-      document.querySelector('.profile-picture').style.backgroundImage = `url('${userData.profile_picture}')`;
-    }else {
-      document.querySelector('.profile-picture').style.backgroundImage = `url('../asessts/profile_pictures/default.png')`;
+    // if (userData.profile_picture) {
+    //   document.querySelector('.profile-picture').style.backgroundImage = `url('${userData.profile_picture}')`;
+    // }else {
+    //   document.querySelector('.profile-picture').style.backgroundImage = `url(/assets/profile_pictures/default.png')`;
       //console.log('profile picture not found');
     }
-
-  }
 
   function formatDate(dateString) {
     if (!dateString) return '';
@@ -205,7 +199,6 @@ function loadMatchHistory(playerId) {
       return;
   }
 
-  console.log("Attempting to load match history for playerId:", playerId);
   fetch('https://127.0.0.1:443/pongApp/player_match_history', {
       method: 'POST',
       headers: {
@@ -220,7 +213,7 @@ function loadMatchHistory(playerId) {
           console.error("No matches data received:", data);
           return;
       }
-      console.log("Match Data Received:", data);
+     //console.log("Match Data Received:", data);
       const table = document.getElementById('matchHistoryTable').getElementsByTagName('tbody')[0];
       data.matches.forEach(match => {
           let row = table.insertRow();
@@ -235,55 +228,102 @@ function loadMatchHistory(playerId) {
   .catch(error => console.error('Error loading match history:', error));
 }
 
-
 function fetchProfilePicture() {
-  const jwtToken = getCookie('jwt'); 
-  if (!jwtToken) {
-      console.error('JWT token is not available. User might not be authenticated.');
-      return;
-  }
-
-  fetch('https://127.0.0.1:443/api/get_profile_picture/', {
-      method: 'GET',
-      headers: {
-          'Authorization': `Bearer ${jwtToken}`,
-          'Content-Type': 'application/json'
-      },
-  })
-  .then(response => {
-      if (!response.ok) {
-          throw new Error(`Network response was not ok: ${response.statusText}`);
-      }
-      return response.json();
-  })
-  .then(data => {
-      if (data.profile_picture_url) {
-          const profilePictureElement = document.getElementById('profilePicture');
-          if (profilePictureElement) {
-              profilePictureElement.src = data.profile_picture_url + '?v=' + new Date().getTime();
-          } else {
-              console.error('Profile picture element not found in the document.');
-          }
-      } else {
-          console.error('Profile picture URL is missing in the response data.');
-          document.getElementById('profilePicture').src = '../asessts/profile_pictures/default.png';
-      }
-  })
-  .catch(error => {
-      console.error('Error fetching the profile picture:', error);
-      document.getElementById('profilePicture').src = '../asessts/profile_pictures/default.png';
-  });
+    fetch('https://127.0.0.1:443/api/get_profile_picture/', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${getCookie('jwt')}`
+        },
+    })
+    .then(response => {
+        console.log(response);
+        if (response.ok) {
+            return response.blob();
+        } else {
+            throw new Error('Network response was not ok.');
+        }
+    })
+    .then(blob => {
+        document.getElementById('profilePicture').src = URL.createObjectURL(blob);
+    })
+    .catch((error) => {
+        console.error('Error retrieving profile picture:', error);
+        document.getElementById('profilePicture').src = '../assets/profile_pictures/default.png';
+    });
 }
 
-
-// function setupUploadProfilePictureButton() {
-//   document.getElementById('uploadPicButton').addEventListener('click', () => {
-//       document.getElementById('profilePictureInput').click();  // Opens the file selection dialog
-//   });
-
-//   // Setup change event listener for the file input
-//   document.getElementById('profilePictureInput').addEventListener('change', uploadProfilePicture);
+// function fetchProfilePicture() {
+//     fetch('https://127.0.0.1:443/api/get_profile_picture/', {
+//         method: 'GET',
+//         headers: {
+//             'Authorization': `Bearer ${getCookie('jwt')}`
+//         },
+//     })
+//     .then(response => {
+//         console.log(response);
+//         if (response.body) {
+//             // console.log('Profile picture retrieved:', data.profile_picture_url);
+//             document.getElementById('profilePicture').src = URL.createObjectURL(response.body.blob())
+//         } else {
+//             console.error('Error:', data.error);
+//             // document.getElementById('profilePicture').src = '/assets/profile_pictures/default.png'; 
+//         }
+//     })
+//     // .then(data => {
+//     //     console.log(data);
+//     //     if (data.profile_picture_url) {
+//     //         console.log('Profile picture retrieved:', data.profile_picture_url);
+//     //         document.getElementById('profilePicture').src = data;
+//     //     } else {
+//     //         console.error('Error:', data.error);
+//     //         document.getElementById('profilePicture').src = '/assets/profile_pictures/default.png'; 
+//     //     }
+//     // })
+//     .catch((error) => {
+//         console.error('Error retrieving profile picture:', error);
+//         document.getElementById('profilePicture').src = '/assets/profile_pictures/default.png';
+//     });
 // }
+
+// function fetchProfilePicture() {
+//   const jwtToken = getCookie('jwt'); 
+//   if (!jwtToken) {
+//       console.error('JWT token is not available. User might not be authenticated.');
+//       return;
+//   }
+
+//   fetch('/api/get_profile_picture/', {
+//       method: 'GET',
+//       headers: {
+//           'Authorization': `Bearer ${jwtToken}`,
+//           'Content-Type': 'application/json'
+//       },
+//   })
+//   .then(response => {
+//       if (!response.ok) {
+//           throw new Error(`Network response was not ok: ${response.statusText}`);
+//       }
+//       return response.json();
+//   })
+//   .then(data => {
+//       if (data.profile_picture_url) {
+//           const profilePictureElement = document.getElementById('profilePicture');
+//           if (profilePictureElement) {
+//               profilePictureElement.src = data.profile_picture_url + '?v=' + new Date().getTime();
+//           } else {
+//               console.error('Profile picture element not found in the document.');
+//           }
+//       } else {
+//           console.error('Profile picture URL is missing in the response data.');
+//           document.getElementById('profilePicture').src = '/assets/profile_pictures/default.png';
+//       }
+//   })
+//   .catch(error => {
+//       console.error('Error fetching the profile picture:', error);
+//       document.getElementById('profilePicture').src = '/assets/profile_pictures/default.png';
+//   });
+// }
+
 
 function setupUploadProfilePictureButton() {
   const uploadButton = document.getElementById('uploadPicButton');
@@ -324,18 +364,36 @@ function uploadProfilePicture() {
       })
       .then(data => {
           if (data.message) {
-              console.log('Success:', data.message);
+             //console.log('Success:', data.message);
               document.getElementById('profilePicture').src = URL.createObjectURL(file);
           } else {
               console.error('Error:', data.error);
-              document.getElementById('profilePicture').src = '../assets/profile_pictures/default.png';
+              document.getElementById('profilePicture').src = '/assets/profile_pictures/default.png';
           }
       })
       .catch((error) => {
           console.error('Error:', error);
-          document.getElementById('profilePicture').src = '../assets/profile_pictures/default.png';
+          document.getElementById('profilePicture').src = '/assets/profile_pictures/default.png';
       });
   }
+}
+
+function deleteProfilePicture() {
+    fetch('https://127.0.0.1:443/api/delete_profile_picture/', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${getCookie('jwt')}`,
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data.message);
+        document.getElementById('profilePicture').src = '/assets/profile_pictures/default.png'; // Path to default image
+    })
+    .catch((error) => {
+        console.error('Error deleting profile picture:', error);
+    });
 }
 
 export { setupAnonymizeButton, fetchUserProfile, setupDeleteProfileButton, setupCloseButton , setUpVerifyDeleteOtpButton, getCookie, setupUploadProfilePictureButton};

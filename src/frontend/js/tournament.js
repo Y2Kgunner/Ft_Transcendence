@@ -129,7 +129,7 @@ function getCookie(name) {
         }
       }
     }
-    console.log('Cookie value:', cookieValue);
+   //console.log('Cookie value:', cookieValue);
     return cookieValue;
 }
 
@@ -160,7 +160,7 @@ function startTournament() {
         return response.json();
     })
     .then(data => {
-        console.log('Tournament created:', data);
+       //console.log('Tournament    :', data);
         alert('Tournament created successfully!');
         setTournamentId(data.id);
         // create breacket page here or direct the to the game page

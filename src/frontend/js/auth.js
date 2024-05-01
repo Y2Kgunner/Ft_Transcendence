@@ -21,8 +21,8 @@ async function isAuthenticated() {
 
 function getAuthToken() {
     const token = localStorage.getItem('authToken');
-    console.log("this from auth.js", token);
-    console.log('Token:', token);
+   //console.log("this from auth.js", token);
+   //console.log('Token:', token);
     return token ? token : null;
 }
 
@@ -41,7 +41,7 @@ async function login(event) {
     
     if (response.ok) {
         const data = await response.json();
-        console.log('Login successful:', data);
+       //console.log('Login successful:', data);
         setCookie('authToken', data.token, 1, true, 'None');
         setUserId(data.userId);
         updateMainContentVisibility(true);
@@ -70,7 +70,7 @@ async function loginOtpUser(event) {
     
     if (response.ok) {
         const data = await response.json();
-        console.log('Login successful:', data);
+       //console.log('Login successful:', data);
         setCookie('authToken', data.token, 1, true, 'None');
         appRouter.navigate('/');
     }
@@ -104,7 +104,7 @@ async function register(event) {
 
     if (response.ok) {
         const data = await response.json();
-        console.log('Registration successful:', data);
+       //console.log('Registration successful:', data);
         await appRouter.navigate('/login', { force: true });
     } else {
         const error = await response.json();
@@ -132,14 +132,14 @@ async function verifyOtp(otp) {
 function setupEventListeners() {
     document.getElementById('showRegisterForm')?.addEventListener('click', function(event) {
         event.preventDefault();
-        console.log('Switching to register form...'); 
+       //console.log('Switching to register form...'); 
         showRegisterForm();
         // appRouter.navigate('/register')
     });
 
     document.getElementById('showLoginForm')?.addEventListener('click', function(event) {
         event.preventDefault();
-        console.log('Switching to login form...'); 
+       //console.log('Switching to login form...'); 
         showLoginForm();
     });
 
@@ -170,6 +170,18 @@ export async function setupAuthPage() {
     setupEventListeners();
 }
 
+// function setCookie(name, value, days, secure = false, sameSite = 'Lax') {
+//     let expires = '';
+//     if (days) {
+//         const date = new Date();
+//         date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+//         expires = `; expires=${date.toUTCString()}`;
+//     }
+//     const secureFlag = secure ? '; Secure' : '';
+//     const sameSitePolicy = `; SameSite=${sameSite}`;
+//     document.cookie = `${name}=${value || ''}${expires}; path=/${secureFlag}${sameSitePolicy}`;
+// }
+
 function setCookie(name, value, days, secure = false, sameSite = 'Lax') {
     let expires = '';
     if (days) {
@@ -179,7 +191,7 @@ function setCookie(name, value, days, secure = false, sameSite = 'Lax') {
     }
     const secureFlag = secure ? '; Secure' : '';
     const sameSitePolicy = `; SameSite=${sameSite}`;
-    document.cookie = `${name}=${value || ''}${expires}; path=/${secureFlag}${sameSitePolicy}`;
+    document.cookie = `${name}=${encodeURIComponent(value || '')}${expires}; path=/${secureFlag}${sameSitePolicy}`;
 }
 
 async function handleOAuthCallback(code) {
@@ -196,13 +208,14 @@ async function handleOAuthCallback(code) {
         }
 
         const data = await response.json();
-
+        console.log('OAuth callback data:', data);
         if (data.success) {
-            console.log('OAuth callback handled successfully:', data.message);
+            ////console.log('OAuth callback handled successfully:', data.message);
+            setCookie('authToken', data.token, 1, true, 'None');
             updateMainContentVisibility(true);
             await appRouter.navigate('/'); 
         } else {
-            console.error('Authentication failed after OAuth callback:', data.message);
+            // console.error('Authentication failed after OAuth callback:', data.message);
             alert('Authentication failed: ' + data.message);
             updateMainContentVisibility(false);
             await navigateBasedOnAuth(false);
