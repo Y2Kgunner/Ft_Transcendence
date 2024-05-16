@@ -288,47 +288,6 @@ export { setupTournamentPage };
 // export { checkInput };
 
 
-// function setupTournamentPage() {
-//     // const startNewTournamentButton = document.getElementById('startNewTournament');
-//     // const newTournamentForm = document.getElementById('newTournamentForm');
-//     // const backToTournamentMainButton = document.getElementById('backToTournamentMain');
-//     const minusButton = document.querySelector('.quantity__minus');
-//     const plusButton = document.querySelector('.quantity__plus');
-//     const input = document.getElementById('numParticipants');
-
-//     // function handleStartNewTournament() {
-//     //     document.getElementById('tournament-content').style.display = 'none';
-//     //     document.getElementById('newTournamentContainer').style.display = 'block';
-//     // }
-
-
-
-//     // function handleBackToTournamentMain() {
-//     //     document.getElementById('newTournamentContainer').style.display = 'none';
-//     //     document.getElementById('tournament-content').style.display = 'block';
-//     // }
-
-//     function handleMinusButtonClick() {
-//         let value = parseInt(input.value, 10);
-//         value = Math.max(3, value - 1);
-//         input.value = value;
-//     }
-
-//     function handlePlusButtonClick() {
-//         let value = parseInt(input.value, 10);
-//         value = Math.min(value + 1, 8);
-//         input.value = value;
-//     }
-
-//     // startNewTournamentButton.addEventListener('click', handleStartNewTournament);
-//     // newTournamentForm.addEventListener('submit', handleNewTournamentFormSubmit);
-//     // backToTournamentMainButton.addEventListener('click', handleBackToTournamentMain);
-//     minusButton.addEventListener('click', handleMinusButtonClick);
-//     plusButton.addEventListener('click', handlePlusButtonClick);
-//     // setupStartTournamentForm();
-// }
-
-
 
 function fetchUserProfile() {
     return fetch('https://127.0.0.1:443/api/profile', {
@@ -396,14 +355,73 @@ function startTournament() {
         return response.json();
     })
     .then(data => {
-       //console.log('Tournament    :', data);
+        console.log('Tournament    :', data);
         alert('Tournament created successfully!');
-        setTournamentId(data.id);
-        // create breacket page here or direct the to the game page
+        // setTournamentId(data.id);
+        // console.log(data.id);
+        getMatchData();
+        // startMatchLoop(data.id);
     })
     .catch(error => {
         console.error('Failed to create tournament:', error);
         alert('Failed to create tournament. Please try again.');
+    });
+}
+
+function getMatchData() {
+    console.log();
+    fetch(`https://127.0.0.1:443/tournament_api/detail`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + getCookie('jwt')
+        }
+        // },
+        // body: JSON.stringify(id)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+       //console.log('Tournament    :', data);
+       alert('Tournament details pulled successfully!');
+        setTournamentId(data);
+        startMatchLoop(data.id);
+    })
+    .catch(error => {
+        console.error('Failed to find tournament:', error);
+    });
+}
+
+function startMatchLoop(id) {
+    console.log(id);
+    fetch(`https://127.0.0.1:443/tournament_api/get_next_match/${id}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + getCookie('jwt')
+        }
+        // },
+        // body: JSON.stringify(id)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+       //console.log('Tournament    :', data);
+        alert('next match found!');
+        setTournamentId(data.id);
+        // create breacket page here or direct the to the game page
+    })
+    .catch(error => {
+        console.error('Failed to setup next match:', error);
+        alert('Failed to setup next match. Please try again.');
     });
 }
 
@@ -415,8 +433,8 @@ function setupStartTournamentForm() {
     });
 }
 
-function setTournamentId(tournamentId) {
-    localStorage.setItem('currentTournamentId', tournamentId);
+function setTournamentId(data) {
+    localStorage.setItem('currentTournamentId', data.id);
 }
 
 function getTournamentId() {

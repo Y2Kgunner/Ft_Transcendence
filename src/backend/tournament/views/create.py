@@ -13,9 +13,9 @@ User = get_user_model()
 def create_tournament(request):
     tournament = None 
     try:
-        if Tournament.objects.filter(creator=request.user, is_active=True , is_completed= False).exists():
-            return JsonResponse({"error": "You already have an active tournament. Please complete it before creating a new one."}, status=400)
-        
+        # if Tournament.objects.filter(creator=request.user, is_active=True , is_completed= False).exists():
+        #     return JsonResponse({"error": "You already have an active tournament. Please complete it before creating a new one."}, status=400)
+        print("trying")
         data = json.loads(request.body)
         tournament = Tournament.objects.create(
             creator=request.user,
