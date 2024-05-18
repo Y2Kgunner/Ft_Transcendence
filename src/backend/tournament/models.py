@@ -10,6 +10,19 @@ class Tournament(models.Model):
     is_completed = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     winner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='won_tournaments')
+    def remaining_matches_count(self):
+        existing_incomplete_matches = self.matches.filter(is_completed=False).count()
+        curr_participants = self.participants.count()
+        total_matches = 0
+        while curr_participants > 1:
+            if curr_participants % 2 != 0:
+                curr_participants += 1
+            matches_this_round = curr_participants // 2
+            total_matches += matches_this_round
+            curr_participants = matches_this_round
+        arranged_matches = self.matches.count()
+        remaining_matches = max(0, total_matches - arranged_matches)
+        return existing_incomplete_matches + remaining_matches
 
 class Participant(models.Model):
     tournament = models.ForeignKey('Tournament', on_delete=models.CASCADE, related_name='participants')
