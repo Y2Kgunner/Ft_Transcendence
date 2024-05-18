@@ -4,6 +4,7 @@
 }
 
 body {
+  margin-top: 15vh;
   font-family: 'PixelatedFont', sans-serif; /* Use the custom font as the default font */
   overflow: hidden;
 }
@@ -209,14 +210,14 @@ body {
   }
 }
 
-#player2alias {
+#player2alias, #player3alias {
   background-color: #181915;
   color: #b39616;
   border: none;
   padding-left: 1em;
 }
 
-#player2alias:focus {
+#player2alias:focus, #player3alias:focus {
   box-shadow: 0 0 5px #e8d821; /* Add a box shadow for a more prominent effect */
 }
 

@@ -1,15 +1,23 @@
+const matchPoint = 1;
+let intervalId = null;
+let paused = false;
+let pauseModalVisible = false;
+let gameOver = false;
+
+
 let paddle1Y = 0;
 let paddle2Y = 0;
 let ballX = 5;
 let ballY = 5;
-let ballSpeedX = 5;
-let ballSpeedY = 5;
-let initialBallSpeedX = 5;
-let initialBallSpeedY = 5;
+let ballSpeedX = 10;
+let ballSpeedY = 10;
+let initialBallSpeedX = 10;
+let initialBallSpeedY = 10;
 let score1 = 0;
 let score2 = 0;
 let player1Alias = "Player 1";
 let player2Alias = "";
+let initialPaddlePos;
 
 let paddle1;
 let paddle2;
@@ -26,29 +34,19 @@ let paddle2MovingUp = false;
 let paddle2MovingDown = false;
 
 document.addEventListener("DOMContentLoaded", function () {
-  // Get elements
   board = document.getElementById("board");
   paddle1 = document.getElementById("paddle_1");
   paddle2 = document.getElementById("paddle_2");
+  initialPaddlePos = paddle1.style.top;
   ball = document.getElementById("ball");
   score1Element = document.getElementById("player_1_score");
   score2Element = document.getElementById("player_2_score");
 
-  // Set initial paddle positions
-  // paddle1.style.top = "50%";
-  // paddle2.style.top = "50%";
-
-  // Set initial ball position
   ballX = board.offsetWidth / 2 - ball.offsetWidth / 2;
   ballY = board.offsetHeight / 2 - ball.offsetHeight / 2;
-  // ball.style.left = `${ballX}px`;
-  // ball.style.top = `${ballY}px`;
 
-  // Update scores and aliases
   score1Element.textContent = score1;
   score2Element.textContent = score2;
-  // player1AliasElement.textContent = player1Alias;
-  // player2AliasElement.textContent = player2Alias;
   var startModal = new bootstrap.Modal(document.getElementById('startGameModal'));
   startModal.show();
 });
@@ -62,6 +60,8 @@ function handleKeyDown(event) {
     paddle2MovingUp = true;
   } else if (event.key === "ArrowDown") {
     paddle2MovingDown = true;
+  } else if (event.key === " ") {
+    togglePause();
   }
 }
 
@@ -77,45 +77,51 @@ function handleKeyUp(event) {
   }
 }
 
+function togglePause() {
+  if (!pauseModalVisible && !gameOver) {
+    paused = true;
+    pauseGame();
+  } else {
+    continueGame();
+  }
+}
+
 function updateGame() {
-  if (begin) {
+  if (begin && !pauseModalVisible) {
     // Update paddle positions
     if (paddle1MovingUp && paddle1.offsetTop > 0) {
-      paddle1.style.top = `${paddle1.offsetTop - 6}px`;
+      paddle1.style.top = `${paddle1.offsetTop - 10}px`;
     } else if (paddle1MovingDown && paddle1.offsetTop + paddle1.offsetHeight < board.offsetHeight) {
-      paddle1.style.top = `${paddle1.offsetTop + 6}px`;
+      paddle1.style.top = `${paddle1.offsetTop + 10}px`;
     }
 
     if (paddle2MovingUp && paddle2.offsetTop > 0) {
-      paddle2.style.top = `${paddle2.offsetTop - 6}px`;
+      paddle2.style.top = `${paddle2.offsetTop - 10}px`;
     } else if (paddle2MovingDown && paddle2.offsetTop + paddle2.offsetHeight < board.offsetHeight) {
-      paddle2.style.top = `${paddle2.offsetTop + 6}px`;
+      paddle2.style.top = `${paddle2.offsetTop + 10}px`;
     }
 
-    // Update ball position
     ballX += ballSpeedX;
     ballY += ballSpeedY;
     ball.style.left = `${ballX}px`;
     ball.style.top = `${ballY}px`;
 
-    // Collision detection
     if (ballX <= 0) {
-      // Ball hit left wall, score point for player 2
       score2++;
       score2Element.textContent = score2;
       resetBall();
     } else if (ballX + ball.offsetWidth >= board.offsetWidth) {
-      // Ball hit right wall, score point for player 1
       score1++;
       score1Element.textContent = score1;
       resetBall();
     }
+    if (score1 === matchPoint || score2 === matchPoint) {
+      haltGame(score1 === matchPoint ? player1Alias : player2Alias);
+    }
 
-    // Ball hit top or bottom wall, reverse Y direction
     if (ballY <= 0 || ballY + ball.offsetHeight >= board.offsetHeight)
       ballSpeedY = -ballSpeedY;
 
-    // Paddle collision detection
     const ballRect = ball.getBoundingClientRect();
     const paddle1Rect = paddle1.getBoundingClientRect();
     const paddle2Rect = paddle2.getBoundingClientRect();
@@ -132,9 +138,46 @@ function updateGame() {
         ballRect.bottom >= paddle2Rect.top &&
         ballSpeedX > 0);
 
-    if (paddleCollision)
+    if (paddleCollision) {
+      const ballCenterY = ballY + ball.offsetHeight / 2;
+      const paddle1CenterY = paddle1.offsetTop + paddle1.offsetHeight / 2;
+      const paddle2CenterY = paddle2.offsetTop + paddle2.offsetHeight / 2;
+
+      let paddleCenterY;
+      if (ballSpeedX < 0) {
+        paddleCenterY = paddle1CenterY;
+      } else {
+        paddleCenterY = paddle2CenterY;
+      }
+
+      const collisionOffset = ballCenterY - paddleCenterY;
+      const maxOffset = paddle1.offsetHeight / 2;
+
+      const angle = collisionOffset / maxOffset;
+      ballSpeedY = initialBallSpeedY * angle;
       ballSpeedX = -ballSpeedX;
+    }
   }
+}
+
+function haltGame(winner) {
+  paused = false;
+  pauseModalVisible = false;
+  gameOver = true;
+  let winnerMsg = document.getElementById('GameWinner');
+  winnerMsg.textContent = winner.toString() + " wins!";
+  score1 = 0;
+  score2 = 0;
+  resetBall();
+  begin = false;
+  score1Element.textContent = score1;
+  score2Element.textContent = score2;
+  paddle1.style.top = initialPaddlePos;
+  paddle2.style.top = initialPaddlePos;
+  var restartModal = new bootstrap.Modal(document.getElementById('restartGame'));
+  restartModal.show();
+  clearInterval(intervalId);
+  intervalId = null;
 }
 
 function resetBall() {
@@ -142,15 +185,21 @@ function resetBall() {
   ballY = board.offsetHeight / 2;
   ball.style.left = `${ballX}px`;
   ball.style.top = `${ballY}px`;
-  ballSpeedX = initialBallSpeedX;
-  ballSpeedY = initialBallSpeedY;
+
+  const randomDirection = Math.random() < 0.5 ? -1 : 1;
+  ballSpeedX = initialBallSpeedX * randomDirection;
+  ballSpeedY = initialBallSpeedY * (Math.random() * 2 - 1);
 }
 
 function startGame() {
   begin = true;
+  gameOver = false;
   player2Alias = document.getElementById("player2alias").value;
   player2AliasElement.textContent = player2Alias;
-  setInterval(updateGame, 16); // 16ms = 60fps
+  if (intervalId) {
+    clearInterval(intervalId);
+  }
+  intervalId = setInterval(updateGame, 16);
   document.addEventListener("keydown", handleKeyDown);
   document.addEventListener("keyup", handleKeyUp);
 }
@@ -168,33 +217,37 @@ function hideOverflow() {
 function checkInput() {
   var button = document.getElementById("startGameBtn");
   player2Alias = document.getElementById("player2alias").value;
-  player1Alias = "poopy";
   if (player2Alias.trim() === '') {
     button.disabled = true;
   } else if (player2Alias.length > 10 || player2Alias.length < 3) {
     player2AliasElement = document.getElementById("player_2_alias");
     button.disabled = false;
-    // createAlert(notiAlert, 'Alias is between 3 and 10 characters!', 'alert-danger');
   } else if (!isPrintableASCII(player2Alias)) {
     player2AliasElement = document.getElementById("player_2_alias");
     button.disabled = false;
-    // createAlert(notiAlert, 'Alias cannot contain spaces!', 'alert-danger');
   } else if (player1Alias === player2Alias) {
     player2AliasElement = document.getElementById("player_2_alias");
     button.disabled = false;
-    // createAlert(notiAlert, 'Alias cannot be the same as the user!', 'alert-danger');
   } else {
     player2AliasElement = document.getElementById("player_2_alias");
     button.disabled = false;
   }
-  // return ;
 }
 
-// Get the element with the class baseTest
-let baseTestElement = document.querySelector('.baseTest');
+let pauseModalInstance = new bootstrap.Modal(document.getElementById('pauseGameModal'));
 
-// Add an event listener to the game start event (e.g. a button click)
-document.getElementById('startGameBtn').addEventListener('click', () => {
-  // Remove the class baseTest from the element
-  baseTestElement.classList.remove('baseTest');
-});
+function pauseGame() {
+  clearInterval(intervalId);
+  intervalId = null;
+  pauseModalInstance.show();
+  pauseModalVisible = true;
+}
+
+function continueGame() {
+  pauseModalInstance.hide();
+  pauseModalInstance._element.addEventListener('hidden.bs.modal', function () {
+    pauseModalVisible = false;
+    if (!intervalId)
+      intervalId = setInterval(updateGame, 16);
+  }, { once: true });
+}

@@ -36,7 +36,47 @@
     </div>
   </div>
 
-  <div class="mainContext baseTest text-light container">
+  <div class="modal fade rounded-3" id="restartGame" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="container-fluid gradientHousing rounded-3">
+        <div class="modal-content custoModal">
+          <div class="modal-header bg-dark justify-content-center">
+            <h5 class="modal-title gradientText h2" id="staticBackdropLabel">Game Over!</h5>
+          </div>
+          <div class="modal-body text-center bg-dark">
+            <h5 id="GameWinner" class="gradientText"></h5>
+          </div>
+          <div class="modal-footer justify-content-center pb-4 bg-dark">
+            <div class="gradientHousingBtn">
+              <button type="button" class="btn custoModal" id="restartGameBtn" data-bs-dismiss="modal"
+              onclick="startGame('game')">Restart Game</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal fade rounded-3" id="pauseGameModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="container-fluid gradientHousing rounded-3">
+      <div class="modal-content custoModal">
+        <div class="modal-header bg-dark justify-content-center">
+          <h5 class="modal-title gradientText h2" id="staticBackdropLabel">Game Paused!</h5>
+        </div>
+          <div class="modal-footer justify-content-center pb-4 bg-dark">
+            <div class="gradientHousingBtn">
+              <button type="button" class="btn custoModal" id="pauseBtn" onclick="continueGame()">Resume Game</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mainContext text-light container">
     <div class="row row-cols-1 align-items-center justify-content-center">
       <div class="col d-flex gameInfo justify-content-center p-2">
         <p class="gradientText" style="font-style: normal;">
