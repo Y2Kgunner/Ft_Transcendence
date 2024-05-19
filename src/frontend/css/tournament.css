@@ -157,20 +157,20 @@
     top: -100%;
     height: 300%;
     width: 150%;
-    background-image: linear-gradient(to bottom, #1f7016, #38e821, #1f7016, #38e821, #1f7016, #38e821, #1f7016, #38e821, #1f7016, #38e821, #1f7016, #38e821, #1f7016);
+    background-color: #1f7016;
+    /* background-image: linear-gradient(to bottom, #1bd215, #4c8a0a, #1bd215, #4c8a0a); */
     background-size: 100% 200%; /* Add this line */
-    animation: paddleGradient 1s infinite linear;
+    /* animation: paddleGradient 5s infinite linear; */
   }
   
-  @keyframes paddleGradient {
-    0% {
-      background-position: 50% 100%; /* changed from 100% 50% to 50% 100% */
-    }
-    100% {
-      background-position: 50% 0%; /* changed from 0% 50% to 50% 0% */
-    }
+/* @keyframes paddleGradient {
+  0% {
+    background-position: 50% 100%;
   }
-  
+  100% {
+    background-position: 50% 0%;
+  }
+} */
   /* --- --- --- --- --- --- --- --- */
   
   #paddle_1 {
@@ -191,8 +191,8 @@
     height: 2vmin;
     border-radius: 50%;
     position: absolute;
-    background-color: #948b22;
-    box-shadow: 0 0 10px 2px #1f7016;
+    background-color: #34a412;
+    box-shadow: 0 0 10px 2px #5f6431;
     top: calc(50% - (2vmin / 2));
     left: calc(50% - (2vmin / 2));
   }
@@ -201,7 +201,7 @@
   /* --- --- --- --- --- --- --- --- */
   
   .custoModal {
-    color: #e5e5e5;
+    color: #357c10;
     --bs-modal-header-border-color: none;
     --bs-modal-footer-border-color: none;
   }
@@ -257,12 +257,14 @@
   .gradientHousing:before {
     content: "";
     position: absolute;
-    left: -25%;
-    top: -100%;
-    height: 300%;
+    left: -27%;
+    top: -125%;
+    height: 369%;
     width: 150%;
-    background-image: conic-gradient(#1f7016, #38e821, #1f7016, #38e821, #1f7016, #38e821, #1f7016, #38e821, #1f7016);
-    animation: spin 1s infinite linear;
+    /* background-image: conic-gradient(#1bd215, #a9940d, #1bd215, #a9940d, #1bd215, #a9940d, #1bd215, #a9940d, #1bd215); */
+    /* background-image: conic-gradient(#40e10f, #f06a05, #40e10f, #f06a05, #40e10f, #f06a05, #40e10f, #f06a05, #40e10f); */
+    background-image: conic-gradient(#3cff00, #2c5519, #3cff00, #2c5519, #3cff00);
+    animation: spin 4s infinite linear;
   }
   
   @keyframes spin {
@@ -288,20 +290,23 @@
     height: 500%;
     width: 550%;
     /* background-image: conic-gradient(#07b66d, #d6095b, #07b66d, #d6095b, #07b66d, #d6095b, #07b66d); */
-    background-image: conic-gradient(#1f7016, #38e821, #1f7016, #38e821, #1f7016, #38e821, #1f7016, #38e821, #1f7016, #38e821, #1f7016, #38e821, #1f7016, #38e821, #1f7016, #38e821, #1f7016, #38e821, #1f7016, #38e821, #1f7016);
-    animation: spin 5s infinite linear;
+    /* background-image: conic-gradient(#40e10f, #f06a05, #40e10f, #f06a05, #40e10f); */
+    background-image: conic-gradient(#3cff00, #2c5519, #3cff00, #2c5519, #3cff00, #2c5519, #3cff00, #2c5519, #3cff00, #2c5519, #3cff00, #2c5519, #3cff00, #2c5519, #3cff00);
+    animation: spin 8s infinite linear;
   }
-  
+
   .gradientText {
     /* font-style: oblique; */
     font-style: italic;
-    background: linear-gradient(to right,#1f7016, #38e821, #1f7016, #38e821, #1f7016, #38e821, #1f7016,#38e821, #1f7016, #38e821, #1f7016, #38e821, #1f7016, #38e821, #1f7016, #38e821, #1f7016);
+    /* background: linear-gradient(to right,#40e10f, #f06a05, #40e10f, #f06a05, #40e10f); */
+    background: linear-gradient(to right,#3cff00, #2c5519, #3cff00, #2c5519, #3cff00, #2c5519, #3cff00, #2c5519, #3cff00, #2c5519, #3cff00, #2c5519, #3cff00);
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
     background-size: 200% 100%;
-    animation: gradient 2s linear infinite;
+    animation: gradient 5s linear infinite;
   }
+  
   
   @keyframes gradient {
     0% {
@@ -314,41 +319,43 @@
   
   #player2alias {
     background-color: #181915;
-    color: #b39616;
+    color: #51a40c;
     border: none;
     padding-left: 1em;
   }
   
-  #player2alias:focus {
-    box-shadow: 0 0 5px #38e821; /* Add a box shadow for a more prominent effect */
-  }
   
-  .modal-content {
-    background-color: transparent;
-  }
   
-  .baseTest {
-    position: relative;
-    overflow: hidden;
-  }
+#player2alias:focus {
+  box-shadow: 0 0 5px #57ae10; /* Add a box shadow for a more prominent effect */
+}
+
+.modal-content {
+  background-color: transparent;
+}
+
+.baseTest {
+  position: relative;
+  overflow: hidden;
+}
   
-  .baseTest:before {
-    content: "";
-    position: absolute;
-    left: -225%;
-    top: -200%;
-    height: 500%;
-    width: 550%;
-    background-image: conic-gradient(#1f7016, #38e821, #1f7016, #38e821, #1f7016, #38e821, #1f7016, #38e821, #1f7016, #38e821, #1f7016, #38e821, #1f7016, #38e821, #1f7016);
-    animation: spin 5s infinite linear;
+.baseTest:before {
+  content: "";
+  position: absolute;
+  left: -225%;
+  top: -200%;
+  height: 500%;
+  width: 550%;
+  background-image: conic-gradient(#a9940d, #38e821, #a9940d, #38e821, #a9940d, #38e821, #a9940d, #38e821, #a9940d, #38e821, #a9940d, #38e821, #a9940d, #38e821, #a9940d);
+  animation: spin 5s infinite linear;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
   }
-  
-  @keyframes spin {
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-  
+}
+
   input[type="text"] {
     appearance: none;
     -webkit-appearance: none;
@@ -366,6 +373,7 @@
   input[type="text"]::placeholder {
     color: #504e45;
   }
+  
   input[type="number"] {
     appearance: none;
     -webkit-appearance: none;

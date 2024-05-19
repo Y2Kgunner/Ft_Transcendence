@@ -1,4 +1,12 @@
+const matchPoint = 1;
+let intervalId = null;
+let paused = false;
+let pauseModalVisible = false;
+let gameOver = false;
+
+let pauseModalInstance;
 let startModal;
+
 let paddle1Y = 0;
 let paddle2Y = 0;
 let ballX = 5;
@@ -11,7 +19,9 @@ let score1 = 0;
 let score2 = 0;
 let player1Alias = "Player 1";
 let player2Alias = "";
+let initialPaddlePos;
 let tournamentName = "";
+
 let paddle1;
 let paddle2;
 let ball;
@@ -28,48 +38,19 @@ let paddle2MovingUp = false;
 let paddle2MovingDown = false;
 
 
-function startGame() {
-    begin = true;
-    tournamentName = document.getElementById("tournamentName").value;
-    // player2AliasElement.textContent = player2Alias;
-    setInterval(updateGame, 16); // 16ms = 60fps
-    document.addEventListener("keydown", handleKeyDown);
-    document.addEventListener("keyup", handleKeyUp);
-};
 
-function checkInput() {
-    var button = document.getElementById("continueBtn");
-    tournamentName = document.getElementById("tournamentName").value;
-    if (tournamentName.trim() === '') {
-        button.disabled = true;
-    } else if (tournamentName.length > 10 || tournamentName.length < 3) {
-        tournamentNameElement = document.getElementById("tournamentName");
-        button.disabled = false;
-        // createAlert(notiAlert, 'Alias is between 3 and 10 characters!', 'alert-danger');
-    } else if (!isPrintableASCII(tournamentName)) {
-        tournamentNameElement = document.getElementById("tournamentName");
-        button.disabled = false;
-        // createAlert(notiAlert, 'Alias cannot contain spaces!', 'alert-danger');
-    } else {
-        tournamentNameElement = document.getElementById("tournamentName");
-        button.disabled = false;
-    }
-    // return ;
-    // else if (player1Alias === tournamentName) {
-    //     tournamentNameElement = document.getElementById("player_2_alias");
-    //     button.disabled = false;
-    //     // createAlert(notiAlert, 'Alias cannot be the same as the user!', 'alert-danger');
-    //   }
-};
+
 
 function setupTournamentPage() {
     // Get elements
     board = document.getElementById("board");
     paddle1 = document.getElementById("paddle_1");
     paddle2 = document.getElementById("paddle_2");
+    initialPaddlePos = paddle1.style.top;
     ball = document.getElementById("ball");
     score1Element = document.getElementById("player_1_score");
     score2Element = document.getElementById("player_2_score");
+    pauseModalInstance = new bootstrap.Modal(document.getElementById('pauseGameModal'));
 
     // Set initial paddle positions
     // paddle1.style.top = "50%";
@@ -174,18 +155,20 @@ function generateParticipantFields(num) {
 
     // document.getElementById('newTournamentContainer').style.display = 'none';
     // document.getElementById('participantDetailsForm').style.display = 'block';
-}
+};
 
 function handleKeyDown(event) {
-    if (event.key === "w" || event.key === "W") {
-        paddle1MovingUp = true;
-    } else if (event.key === "s" || event.key === "S") {
-        paddle1MovingDown = true;
-    } else if (event.key === "ArrowUp") {
-        paddle2MovingUp = true;
-    } else if (event.key === "ArrowDown") {
-        paddle2MovingDown = true;
-    }
+  if (event.key === "w" || event.key === "W") {
+    paddle1MovingUp = true;
+  } else if (event.key === "s" || event.key === "S") {
+    paddle1MovingDown = true;
+  } else if (event.key === "ArrowUp") {
+    paddle2MovingUp = true;
+  } else if (event.key === "ArrowDown") {
+    paddle2MovingDown = true;
+  } else if (event.key === " ") {
+    togglePause();
+  }
 };
 
 function handleKeyUp(event) {
@@ -200,75 +183,142 @@ function handleKeyUp(event) {
     }
 };
 
+function togglePause() {
+  if (!pauseModalVisible && !gameOver) {
+    paused = true;
+    pauseGame();
+  } else {
+    continueGame();
+  }
+};
+
 function updateGame() {
-    if (begin) {
-        // Update paddle positions
-        if (paddle1MovingUp && paddle1.offsetTop > 0) {
-            paddle1.style.top = `${paddle1.offsetTop - 6}px`;
-        } else if (paddle1MovingDown && paddle1.offsetTop + paddle1.offsetHeight < board.offsetHeight) {
-            paddle1.style.top = `${paddle1.offsetTop + 6}px`;
-        }
-
-        if (paddle2MovingUp && paddle2.offsetTop > 0) {
-            paddle2.style.top = `${paddle2.offsetTop - 6}px`;
-        } else if (paddle2MovingDown && paddle2.offsetTop + paddle2.offsetHeight < board.offsetHeight) {
-            paddle2.style.top = `${paddle2.offsetTop + 6}px`;
-        }
-
-        // Update ball position
-        ballX += ballSpeedX;
-        ballY += ballSpeedY;
-        ball.style.left = `${ballX}px`;
-        ball.style.top = `${ballY}px`;
-
-        // Collision detection
-        if (ballX <= 0) {
-            // Ball hit left wall, score point for player 2
-            score2++;
-            score2Element.textContent = score2;
-            resetBall();
-        } else if (ballX + ball.offsetWidth >= board.offsetWidth) {
-            // Ball hit right wall, score point for player 1
-            score1++;
-            score1Element.textContent = score1;
-            resetBall();
-        }
-
-        // Ball hit top or bottom wall, reverse Y direction
-        if (ballY <= 0 || ballY + ball.offsetHeight >= board.offsetHeight)
-            ballSpeedY = -ballSpeedY;
-
-        // Paddle collision detection
-        const ballRect = ball.getBoundingClientRect();
-        const paddle1Rect = paddle1.getBoundingClientRect();
-        const paddle2Rect = paddle2.getBoundingClientRect();
-
-        let paddleCollision =
-            (ballRect.right >= paddle1Rect.left &&
-                ballRect.left <= paddle1Rect.right &&
-                ballRect.top <= paddle1Rect.bottom &&
-                ballRect.bottom >= paddle1Rect.top &&
-                ballSpeedX < 0) ||
-            (ballRect.right >= paddle2Rect.left &&
-                ballRect.left <= paddle2Rect.right &&
-                ballRect.top <= paddle2Rect.bottom &&
-                ballRect.bottom >= paddle2Rect.top &&
-                ballSpeedX > 0);
-
-        if (paddleCollision)
-            ballSpeedX = -ballSpeedX;
+  if (begin && !pauseModalVisible) {
+    // Update paddle positions
+    if (paddle1MovingUp && paddle1.offsetTop > 0) {
+      paddle1.style.top = `${paddle1.offsetTop - 10}px`;
+    } else if (paddle1MovingDown && paddle1.offsetTop + paddle1.offsetHeight < board.offsetHeight) {
+      paddle1.style.top = `${paddle1.offsetTop + 10}px`;
     }
+
+    if (paddle2MovingUp && paddle2.offsetTop > 0) {
+      paddle2.style.top = `${paddle2.offsetTop - 10}px`;
+    } else if (paddle2MovingDown && paddle2.offsetTop + paddle2.offsetHeight < board.offsetHeight) {
+      paddle2.style.top = `${paddle2.offsetTop + 10}px`;
+    }
+
+    ballX += ballSpeedX;
+    ballY += ballSpeedY;
+    ball.style.left = `${ballX}px`;
+    ball.style.top = `${ballY}px`;
+
+    if (ballX <= 0) {
+      score2++;
+      score2Element.textContent = score2;
+      resetBall();
+    } else if (ballX + ball.offsetWidth >= board.offsetWidth) {
+      score1++;
+      score1Element.textContent = score1;
+      resetBall();
+    }
+    if (score1 === matchPoint || score2 === matchPoint) {
+      haltGame(score1 === matchPoint ? player1Alias : player2Alias);
+    }
+
+    if (ballY <= 0 || ballY + ball.offsetHeight >= board.offsetHeight)
+      ballSpeedY = -ballSpeedY;
+
+    const ballRect = ball.getBoundingClientRect();
+    const paddle1Rect = paddle1.getBoundingClientRect();
+    const paddle2Rect = paddle2.getBoundingClientRect();
+
+    let paddleCollision =
+      (ballRect.right >= paddle1Rect.left &&
+        ballRect.left <= paddle1Rect.right &&
+        ballRect.top <= paddle1Rect.bottom &&
+        ballRect.bottom >= paddle1Rect.top &&
+        ballSpeedX < 0) ||
+      (ballRect.right >= paddle2Rect.left &&
+        ballRect.left <= paddle2Rect.right &&
+        ballRect.top <= paddle2Rect.bottom &&
+        ballRect.bottom >= paddle2Rect.top &&
+        ballSpeedX > 0);
+
+    if (paddleCollision) {
+      const ballCenterY = ballY + ball.offsetHeight / 2;
+      const paddle1CenterY = paddle1.offsetTop + paddle1.offsetHeight / 2;
+      const paddle2CenterY = paddle2.offsetTop + paddle2.offsetHeight / 2;
+
+      let paddleCenterY;
+      if (ballSpeedX < 0) {
+        paddleCenterY = paddle1CenterY;
+      } else {
+        paddleCenterY = paddle2CenterY;
+      }
+
+      const collisionOffset = ballCenterY - paddleCenterY;
+      const maxOffset = paddle1.offsetHeight / 2;
+
+      const angle = collisionOffset / maxOffset;
+      ballSpeedY = initialBallSpeedY * angle;
+      ballSpeedX = -ballSpeedX;
+    }
+  }
+}
+
+function haltGame(winner) {
+  paused = false;
+  pauseModalVisible = false;
+  gameOver = true;
+  let winnerMsg = document.getElementById('GameWinner');
+  winnerMsg.textContent = winner.toString() + " wins!";
+  score1 = 0;
+  score2 = 0;
+  resetBall();
+  begin = false;
+  score1Element.textContent = score1;
+  score2Element.textContent = score2;
+  paddle1.style.top = initialPaddlePos;
+  paddle2.style.top = initialPaddlePos;
+  var restartModal = new bootstrap.Modal(document.getElementById('restartGame'));
+  restartModal.show();
+  clearInterval(intervalId);
+  intervalId = null;
 }
 
 function resetBall() {
-    ballX = board.offsetWidth / 2;
-    ballY = board.offsetHeight / 2;
-    ball.style.left = `${ballX}px`;
-    ball.style.top = `${ballY}px`;
-    ballSpeedX = initialBallSpeedX;
-    ballSpeedY = initialBallSpeedY;
+  ballX = board.offsetWidth / 2;
+  ballY = board.offsetHeight / 2;
+  ball.style.left = `${ballX}px`;
+  ball.style.top = `${ballY}px`;
+
+  const randomDirection = Math.random() < 0.5 ? -1 : 1;
+  ballSpeedX = initialBallSpeedX * randomDirection;
+  ballSpeedY = initialBallSpeedY * (Math.random() * 2 - 1);
 }
 
+// function startGame() {
+//   begin = true;
+//   tournamentName = document.getElementById("tournamentName").value;
+//   // player2AliasElement.textContent = player2Alias;
+//   setInterval(updateGame, 16); // 16ms = 60fps
+//   document.addEventListener("keydown", handleKeyDown);
+//   document.addEventListener("keyup", handleKeyUp);
+// };
+
+function startGame() {
+  begin = true;
+  gameOver = false;
+  tournamentName = document.getElementById("tournamentName").value;
+  // player2Alias = document.getElementById("player2alias").value;
+  // player2AliasElement.textContent = player2Alias;
+  if (intervalId) {
+    clearInterval(intervalId);
+  }
+  intervalId = setInterval(updateGame, 16);
+  document.addEventListener("keydown", handleKeyDown);
+  document.addEventListener("keyup", handleKeyUp);
+}
 
 function isPrintableASCII(str) {
     var printableASCIIRegex = /^[!-~]+$/;
@@ -279,7 +329,49 @@ function hideOverflow() {
     const content = document.getElementsById('board');
     content.style.opacity = 1;
 }
-export { setupTournamentPage };
+
+function checkInput() {
+  var button = document.getElementById("continueBtn");
+  tournamentName = document.getElementById("tournamentName").value;
+  if (tournamentName.trim() === '') {
+      button.disabled = true;
+  } else if (tournamentName.length > 10 || tournamentName.length < 3) {
+      tournamentNameElement = document.getElementById("tournamentName");
+      button.disabled = false;
+      // createAlert(notiAlert, 'Alias is between 3 and 10 characters!', 'alert-danger');
+  } else if (!isPrintableASCII(tournamentName)) {
+      tournamentNameElement = document.getElementById("tournamentName");
+      button.disabled = false;
+      // createAlert(notiAlert, 'Alias cannot contain spaces!', 'alert-danger');
+  } else {
+      tournamentNameElement = document.getElementById("tournamentName");
+      button.disabled = false;
+  }
+  // return ;
+  // else if (player1Alias === tournamentName) {
+  //     tournamentNameElement = document.getElementById("player_2_alias");
+  //     button.disabled = false;
+  //     // createAlert(notiAlert, 'Alias cannot be the same as the user!', 'alert-danger');
+  //   }
+};
+
+
+function pauseGame() {
+  clearInterval(intervalId);
+  intervalId = null;
+  pauseModalInstance.show();
+  pauseModalVisible = true;
+}
+
+function continueGame() {
+  pauseModalInstance.hide();
+  pauseModalInstance._element.addEventListener('hidden.bs.modal', function () {
+    pauseModalVisible = false;
+    if (!intervalId)
+      intervalId = setInterval(updateGame, 16);
+  }, { once: true });
+}
+
 // Get the element with the class baseTest
 // let baseTestElement = document.querySelector('.baseTest');
 
@@ -371,9 +463,9 @@ function createTournament() {
     });
 }
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve,ms));
-}
+// function sleep(ms) {
+//   return new Promise(resolve => setTimeout(resolve,ms));
+// }
 function startTournament(id) {
   const tournamentData = {
     tournament_id : id
@@ -421,7 +513,7 @@ function getMatchData() {
     })
     .then(data => {
        //console.log('Tournament    :', data);
-       alert('Tournament details pulled successfully!');
+      //  alert('Tournament details pulled successfully!');
         setTournamentId(data);
         startTournament(data.id);
         // arrangeNextRound(data.id);
@@ -433,10 +525,12 @@ function getMatchData() {
 function startGameLoop() {
 
     var match = getNextMatch();
-    console.log(match);
     var p1 = match.participant_one;
     var p2 = match.participant_two;
     var remaining = match.remaining_matches;
+    console.log(remaining);
+    console.log(p1);
+    console.log(p2);
     startModal.hide();
     startGame();
 }
@@ -458,14 +552,14 @@ function getNextMatch() {
     })
     .then(data => {
        //console.log('Tournament    :', data);
-        alert('next match found!');
+        // alert('next match found!');
         // setTournamentId(data.id);
         // create breacket page here or direct the to the game page
         return data;
     })
     .catch(error => {
         console.error('Failed to setup next match:', error);
-        alert('Failed to setup next match. Please try again.');
+        // alert('Failed to setup next match. Please try again.');
     });
 }
 
@@ -484,3 +578,5 @@ function setTournamentId(data) {
 function getTournamentId() {
     return localStorage.getItem('currentTournamentId');
 }
+
+export { setupTournamentPage };
