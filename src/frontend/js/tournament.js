@@ -119,7 +119,7 @@ function setupTournamentPage() {
         startModal.show();
     }
     continueBtn.addEventListener('submit', handleNewTournamentFormSubmit);
-    setupStartTournamentForm();
+    setupcreateTournamentForm();
 };
 
 function generateParticipantFields(num) {
@@ -328,7 +328,7 @@ function getCookie(name) {
     return cookieValue;
 }
 
-function startTournament() {
+function createTournament() {
     const tournamentName = document.getElementById('tournamentName').value;
     const participantInputs = document.querySelectorAll('#participantDetailsFormInner .form-control:not([readonly])');
     const participants = Array.from(participantInputs).map(input => ({ temp_username: input.value }));
@@ -368,6 +368,34 @@ function startTournament() {
     });
 }
 
+
+function startTournament(id) {
+  const tournamentData = {
+    tournament_id : id
+};
+  fetch(`https://127.0.0.1:443/tournament_api/start`, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + getCookie('jwt')
+      }
+  })
+  .then(response => {
+      if (!response.ok) {
+          throw new Error('Network response was not ok');
+      }
+      return response.json();
+  })
+  .then(data => {
+     //console.log('Tournament    :', data);
+     alert('started Tournament!');
+  })
+  .catch(error => {
+      console.error('Failed to start tournanment:', error);
+      alert('failed to start Tournament!');
+  });
+}
+
 function getMatchData() {
     console.log();
     fetch(`https://127.0.0.1:443/tournament_api/detail`, {
@@ -389,7 +417,9 @@ function getMatchData() {
        //console.log('Tournament    :', data);
        alert('Tournament details pulled successfully!');
         setTournamentId(data);
-        startMatchLoop(data.id);
+        startTournament(data.id);
+        // arrangeNextRound(data.id);
+        // startMatchLoop(data.id);
     })
     .catch(error => {
         console.error('Failed to find tournament:', error);
@@ -425,11 +455,11 @@ function startMatchLoop(id) {
     });
 }
 
-function setupStartTournamentForm() {
+function setupcreateTournamentForm() {
     const form = document.getElementById('participantDetailsFormInner');
     form.addEventListener('submit', function(event) {
         event.preventDefault();
-        startTournament();
+        createTournament();
     });
 }
 
