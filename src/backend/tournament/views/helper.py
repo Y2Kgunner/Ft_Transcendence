@@ -14,7 +14,7 @@ def start_tournament(request):
         if not tournament:
             return JsonResponse({"message": "No active tournament found for this user."}, status=404)
 
-        logger.info("Tournament fetched: %s", str(tournament))
+        # logger.info("Tournament fetched: %s", str(tournament))
 
         if tournament.is_started or tournament.is_completed:
             return JsonResponse({"error": "Tournament cannot be started again."}, status=400)
