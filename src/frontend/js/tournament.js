@@ -3,9 +3,13 @@ let intervalId = null;
 let paused = false;
 let pauseModalVisible = false;
 let gameOver = false;
+let winner;
+let participants;
+let creator;
 
 let pauseModalInstance;
 let startModal;
+var restartModal;
 
 let paddle1Y = 0;
 let paddle2Y = 0;
@@ -30,6 +34,7 @@ let score1Element;
 let score2Element;
 let player1AliasElement;
 let player2AliasElement;
+
 let tournamentNameElement;
 let begin = false;
 let paddle1MovingUp = false;
@@ -51,7 +56,7 @@ function setupTournamentPage() {
     score1Element = document.getElementById("player_1_score");
     score2Element = document.getElementById("player_2_score");
     pauseModalInstance = new bootstrap.Modal(document.getElementById('pauseGameModal'));
-
+    restartModal = new bootstrap.Modal(document.getElementById('restartGame'));
     // Set initial paddle positions
     // paddle1.style.top = "50%";
     // paddle2.style.top = "50%";
@@ -266,12 +271,13 @@ function updateGame() {
   }
 }
 
-function haltGame(winner) {
+function haltGame(winning_player) {
+  winner = winning_player;
   paused = false;
   pauseModalVisible = false;
   gameOver = true;
   let winnerMsg = document.getElementById('GameWinner');
-  winnerMsg.textContent = winner.toString() + " wins!";
+  winnerMsg.textContent = winning_player.toString() + " wins!";
   score1 = 0;
   score2 = 0;
   resetBall();
@@ -280,7 +286,6 @@ function haltGame(winner) {
   score2Element.textContent = score2;
   paddle1.style.top = initialPaddlePos;
   paddle2.style.top = initialPaddlePos;
-  var restartModal = new bootstrap.Modal(document.getElementById('restartGame'));
   restartModal.show();
   clearInterval(intervalId);
   intervalId = null;
@@ -451,7 +456,7 @@ function createTournament() {
     })
     .then(data => {
         console.log('Tournament    :', data);
-        alert('Tournament created successfully!');
+        // alert('Tournament created successfully!');
         // setTournamentId(data.id);
         // console.log(data.id);
         getMatchData();
@@ -467,9 +472,6 @@ function createTournament() {
 //   return new Promise(resolve => setTimeout(resolve,ms));
 // }
 function startTournament(id) {
-  const tournamentData = {
-    tournament_id : id
-};
   fetch(`https://127.0.0.1:443/tournament_api/start`, {
       method: 'POST',
       headers: {
@@ -514,6 +516,10 @@ function getMatchData() {
     .then(data => {
        //console.log('Tournament    :', data);
       //  alert('Tournament details pulled successfully!');
+      participants = data.participants;
+      creator = data.creator;
+      console.log(creator);
+      console.log(participants);
         setTournamentId(data);
         startTournament(data.id);
         // arrangeNextRound(data.id);
@@ -522,45 +528,100 @@ function getMatchData() {
         console.error('Failed to find tournament:', error);
     });
 }
-function startGameLoop() {
 
-    var match = getNextMatch();
-    var p1 = match.participant_one;
-    var p2 = match.participant_two;
-    var remaining = match.remaining_matches;
-    console.log(remaining);
-    console.log(p1);
-    console.log(p2);
-    startModal.hide();
-    startGame();
+function waitGameFinish(interval = 100) {
+  return new Promise(resolve => {
+    const check = () => {
+      if(gameOver) {
+        console.log("game over")
+        resolve();
+      } else {
+        setTimeout(check,interval);
+      }
+    };
+    check();
+
+  })
 }
-function getNextMatch() {
-    return fetch(`https://127.0.0.1:443/tournament_api/get-next-match/${getTournamentId()}`, {
+
+async function startGameLoop() {
+  var p1,p2,remaining,match_id;
+  console.log("hi");
+  for(let i = 0; i<3;i++)
+  {
+    try {
+      const data = await getNextMatch();
+      console.log("hi");
+      if (i == 0)
+        startModal.hide();
+      console.log(data);
+      p1 = data.next_match.participant_one;
+      p2 = data.next_match.participant_two;
+      remaining = data.next_match.remaining_matches;
+      match_id =  data.next_match.match_id;
+      console.log(remaining);
+      console.log(p1);
+      console.log(p2);
+      startGame();
+
+      await waitGameFinish();
+      console.log(winner);
+      await updateMatchResult(match_id,winner);
+      restartGameBtn = document.getElementById('restartGameBtn');
+      restartGameBtn.addEventListener('click', async function(event) {
+        event.preventDefault();
+        await handleFormSubmission();
+        restartModal.hide();
+      });
+      } catch (error){
+      console.error('Failed to get next match:', error);
+      }
+  }
+
+    // var p1 = match.participant_one;
+    // var p2 = match.participant_two;
+    // var remaining = match.remaining_matches;
+    // console.log(remaining);
+    // console.log(p1);
+    // console.log(p2);
+    // startModal.hide();
+    // startGame();
+}
+async function handleFormSubmission() {
+  await new Promise(resolve => setTimeout(resolve,100));
+}
+async function updateMatchResult(match_id,winner) {
+  const matchData = {
+    winner_id : winner
+  };
+  const response = await fetch(`https://127.0.0.1:443/tournament_api/update-match-result/${match_id}/`, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + getCookie('jwt')
+      },
+      body: JSON.stringify(matchData)
+  })
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  const data = await response.json();
+  return data;
+}
+
+async function getNextMatch() {
+    const response = await fetch(`https://127.0.0.1:443/tournament_api/get-next-match/${getTournamentId()}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + getCookie('jwt')
         }
-        // },
-        // body: JSON.stringify(id)
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-       //console.log('Tournament    :', data);
-        // alert('next match found!');
-        // setTournamentId(data.id);
-        // create breacket page here or direct the to the game page
-        return data;
-    })
-    .catch(error => {
-        console.error('Failed to setup next match:', error);
-        // alert('Failed to setup next match. Please try again.');
-    });
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const data = await response.json();
+    return data;
 }
 
 function setupcreateTournamentForm() {
