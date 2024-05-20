@@ -1,4 +1,4 @@
-const matchPoint = 1;
+const matchPoint = 11 ;
 let intervalId = null;
 let paused = false;
 let pauseModalVisible = false;
