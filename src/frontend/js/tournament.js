@@ -518,6 +518,7 @@ function getMatchData() {
       //  alert('Tournament details pulled successfully!');
       participants = data.participants;
       creator = data.creator;
+      participants[0].username = creator.username;
       console.log(creator);
       console.log(participants);
         setTournamentId(data);
@@ -545,7 +546,7 @@ function waitGameFinish(interval = 100) {
 }
 
 async function startGameLoop() {
-  var p1,p2,remaining,match_id;
+  var p1,p2,win,remaining,match_id;
   console.log("hi");
   for(let i = 0; i<3;i++)
   {
@@ -555,8 +556,11 @@ async function startGameLoop() {
       if (i == 0)
         startModal.hide();
       console.log(data);
-      p1 = data.next_match.participant_one;
-      p2 = data.next_match.participant_two;
+      p1 = participants.find(element => Object.values(element).includes(data.next_match.participant_one));
+      p2 = participants.find(element => Object.values(element).includes(data.next_match.participant_two));
+
+      player1Alias = p1.username;
+      player2Alias = p2.username;
       remaining = data.next_match.remaining_matches;
       match_id =  data.next_match.match_id;
       console.log(remaining);
@@ -565,14 +569,15 @@ async function startGameLoop() {
       startGame();
 
       await waitGameFinish();
-      console.log(winner);
-      await updateMatchResult(match_id,winner);
+      win = participants.find(element => Object.values(element).includes(winner));
+      console.log(win.id);
+      await updateMatchResult(match_id,win.id);
       restartGameBtn = document.getElementById('restartGameBtn');
-      restartGameBtn.addEventListener('click', async function(event) {
-        event.preventDefault();
-        await handleFormSubmission();
-        restartModal.hide();
-      });
+      // restartGameBtn.addEventListener('click', async function(event) {
+      //   event.preventDefault();
+        await waitSubmission(restartGameBtn);
+        restartModal.toggle();
+      // });
       } catch (error){
       console.error('Failed to get next match:', error);
       }
@@ -587,8 +592,13 @@ async function startGameLoop() {
     // startModal.hide();
     // startGame();
 }
-async function handleFormSubmission() {
-  await new Promise(resolve => setTimeout(resolve,100));
+function waitSubmission(element) {
+  return new Promise(resolve => {
+    element.addEventListener('click', function onClick(event) {
+      element.removeEventListener('click', onClick);
+      resolve(event);
+    });
+  });
 }
 async function updateMatchResult(match_id,winner) {
   const matchData = {
