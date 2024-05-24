@@ -581,8 +581,8 @@ function waitGameFinish(interval = 100) {
 }
 
 async function startGameLoop() {
-  var p1,p2,win,remaining,match_id;
-  for(let i = 0; i<2;i++)
+  var p1,p2,win,remaining = 0,match_id;
+  for(let i = 0; i!= 1;i=remaining)
   {
     try {
       const data = await getNextMatch();
@@ -595,6 +595,7 @@ async function startGameLoop() {
       player1Alias = p1.username;
       player2Alias = p2.username;
       remaining = data.next_match.remaining_matches;
+      // i = remaining;
       match_id =  data.next_match.match_id;
       // console.log(remaining);
       console.log(p1);
