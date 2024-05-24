@@ -4,6 +4,7 @@ let paused = false;
 let pauseModalVisible = false;
 let gameOver = false;
 var startModal;
+let pauseModalInstance;
 
 let paddle1Y = 0;
 let paddle2Y = 0;
@@ -49,12 +50,15 @@ function setupGamePage() {
   score2Element.textContent = score2;
 
   console.log("show");
+  pauseModalInstance = new bootstrap.Modal(document.getElementById('pauseGameModal'));
+
   startModal = new bootstrap.Modal(document.getElementById('startGameModal'));
   startModal.show();
   
   player2Alias = document.getElementById("player2alias");
   player2alias.addEventListener('input', checkInput);
   startGameBtn.addEventListener('click', startGame);
+  restartGameBtn.addEventListener('click', startGame);
 };
 
 function handleKeyDown(event) {
@@ -240,7 +244,6 @@ function checkInput() {
   }
 }
 
-let pauseModalInstance = new bootstrap.Modal(document.getElementById('pauseGameModal'));
 
 function pauseGame() {
   clearInterval(intervalId);
