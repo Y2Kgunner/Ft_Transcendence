@@ -47,9 +47,14 @@ function setupGamePage() {
 
   score1Element.textContent = score1;
   score2Element.textContent = score2;
+
   console.log("show");
   startModal = new bootstrap.Modal(document.getElementById('startGameModal'));
   startModal.show();
+  
+  player2Alias = document.getElementById("player2alias");
+  player2alias.addEventListener('input', checkInput);
+  startGameBtn.addEventListener('click', startGame);
 };
 
 function handleKeyDown(event) {
