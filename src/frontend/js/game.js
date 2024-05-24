@@ -49,7 +49,6 @@ function setupGamePage() {
   score1Element.textContent = score1;
   score2Element.textContent = score2;
 
-  console.log("show");
   pauseModalInstance = new bootstrap.Modal(document.getElementById('pauseGameModal'));
 
   startModal = new bootstrap.Modal(document.getElementById('startGameModal'));

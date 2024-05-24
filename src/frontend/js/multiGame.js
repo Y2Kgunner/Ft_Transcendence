@@ -1,229 +1,244 @@
-let m_gameState = 'start';
-let m_paddle_1, m_paddle_2, m_paddle_3, m_board, m_initial_ball, m_ball, m_score_1, m_score_2, m_score_3, m_message;
-let m_paddle_1_coord, m_paddle_2_coord, m_paddle_3_coord, m_initial_ball_coord, m_ball_coord, m_board_coord, m_paddle_common;
-let m_game_mode;
+let startModal;
 
-let m_direction;
-let m_initial_velocity = 5;
-// let m_velocity_increase = 0.5;
-let m_paddle_translate = 120;
-let m_score = '-5';
-let m_alias1, m_alias2, m_alias3, m_winner;
+let paddle1Y = 0;
+let paddle2Y = 0;
+let paddle3Y = 0;
+let ballX = 5;
+let ballY = 5;
+let ballSpeedX = 5;
+let ballSpeedY = 5;
+let initialBallSpeedX = 5;
+let initialBallSpeedY = 5;
+let score1 = 0;
+let score2 = 0;
+let score3 = 0;
+let player1Alias = "Player 1";
+let player2Alias = "";
+let player3Alias = "";
 
-async function m_goToGame(gamemode) {
-	m_alias1 = document.getElementById('multiplayer1').value;
-	m_alias2 = document.getElementById('multiplayer2').value;
-	m_alias3 = document.getElementById('multiplayer3').value;
-	const notiAlert = document.getElementById('select-alert-container');
-	if (m_alias1.trim() === '' || m_alias2.trim() === '' || m_alias3.trim() === '') {
-		createAlert(notiAlert, 'Alias cannot be empty!', 'alert-danger');
-		return;
-	}
-	if (m_alias2.length > 10 || m_alias2.length < 3 || m_alias3.length > 10 || m_alias3.length < 3 || m_alias1.length > 10 || m_alias1.length < 3) {
-		createAlert(notiAlert, 'Alias is between 3 and 10 characters!', 'alert-danger');
-		return;
-	}
-	if (!m_isPrintableASCII(m_alias2) || !m_isPrintableASCII(m_alias3) || !m_isPrintableASCII(m_alias3)) {
-		createAlert(notiAlert, 'Alias cannot contain spaces!', 'alert-danger');
-		return;
-	}
-	if (m_alias1 === m_alias2 || m_alias1 === m_alias3 || m_alias2 === m_alias3) {
-        createAlert(notiAlert, 'Aliases should be unique!', 'alert-danger');
-        return;
-    }
-	await showSection('gameMulti');
+let paddle1;
+let paddle2;
+let paddle3;
+let ball;
+let board;
+let score1Element;
+let score2Element;
+let score3Element;
+let player1AliasElement;
+let player2AliasElement;
+let player3AliasElement;
+let begin = false;
+let paddle1MovingUp = false;
+let paddle1MovingDown = false;
+let paddle2MovingUp = false;
+let paddle2MovingDown = false;
+let paddle3MovingUp = false;
+let paddle3MovingDown = false;
 
-	document.getElementById('player_3_alias').innerHTML = m_alias3;
-	document.getElementById('player_2_alias').innerHTML = m_alias2;
-	document.getElementById('player_1_alias').innerHTML = m_alias1;
-}
+function setupMultiGamePage() {
+  // Get elements
+  board = document.getElementById("board");
+  paddle1 = document.getElementById("paddle_1");
+  paddle2 = document.getElementById("paddle_2");
+  paddle3 = document.getElementById("paddle_3");
+  ball = document.getElementById("ball");
+  score1Element = document.getElementById("player_1_score");
+  score2Element = document.getElementById("player_2_score");
+  score3Element = document.getElementById("player_3_score");
 
-function m_isPrintableASCII(str) {
-    var printableASCIIRegex = /^[!-~]+$/;
-    return printableASCIIRegex.test(str);
-}
+  // Set initial paddle positions
+  paddle1.style.top = "33%";
+  paddle2.style.top = "33%";
+  paddle3.style.top = "33%";
 
-function m_sleep(ms) {
-	return new Promise(resolve => setTimeout(resolve, ms));
-}
+  // Set initial ball position
+  ballX = board.offsetWidth / 2 - ball.offsetWidth / 2;
+  ballY = board.offsetHeight / 2 - ball.offsetHeight / 2;
+  ball.style.left = `${ballX}px`;
+  ball.style.top = `${ballY}px`;
 
-function m_getRandomInt(min, max) {
-	return Math.random() * (max - min) + min;
+  // Update scores and aliases
+  score1Element.textContent = score1;
+  score2Element.textContent = score2;
+  score3Element.textContent = score3;
+
+  startModal = new bootstrap.Modal(document.getElementById('startGameModal'));
+  startModal.show();
+
+  player2Alias = document.getElementById("player2alias");
+  player2alias.addEventListener('input', checkInput);
+  player3Alias = document.getElementById("player3alias");
+  player3alias.addEventListener('input', checkInput);
+  startGameBtn.addEventListener('click', startGame);
+
+};
+
+function handleKeyDown(event) {
+  if (event.key === "w" || event.key === "W") {
+    paddle1MovingUp = true;
+  } else if (event.key === "s" || event.key === "S") {
+    paddle1MovingDown = true;
+  } else if (event.key === "ArrowUp") {
+    paddle2MovingUp = true;
+  } else if (event.key === "ArrowDown") {
+    paddle2MovingDown = true;
+  } else if (event.key === "ArrowLeft") {
+    paddle3MovingUp = true;
+  } else if (event.key === "ArrowRight") {
+    paddle3MovingDown = true;
   }
-
-function m_startgame(gamemode) {
-	m_game_mode = gamemode;
-	document.getElementById('startgame').disabled = true;
-	document.getElementById('grow').style.display = 'none';
-    m_paddle_1 = document.getElementById('paddle_1');
-    m_paddle_2 = document.getElementById('paddle_2');
-    m_paddle_3 = document.getElementById('paddle_3');
-    m_initial_ball = document.getElementById('ball');
-    m_ball = document.getElementById('ball');
-    m_score_1 = document.getElementById('player_1_score');
-    m_score_2 = document.getElementById('player_2_score');
-    m_score_3 = document.getElementById('player_3_score');
-    m_message = document.getElementById('game_message');
-    m_paddle_common = document.querySelector('.paddle').getBoundingClientRect();
-
-    document.addEventListener('keydown', m_movePaddle);
-	m_startballmovement();
 }
 
-function m_startballmovement() {
-	m_gameState = 'play';
-	requestAnimationFrame(() => {
-		m_ball.style = m_initial_ball.style;
-		var x = 0;
-		var y = 0;
-		velocity = m_initial_velocity;
-		while (Math.abs(x) <= 0.5 || Math.abs(x) >= 0.8)
-		{
-			m_direction = m_getRandomInt(0, 2 * Math.PI);
-			x =  Math.cos(m_direction);
-			y = Math.sin(m_direction);
-		}
-		m_initializeCoordinates();
-		m_moveBall(x, y);
-	});
+function handleKeyUp(event) {
+  if (event.key === "w" || event.key === "W") {
+    paddle1MovingUp = false;
+  } else if (event.key === "s" || event.key === "S") {
+    paddle1MovingDown = false;
+  } else if (event.key === "ArrowUp") {
+    paddle2MovingUp = false;
+  } else if (event.key === "ArrowDown") {
+    paddle2MovingDown = false;
+  } else if (event.key === "ArrowLeft") {
+    paddle3MovingUp = false;
+  } else if (event.key === "ArrowRight") {
+    paddle3MovingDown = false;
+  }
 }
 
-function m_initializeCoordinates() {
-    m_paddle_1_coord = m_paddle_1.getBoundingClientRect();
-    m_paddle_2_coord = m_paddle_2.getBoundingClientRect();
-    m_paddle_3_coord = m_paddle_3.getBoundingClientRect();
-    m_initial_ball_coord = m_ball.getBoundingClientRect();
-    m_ball_coord = m_initial_ball_coord;
-    m_board_coord = document.getElementById('board').getBoundingClientRect();
+function updateGame() {
+  if (begin) {
+    // Update paddle positions
+    if (paddle1MovingUp && paddle1.offsetTop > 0) {
+      paddle1.style.top = `${paddle1.offsetTop - 6}px`;
+    } else if (paddle1MovingDown && paddle1.offsetTop + paddle1.offsetHeight < board.offsetHeight) {
+      paddle1.style.top = `${paddle1.offsetTop + 6}px`;
+    }
+
+    if (paddle2MovingUp && paddle2.offsetTop > 0) {
+      paddle2.style.top = `${paddle2.offsetTop - 6}px`;
+    } else if (paddle2MovingDown && paddle2.offsetTop + paddle2.offsetHeight < board.offsetHeight) {
+      paddle2.style.top = `${paddle2.offsetTop + 6}px`;
+    }
+
+    if (paddle3MovingUp && paddle3.offsetTop > 0) {
+      paddle3.style.top = `${paddle3.offsetTop - 6}px`;
+    } else if (paddle3MovingDown && paddle3.offsetTop + paddle3.offsetHeight < board.offsetHeight) {
+      paddle3.style.top = `${paddle3.offsetTop + 6}px`;
+    }
+
+    // Update ball position
+    ballX += ballSpeedX;
+    ballY += ballSpeedY;
+    ball.style.left = `${ballX}px`;
+    ball.style.top = `${ballY}px`;
+
+    // Collision detection
+    if (ballX <= 0) {
+      // Ball hit left wall, score point for player 2
+      score2++;
+      score2Element.textContent = score2;
+      resetBall();
+    } else if (ballX + ball.offsetWidth >= board.offsetWidth) {
+      // Ball hit right wall, score point for player 1
+      score1++;
+      score1Element.textContent = score1;
+      resetBall();
+    } else if (ballX + ball.offsetWidth >= board.offsetWidth - 50) {
+      // Ball hit right wall, score point for player 3
+      score3++;
+      score3Element.textContent = score3;
+      resetBall();
+    }
+
+    // Ball hit top or bottom wall, reverse Y direction
+    if (ballY <= 0 || ballY + ball.offsetHeight >= board.offsetHeight)
+      ballSpeedY = -ballSpeedY;
+
+    // Paddle collision detection
+    const ballRect = ball.getBoundingClientRect();
+    const paddle1Rect = paddle1.getBoundingClientRect();
+    const paddle2Rect = paddle2.getBoundingClientRect();
+    const paddle3Rect = paddle3.getBoundingClientRect();
+
+    let paddleCollision =
+      (ballRect.right >= paddle1Rect.left &&
+        ballRect.left <= paddle1Rect.right &&
+        ballRect.top <= paddle1Rect.bottom &&
+        ballRect.bottom >= paddle1Rect.top &&
+        ballSpeedX < 0) ||
+      (ballRect.right >= paddle2Rect.left &&
+        ballRect.left <= paddle2Rect.right &&
+        ballRect.top <= paddle2Rect.bottom &&
+        ballRect.bottom >= paddle2Rect.top &&
+        ballSpeedX > 0) ||
+      (ballRect.right >= paddle3Rect.left &&
+        ballRect.left <= paddle3Rect.right &&
+        ballRect.top <= paddle3Rect.bottom &&
+        ballRect.bottom >= paddle3Rect.top &&
+        ballSpeedX > 0);
+
+    if (paddleCollision)
+      ballSpeedX = -ballSpeedX;
+  }
 }
 
-function m_calculateBallMove(x, y) {
-	const translateX = x * velocity;
-	const translateY = y * velocity;
-
-    const existingTransform = m_ball.style.transform;
-
-    const existingTranslate = existingTransform.match(/translate\((.*?)\)/);
-    const existingTranslateX = existingTranslate ? parseFloat(existingTranslate[1].split(',')[0]) : 0;
-    const existingTranslateY = existingTranslate ? parseFloat(existingTranslate[1].split(',')[1]) : 0;
-
-    const newTranslateX = existingTranslateX + translateX;
-    const newTranslateY = existingTranslateY + translateY;
-
-    m_ball.style.transform = `translate(${newTranslateX}px, ${newTranslateY}px)`;
-
-	m_ball_coord = m_ball.getBoundingClientRect();
-	requestAnimationFrame(() => {
-		m_moveBall(x, y);
-	});
+function resetBall() {
+  ballX = board.offsetWidth / 2;
+  ballY = board.offsetHeight / 2;
+  ball.style.left = `${ballX}px`;
+  ball.style.top= `${ballY}px`;
+  ballSpeedX = initialBallSpeedX;
+  ballSpeedY = initialBallSpeedY;
 }
 
-function m_moveBall(x, y) {
-	if (m_ball_coord.top <= m_board_coord.top)
-		y *= -1;
-	if (m_isCollision(m_paddle_1_coord, m_ball_coord)) {
-		x = 1;
-	} else if (m_isCollision(m_paddle_2_coord, m_ball_coord)) {
-		x = -1;
-	} else if (m_isCollision(m_paddle_3_coord, m_ball_coord)) {
-		y*= -1;
-	}
-	if (m_ball_coord.left <= m_board_coord.left || m_ball_coord.right >= m_board_coord.right || m_ball_coord.bottom >= m_board_coord.bottom) { //went outside
-		if (m_ball_coord.left <= m_board_coord.left) {
-			m_score_1.innerHTML = +m_score_1.innerHTML - 1;
-		}
-		else if (m_ball_coord.right >= m_board_coord.right) {
-			m_score_2.innerHTML = +m_score_2.innerHTML - 1;
-		}
-		else if (m_ball_coord.bottom >= m_board_coord.bottom) {
-			m_score_3.innerHTML = +m_score_3.innerHTML - 1;
-		}
-		m_ball_coord = m_initial_ball_coord;
-		m_ball.style.display = 'none';
-		if (m_score_2.innerHTML === m_score || m_score_1.innerHTML === m_score || m_score_3.innerHTML === m_score)
-		{
-			document.removeEventListener('keydown', m_movePaddle);
-			if ((m_score_2.innerHTML === '-5' || m_score_3.innerHTML === '-5') && m_score_1.innerHTML > m_score_2.innerHTML 
-				&& m_score_1.innerHTML > m_score_3.innerHTML)
-			{
-				text = 'Game Over!<br>' + m_alias1 + ' Wins';
-				m_message.innerHTML = text;
-			}
-			else if ((m_score_1.innerHTML === '-5' || m_score_3.innerHTML === '-5') && m_score_2.innerHTML > m_score_1.innerHTML 
-					&& m_score_2.innerHTML > m_score_3.innerHTML) {
-				text = 'Game Over!<br>' + m_alias2 + ' Wins';
-				m_message.innerHTML = text;
-			}
-			else {
-				text = 'Game Over!<br>' + m_alias3 + ' Wins';
-				m_message.innerHTML = text;
-			}
-			document.getElementById('restart').classList.remove('d-none');
-			m_gameState = 'start';
-		} else {
-			m_sleep(2000).then(() => {
-				m_startballmovement();
-			});
-		}
-		return;
-	}
-
-	m_calculateBallMove(x, y);
+function startGame() {
+  begin = true;
+  player2Alias = document.getElementById("player2alias").value;
+  player3Alias = document.getElementById("player3alias").value;
+  player2AliasElement = document.getElementById("player_2_alias");
+  player3AliasElement = document.getElementById("player_3_alias");
+  player2AliasElement.textContent = player2Alias;
+  player3AliasElement.textContent = player3Alias;
+  setInterval(updateGame, 16); // 16ms = 60fps
+  document.addEventListener("keydown", handleKeyDown);
+  document.addEventListener("keyup", handleKeyUp);
 }
 
-function m_isCollision (paddle, thisball)
-{
-	return (
-		paddle.left <= thisball.right &&
-		paddle.right >= thisball.left &&
-		paddle.top <= thisball.bottom &&
-		paddle.bottom >= thisball.top
-	)
+function isPrintableASCII(str) {
+  var printableASCIIRegex = /^[!-~]+$/;
+  return printableASCIIRegex.test(str);
 }
 
-function m_movePaddle(e)
-{
-	if (m_gameState === 'play') {
-	requestAnimationFrame(() => {
-		if (e.key == 'q') {
-			const m_newTop1 = Math.max(0, m_paddle_1.offsetTop - m_paddle_translate);
-			m_paddle_1.style.top = `${m_newTop1}px`;
-			m_paddle_1_coord = m_paddle_1.getBoundingClientRect();
-		} 
-		else if (e.key == 'a') {
-			const m_newTop1 = Math.min(m_board_coord.height - m_paddle_1_coord.height - 2, m_paddle_1.offsetTop + m_paddle_translate);
-			m_paddle_1.style.top = `${m_newTop1}px`;
-			m_paddle_1_coord = m_paddle_1.getBoundingClientRect();
-		} 
-		else if (e.key == 'o') {
-			const m_newTop2 = Math.max(0, m_paddle_2.offsetTop - m_paddle_translate);
-			m_paddle_2.style.top = `${m_newTop2}px`;
-			m_paddle_2_coord = m_paddle_2.getBoundingClientRect();
-		} 
-		else if (e.key == 'l') {
-			const m_newTop2 = Math.min(m_board_coord.height - m_paddle_2_coord.height - 2, m_paddle_2.offsetTop + m_paddle_translate);
-			m_paddle_2.style.top = `${m_newTop2}px`;
-			m_paddle_2_coord = m_paddle_2.getBoundingClientRect();
-		} 
-		else if (e.key == 'v') {
-			const m_newLeft = Math.max(0, m_paddle_3.offsetLeft - m_paddle_translate);
-			m_paddle_3.style.left = `${m_newLeft}px`;
-			m_paddle_3_coord = m_paddle_3.getBoundingClientRect();
-		} 
-		else if (e.key == 'b') {
-			const m_newLeft = Math.min(m_board_coord.width - m_paddle_3_coord.width - 2, m_paddle_3.offsetLeft + m_paddle_translate);
-			m_paddle_3.style.left = `${m_newLeft}px`;
-			m_paddle_3_coord = m_paddle_3.getBoundingClientRect();
-		}
-	});
-	}
+function hideOverflow() {
+  const content = document.getElementsById('board');
+  content.style.opacity = 1;
 }
 
-// function m_getDate() {
-// 	const date = new Date();
-// 	const day = date.m_getDate();
-// 	const month = date.getMonth() + 1;
-// 	const year = date.getFullYear();
-// 	const fullDate = `${year}-${month}-${day}`;
-// 	return(fullDate);
-// }
+function checkInput() {
+  var button = document.getElementById("startGameBtn");
+  player2Alias = document.getElementById("player2alias").value;
+  player3Alias = document.getElementById("player3alias").value;
+  player1Alias = "poopy";
+  if (player2Alias.trim() === '') {
+    button.disabled = true;
+  } else if (player2Alias.length > 10 || player2Alias.length < 3) {
+    player2AliasElement = document.getElementById("player_2_alias");
+    button.disabled = false;
+    // createAlert(notiAlert, 'Alias is between 3 and 10 characters!', 'alert-danger');
+  } else if (!isPrintableASCII(player2Alias)) {
+    player2AliasElement = document.getElementById("player_2_alias");
+    button.disabled = false;
+    // createAlert(notiAlert, 'Alias cannot contain spaces!', 'alert-danger');
+  } else if (player1Alias === player2Alias || player1Alias === player3Alias || player2Alias === player3Alias) {
+    player2AliasElement = document.getElementById("player_2_alias");
+    player3AliasElement = document.getElementById("player_3_alias");
+    button.disabled = false;
+    // createAlert(notiAlert, 'Alias cannot be the same as another player!', 'alert-danger');
+  } else {
+    player2AliasElement = document.getElementById("player_2_alias");
+    player3AliasElement = document.getElementById("player_3_alias");
+    button.disabled = false;
+  }
+}
+
+export { setupMultiGamePage };
