@@ -1,7 +1,7 @@
 import { setupAuthPage, logoutUser , isAuthenticated} from './auth.js';
 import { fetchUserProfile , setupAnonymizeButton , setupDeleteProfileButton, setupCloseButton, setUpVerifyDeleteOtpButton, setupUploadProfilePictureButton} from './profile.js';
 import { setupTournamentPage } from './tournament.js';
-
+import { setupGamePage } from './game.js';
 class Router {
     constructor(routes) {
         this.routes = routes;
@@ -81,8 +81,8 @@ const routes = {
     '/login': { path: 'pages/login.html', method: setupAuthPage },
     '/profile': { path: 'pages/profile.html', method: setupProfilePage },
     '/about': { path: 'pages/about.html', method: null },
-    '/pong': { path: 'pages/pong.html', method: null },
-    '/game': { path: 'pages/game.html', method: null },
+    // '/pong': { path: 'pages/pong.html', method: null },
+    '/game': { path: 'pages/game.html', method: setupGamePage },
     '/multiplayer': { path: 'pages/multiGame.html', method: null },
     '/tournament': { path: 'pages/tournament.html', method: setupTournamentPage },
     '/logout': { path: '', method: null }

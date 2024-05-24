@@ -1,0 +1,42 @@
+.pong-container {
+    position: relative;
+    width: 1536px;
+    height: 900px;
+    background: #000000;
+}
+
+.players-button {
+    position: absolute;
+    width: 385px;
+    height: 60.69px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-family: 'Pixelated', 'Press Start 2P', sans-serif;
+    font-size: 36px;
+    line-height: 41px;
+    text-align: center;
+    color: #000000;
+}
+
+#two-players {
+    left: 575px;
+    top: 306px;
+    background: #89F4FB;
+}
+
+#two-players span {
+    box-shadow: 1.6px 1.6px 10px #52FF00;
+}
+
+#three-players {
+    left: 575px;
+    top: 474px;
+    background: #A1FF8A;
+}
+
+#three-players span {
+    box-shadow: 1.6px 1.6px 10px #52FF00;
+}
