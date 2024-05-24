@@ -1,15 +1,19 @@
+import { appRouter } from './router.js';
+
 const matchPoint = 1;
 let intervalId = null;
 let paused = false;
 let pauseModalVisible = false;
 let gameOver = false;
 let winner;
+let winnerMsg;
 let participants;
 let creator;
 
 let pauseModalInstance;
 let startModal;
 var restartModal;
+var finishTournamentModal;
 
 let paddle1Y = 0;
 let paddle2Y = 0;
@@ -55,8 +59,10 @@ function setupTournamentPage() {
     ball = document.getElementById("ball");
     score1Element = document.getElementById("player_1_score");
     score2Element = document.getElementById("player_2_score");
-    pauseModalInstance = new bootstrap.Modal(document.getElementById('pauseGameModal'));
-    restartModal = new bootstrap.Modal(document.getElementById('restartGame'));
+    player1AliasElement = document.getElementById("player_1_alias");
+    player2AliasElement = document.getElementById("player_2_alias");
+    // pauseModalInstance = new bootstrap.Modal(document.getElementById('pauseGameModal'));
+    // restartModal = new bootstrap.Modal(document.getElementById('restartGame'));
     // Set initial paddle positions
     // paddle1.style.top = "50%";
     // paddle2.style.top = "50%";
@@ -102,7 +108,7 @@ function setupTournamentPage() {
 
         const numParticipants = parseInt(input.value, 10);
         generateParticipantFields(numParticipants);
-        detailsModal.toggle();
+        detailsModal.hide();
         startModal.show();
     }
     continueBtn.addEventListener('submit', handleNewTournamentFormSubmit);
@@ -276,7 +282,7 @@ function haltGame(winning_player) {
   paused = false;
   pauseModalVisible = false;
   gameOver = true;
-  let winnerMsg = document.getElementById('GameWinner');
+  winnerMsg = document.getElementById('GameWinner');
   winnerMsg.textContent = winning_player.toString() + " wins!";
   score1 = 0;
   score2 = 0;
@@ -312,11 +318,15 @@ function resetBall() {
 // };
 
 function startGame() {
+  // player1AliasElement.textContent = player1Alias;
+    // player2AliasElement.textContent = player2Alias;
+  pauseModalInstance = new bootstrap.Modal(document.getElementById('pauseGameModal'));
+  restartModal = new bootstrap.Modal(document.getElementById('restartGame'));
   begin = true;
   gameOver = false;
   tournamentName = document.getElementById("tournamentName").value;
-  // player2Alias = document.getElementById("player2alias").value;
-  // player2AliasElement.textContent = player2Alias;
+  player1AliasElement.textContent = player1Alias;
+  player2AliasElement.textContent = player2Alias;
   if (intervalId) {
     clearInterval(intervalId);
   }
@@ -495,7 +505,30 @@ function startTournament(id) {
       alert('failed to start Tournament!');
   });
 }
-
+function completeTournament() {
+  fetch(`https://127.0.0.1:443/tournament_api/complete/${getTournamentId()}`, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + getCookie('jwt')
+      }
+  })
+  .then(response => {
+      if (!response.ok) {
+          throw new Error('Network response was not ok');
+      }
+      return response.json();
+  })
+  .then(data => {
+     console.log('Tournament    :', data);
+     startGameLoop();
+    //  alert('started Tournament!');
+  })
+  .catch(error => {
+      console.error('Failed to start tournanment:', error);
+      alert('failed to start Tournament!');
+  });
+}
 function getMatchData() {
     console.log();
     fetch(`https://127.0.0.1:443/tournament_api/detail`, {
@@ -522,6 +555,8 @@ function getMatchData() {
       console.log(creator);
       console.log(participants);
         setTournamentId(data);
+
+        // completeTournament();
         startTournament(data.id);
         // arrangeNextRound(data.id);
     })
@@ -547,15 +582,13 @@ function waitGameFinish(interval = 100) {
 
 async function startGameLoop() {
   var p1,p2,win,remaining,match_id;
-  console.log("hi");
-  for(let i = 0; i<3;i++)
+  for(let i = 0; i<2;i++)
   {
     try {
       const data = await getNextMatch();
-      console.log("hi");
       if (i == 0)
         startModal.hide();
-      console.log(data);
+      // console.log(data);
       p1 = participants.find(element => Object.values(element).includes(data.next_match.participant_one));
       p2 = participants.find(element => Object.values(element).includes(data.next_match.participant_two));
 
@@ -563,34 +596,41 @@ async function startGameLoop() {
       player2Alias = p2.username;
       remaining = data.next_match.remaining_matches;
       match_id =  data.next_match.match_id;
-      console.log(remaining);
+      // console.log(remaining);
       console.log(p1);
       console.log(p2);
       startGame();
 
       await waitGameFinish();
       win = participants.find(element => Object.values(element).includes(winner));
-      console.log(win.id);
+      // if(i==1){
+      //   winnerMsg = document.getElementById('GameWinner');
+      //   winnerMsg.textContent = "Tournament Complete! " + win.name.toString() + " wins!";
+      // }
+      // console.log(win.id);
       await updateMatchResult(match_id,win.id);
       restartGameBtn = document.getElementById('restartGameBtn');
       // restartGameBtn.addEventListener('click', async function(event) {
       //   event.preventDefault();
-        await waitSubmission(restartGameBtn);
-        restartModal.toggle();
+      await waitSubmission(restartGameBtn);
+      restartModal.show();
       // });
       } catch (error){
       console.error('Failed to get next match:', error);
       }
   }
-
-    // var p1 = match.participant_one;
-    // var p2 = match.participant_two;
-    // var remaining = match.remaining_matches;
-    // console.log(remaining);
-    // console.log(p1);
-    // console.log(p2);
-    // startModal.hide();
-    // startGame();
+  // restartModal.hide();
+  var elem = document.getElementById('finishTournament');
+  finishTournamentModal = new bootstrap.Modal(document.getElementById('finishTournament'));
+  winnerMsg = document.getElementById('tournamentWinner');
+  winnerMsg.textContent = win.username + " wins Tournament!";
+  finishTournamentModal.toggle();
+  var restartTournament = document.getElementById("restartTournament");
+  restartTournament.addEventListener('click', function(){
+    finishTournamentModal.hide();
+    restartModal.hide();
+    appRouter.navigate('/tournament', {force : true });
+  });
 }
 function waitSubmission(element) {
   return new Promise(resolve => {

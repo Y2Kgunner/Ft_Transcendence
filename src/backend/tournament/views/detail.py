@@ -5,7 +5,7 @@ from django.views.decorators.http import require_http_methods
 
 @require_http_methods(["GET"])
 def get_active_tournament_for_user(request):
-    tournament = Tournament.objects.filter(creator=request.user, is_active=True).first()
+    tournament = Tournament.objects.filter(creator=request.user, is_active=True,is_completed=False).first()
 
     if not tournament:
         return JsonResponse({"message": "No active tournament found for this user."}, status=404)

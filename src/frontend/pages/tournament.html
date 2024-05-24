@@ -2,50 +2,50 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pong</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="../css/tournament.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pong</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="../css/tournament.css">
 </head>
 
 
 <body class="bg-black">
-    <div class="modal fade rounded-3" id="enterTournamentDetails" data-bs-backdrop="static" data-bs-keyboard="false"
-        tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="container-fluid gradientHousing rounded-3">
-                <div class="modal-content custoModal">
-                    <div class="modal-header bg-dark justify-content-center">
-                        <h5 class="modal-title gradientText h2" id="staticBackdropLabel">Welcome to Tournament!</h5>
-                    </div>
-                    <div class="modal-body text-center bg-dark">
-                        <p class="gradientText h5">tournament name: </p>
-                        <input type="text" id="tournamentName" class="rounded ms-2" placeholder=" tournament name">
-                        <p class="gradientText h5"> number of participants: </p>
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <button type="button" class="btn btn-outline-secondary quantity__minus">-</button>
-                            </div>
-                            <input type="number" class="rounded ms-2 bg-dark" id="numParticipants" value="3" readonly>
-                            <div class="input-group-append">
-                                <button type="button" class="btn btn-outline-secondary quantity__plus">+</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer justify-content-center pb-4 bg-dark">
-                        <div class="gradientHousingBtn">
-                            <button type="button" class="btn custoModal" id="continueBtn" data-bs-dismiss="modal"
-                                disabled>Continue</button>
-                        </div>
-                    </div>
-                </div>
+  <div class="modal fade rounded-3" id="enterTournamentDetails" data-bs-backdrop="static" data-bs-keyboard="false"
+    tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="container-fluid gradientHousing rounded-3">
+        <div class="modal-content custoModal">
+          <div class="modal-header bg-dark justify-content-center">
+            <h5 class="modal-title gradientText h2" id="staticBackdropLabel">Welcome to Tournament!</h5>
+          </div>
+          <div class="modal-body text-center bg-dark">
+            <p class="gradientText h5">tournament name: </p>
+            <input type="text" id="tournamentName" class="rounded ms-2" placeholder=" tournament name">
+            <p class="gradientText h5"> number of participants: </p>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <button type="button" class="btn btn-outline-secondary quantity__minus">-</button>
+              </div>
+              <input type="number" class="rounded ms-2" id="numParticipants" value="3" readonly>
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-secondary quantity__plus">+</button>
+              </div>
             </div>
+          </div>
+          <div class="modal-footer justify-content-center pb-4 bg-dark">
+            <div class="gradientHousingBtn">
+              <button type="button" class="btn custoModal" id="continueBtn" data-bs-dismiss="modal"
+                disabled>Continue</button>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
-    
-    <div class="modal fade rounded-3" id="restartGame" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  </div>
+
+  <div class="modal fade rounded-3" id="restartGame" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
     aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="container-fluid gradientHousing rounded-3">
@@ -58,7 +58,7 @@
           </div>
           <div class="modal-footer justify-content-center pb-4 bg-dark">
             <div class="gradientHousingBtn">
-              <button type="button" class="btn custoModal" id="restartGameBtn" data-bs-dismiss="modal">Restart Game</button>
+              <button type="button" class="btn custoModal" id="restartGameBtn" data-bs-dismiss="modal">Continue </button>
               <!-- onclick="startGame('game')" -->
             </div>
           </div>
@@ -67,14 +67,35 @@
     </div>
   </div>
 
-  <div class="modal fade rounded-3" id="pauseGameModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-  aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="container-fluid gradientHousing rounded-3">
-      <div class="modal-content custoModal">
-        <div class="modal-header bg-dark justify-content-center">
-          <h5 class="modal-title gradientText h2" id="staticBackdropLabel">Game Paused!</h5>
+  <div class="modal fade rounded-3" id="finishTournament" data-bs-backdrop="static" data-bs-keyboard="false"
+    tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="container-fluid gradientHousing rounded-3">
+        <div class="modal-content custoModal">
+          <div class="modal-header bg-dark justify-content-center">
+            <h5 class="modal-title gradientText h2" id="staticBackdropLabel">Tournament Over!</h5>
+          </div>
+          <div class="modal-body text-center bg-dark">
+            <h5 id="tournamentWinner" class="gradientText"></h5>
+          </div>
+          <div class="modal-footer justify-content-center pb-4 bg-dark">
+            <div class="gradientHousingBtn">
+              <button type="button" class="btn custoModal" id="restartTournament" data-bs-dismiss="modal" >Start new Tournament</button>
+            </div>
+          </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade rounded-3" id="pauseGameModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="container-fluid gradientHousing rounded-3">
+        <div class="modal-content custoModal">
+          <div class="modal-header bg-dark justify-content-center">
+            <h5 class="modal-title gradientText h2" id="staticBackdropLabel">Game Paused!</h5>
+          </div>
           <div class="modal-footer justify-content-center pb-4 bg-dark">
             <div class="gradientHousingBtn">
               <button type="button" class="btn custoModal" id="pauseBtn" onclick="continueGame()">Resume Game</button>
@@ -84,130 +105,57 @@
       </div>
     </div>
   </div>
-    <div class="modal fade rounded-3" id="startGameModal" data-bs-backdrop="static" data-bs-keyboard="false"
-        tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="container-fluid gradientHousing rounded-3">
-                <div class="modal-content custoModal">
-                    <div class="modal-header bg-dark justify-content-center">
-                        <h5 class="modal-title gradientText h2" id="staticBackdropLabel">Enter Player Details</h5>
-                    </div>
-                    <div class="modal-body text-center bg-dark">
-                        <div id="participantDetailsForm" >
-                            <form id="participantDetailsFormInner">
-                                <button type="submit" class="btn custoModal" id="startGameBtn" data-bs-dismiss="modal">Submit Tournament</button>
-                            </form>
-                        </div>
-                        <!-- <p class="gradientText h5">tournament name: </p>
-                        <input type="text" id="player2alias" class="rounded ms-2" placeholder=" tournament name">
-                        <p class="gradientText h5"> number of participants: </p>
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <button type="button" class="btn btn-outline-secondary quantity__minus">-</button>
-                            </div>
-                            <input type="number" class="rounded ms-2 bg-dark" id="numParticipants" value="3" readonly>
-                            <div class="input-group-append">
-                                <button type="button" class="btn btn-outline-secondary quantity__plus">+</button>
-                            </div>
-                        </div> -->
-                    </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="mainContext text-light container">
-      <div class="row row-cols-1 align-items-center justify-content-center">
-        <div class="col d-flex gameInfo justify-content-center p-2">
-          <p class="gradientText" style="font-style: normal;">
-            <span id="player_1_alias" class="gameInfo-h2">player-1</span>
-            <span id="player_1_score" class="gameInfo-d4"> 0</span>
-            <span class="gameInfo-h3">vs</span>
-            <span id="player_2_score" class="gameInfo-d4">0</span>
-            <span id="player_2_alias" class="gameInfo-h2">player-2</span>
-          </p>
-        </div>
-        <div class="col d-flex justify-content-center">
-          <div class="pongHousing rounded">
-            <div id="board" class="pseudoCanvas rounded">
-              <div class="dottedLine"></div>
-              <div id="paddle_1" class="paddle rounded-1"></div>
-              <div id="paddle_2" class="paddle rounded-1"></div>
-              <div id="ball" class="ball"></div>
+  <div class="modal fade rounded-3" id="startGameModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="container-fluid gradientHousing rounded-3">
+        <div class="modal-content custoModal">
+          <div class="modal-header bg-dark justify-content-center">
+            <h5 class="modal-title gradientText h2" id="staticBackdropLabel">Enter Player Details</h5>
+          </div>
+          <div class="modal-body text-center bg-dark">
+            <div id="participantDetailsForm">
+              <form id="participantDetailsFormInner">
+                <button type="submit" class="btn custoModal" id="startGameBtn" data-bs-dismiss="modal">Submit
+                  Tournament</button>
+              </form>
             </div>
           </div>
         </div>
       </div>
     </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+  </div>
+  </div>
+
+  <div class="mainContext text-light container">
+    <div class="row row-cols-1 align-items-center justify-content-center">
+      <div class="col d-flex gameInfo justify-content-center p-2">
+        <p class="gradientText" style="font-style: normal;">
+          <span id="player_1_alias" class="gameInfo-h2">player-1</span>
+          <span id="player_1_score" class="gameInfo-d4"> 0</span>
+          <span class="gameInfo-h3">vs</span>
+          <span id="player_2_score" class="gameInfo-d4">0</span>
+          <span id="player_2_alias" class="gameInfo-h2">player-2</span>
+        </p>
+      </div>
+      <div class="col d-flex justify-content-center">
+        <div class="pongHousing rounded">
+          <div id="board" class="pseudoCanvas rounded">
+            <div class="dottedLine"></div>
+            <div id="paddle_1" class="paddle rounded-1"></div>
+            <div id="paddle_2" class="paddle rounded-1"></div>
+            <div id="ball" class="ball"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
-<script src="../js/tournament.js"></script>
+  <script src="../js/tournament.js"></script>
 </body>
 
 </html>
-
-
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tournament Page</title>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-    <link href="../css/tournament.css" rel="stylesheet">
-</head>
-<body>
-    <div id="tournament-content" class="pong-container">
-        <div id="startNewTournament" class="players-button">
-            <span>Start New Tournament</span>
-        </div>
-        <div id="continueTournament" class="players-button">
-            <span>Continue</span>
-        </div>
-    </div>
-    <div id="newTournamentContainer" class="container" style="display: none;">
-        <h2 class="text-center mb-4">Create New Tournament</h2>
-        <form id="newTournamentForm" class="mb-3">
-            <div class="form-group mb-3">
-                <label for="tournamentName">Tournament Name:</label>
-                <input type="text" class="form-control" id="tournamentName" required>
-            </div>
-            <div class="form-group mb-3">
-                <label for="numParticipants">Number of Participants:</label>
-                <div class="input-group col-md-4 px-0"> 
-                    <div class="input-group-prepend">
-                        <button type="button" class="btn btn-outline-secondary quantity__minus">-</button>
-                    </div>
-                    <input type="text" class="form-control text-center quantity__input" id="numParticipants" value="3" readonly>
-                    <div class="input-group-append">
-                        <button type="button" class="btn btn-outline-secondary quantity__plus">+</button>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4 px-0"> 
-                    <button type="submit" class="btn btn-primary w-100">Set Up Participants</button>
-                </div>
-            </div>
-            <div class="row mt-3"> 
-                <div class="col-md-4 px-0"> 
-                    <button id="backToTournamentMain" class="btn btn-secondary w-100">Back</button>
-                </div>
-            </div>
-        </form>
-    
-        <div id="participantDetailsContainer"></div>
-    </div>
-    <div id="participantDetailsForm" style="display: none;">
-        <form id="participantDetailsFormInner">
-            <button type="submit" class="btn btn-primary mt-3">Submit Tournament</button>
-        </form>
-    </div>
-    
-    
-    <script src="tournament.js"></script> 
-</body>
-</html> -->

@@ -34,6 +34,7 @@ def update_match_result(request, match_id):
         if not next_round_matches_exist:
             if not arrange_next_round_matches(tournament.id, current_round):
                 tournament.is_completed = True
+                tournament.is_active = False
                 winner_info = determine_tournament_winner(tournament.id)
                 if tournament.is_completed:
                     tournament.save()
