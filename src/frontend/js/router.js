@@ -84,7 +84,7 @@ const routes = {
     '/profile': { path: 'pages/profile.html', method: setupProfilePage },
     '/about': { path: 'pages/about.html', method: null },
     // '/pong': { path: 'pages/pong.html', method: null },
-    '/pong2': { path: 'pages/game.html', method: setupGamePage },
+    '/pong2': { path: 'pages/pong2.html', method: setupGamePage },
     '/pong3': { path: 'pages/multiGame.html', method: setupMultiGamePage },
     '/tournament': { path: 'pages/tournament.html', method: setupTournamentPage },
     '/logout': { path: '', method: null }

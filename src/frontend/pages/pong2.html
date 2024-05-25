@@ -21,14 +21,11 @@
           </div>
           <div class="modal-body text-center bg-dark">
             <p class="gradientText h5">player2's nickname: </p>
-            <input type="text" id="player2alias" class="rounded ms-2" placeholder=" player 2 nickname"
-              oninput="checkInput()"
-              onKeyDown="if(event.key === 'Enter') document.getElementById('startGameBtn').click()">
+            <input type="text" id="player2alias" class="rounded ms-2" placeholder=" player 2 nickname">
           </div>
           <div class="modal-footer justify-content-center pb-4 bg-dark">
             <div class="gradientHousingBtn">
-              <button type="button" class="btn custoModal" id="startGameBtn" data-bs-dismiss="modal"
-                onclick="startGame('game')" disabled>Start Game</button>
+              <button type="button" class="btn custoModal" id="startGameBtn" data-bs-dismiss="modal" disabled>Start Game</button>
             </div>
           </div>
         </div>
@@ -49,8 +46,7 @@
           </div>
           <div class="modal-footer justify-content-center pb-4 bg-dark">
             <div class="gradientHousingBtn">
-              <button type="button" class="btn custoModal" id="restartGameBtn" data-bs-dismiss="modal"
-              onclick="startGame('game')">Restart Game</button>
+              <button type="button" class="btn custoModal" id="restartGameBtn" data-bs-dismiss="modal">Restart Game</button>
             </div>
           </div>
         </div>
