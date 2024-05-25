@@ -55,9 +55,10 @@ def oauth_callback(request):
             'first_name': user_info['first_name'],
             'last_name': user_info['last_name'],
             'twofa_enabled': False,
-            'profile_picture': user_info['image']['link'],
+            'profile_picture': user_info['image']['link']['versions']['small'],
             'is_staff': True
         })
+        print(profile_picture)
         if created:
             user.set_unusable_password()
             user.save()
