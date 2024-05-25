@@ -1,5 +1,5 @@
 import { appRouter } from './router.js';
-import { fetchUserProfile,getCookie } from './profile.js';
+import { getCookie } from './profile.js';
 
 
 const matchPoint = 1;
@@ -12,6 +12,7 @@ let winnerMsg;
 let participants;
 let creator;
 
+let restartGameButton;
 let pauseModalInstance;
 let startModal;
 var restartModal;
@@ -310,15 +311,6 @@ function resetBall() {
   ballSpeedY = initialBallSpeedY * (Math.random() * 2 - 1);
 }
 
-// function startGame() {
-//   begin = true;
-//   tournamentName = document.getElementById("tournamentName").value;
-//   // player2AliasElement.textContent = player2Alias;
-//   setInterval(updateGame, 16); // 16ms = 60fps
-//   document.addEventListener("keydown", handleKeyDown);
-//   document.addEventListener("keyup", handleKeyUp);
-// };
-
 function startGame() {
   // player1AliasElement.textContent = player1Alias;
     // player2AliasElement.textContent = player2Alias;
@@ -389,40 +381,30 @@ function continueGame() {
   }, { once: true });
 }
 
-// Get the element with the class baseTest
-// let baseTestElement = document.querySelector('.baseTest');
-
-// Add an event listener to the game start event (e.g. a button click)
-// document.getElementById('continueBtn').addEventListener('click', () => {
-//   // Remove the class baseTest from the element
-//   baseTestElement.classList.remove('baseTest');
-// });
-// export { checkInput };
 
 
-
-// function fetchUserProfile() {
-//   return fetch('https://127.0.0.1:443/api/profile', {
-//     method: 'GET',
-//     headers: {
-//       'Content-Type': 'application/json',
-//       'Authorization': 'Bearer ' + getCookie('jwt')
-//     }
-//   })
-//     .then(response => {
-//       if (!response.ok) {
-//         throw new Error('Network response was not ok');
-//       }
-//       return response.json();
-//     })
-//     .then(data => {
-//       return data.username;
-//     })
-//     .catch(error => {
-//       console.error('Failed to fetch user profile:', error);
-//       return 'Unknown';
-//     });
-// }
+function fetchUserProfile() {
+  return fetch('https://127.0.0.1:443/api/profile', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + getCookie('jwt')
+    }
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      return data.username;
+    })
+    .catch(error => {
+      console.error('Failed to fetch user profile:', error);
+      return 'Unknown';
+    });
+}
 
 // function getCookie(name) {
 //   let cookieValue = null;
@@ -605,17 +587,13 @@ async function startGameLoop() {
 
       await waitGameFinish();
       win = participants.find(element => Object.values(element).includes(winner));
-      // if(i==1){
-      //   winnerMsg = document.getElementById('GameWinner');
-      //   winnerMsg.textContent = "Tournament Complete! " + win.name.toString() + " wins!";
-      // }
-      // console.log(win.id);
       await updateMatchResult(match_id,win.id);
-      restartGameBtn = document.getElementById('restartGameBtn');
-      // restartGameBtn.addEventListener('click', async function(event) {
-      //   event.preventDefault();
-      await waitSubmission(restartGameBtn);
+      
       restartModal.show();
+      
+      restartGameButton = document.getElementById("restartGameBtn");
+
+      await waitSubmission(restartGameButton);
       // });
       } catch (error){
       console.error('Failed to get next match:', error);
