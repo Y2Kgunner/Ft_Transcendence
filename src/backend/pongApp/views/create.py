@@ -17,4 +17,4 @@ def create_match(request):
         guest_player1=guest_player1,
         guest_player2=guest_player2
     )
-    return JsonResponse({'message': 'Match created successfully', 'match_id': match.id}, status=201)
+    return JsonResponse({'message': 'Match created successfully', 'match_id': match.id}, status=200)
