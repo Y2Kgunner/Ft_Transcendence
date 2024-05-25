@@ -3,8 +3,9 @@ import { fetchUserProfile, setupAnonymizeButton, setupDeleteProfileButton, setup
 import { setupTournamentPage } from './tournament.js';
 import { setupGamePage } from './game.js';
 import { setupMultiGamePage } from './multiGame.js';
+import { setupTTT } from './ttt.js';
 class Router {
-    constructor(routes) {
+    constructor (routes) {
         this.routes = routes;
     }
 
@@ -16,16 +17,17 @@ class Router {
 
     async navigate(path, { replace = false, force = false } = {}) {
 
-        const modals = document.querySelectorAll('.modal.show');
-        modals.forEach((modal) => {
-            const modalInstance = bootstrap.Modal.getInstance(modal);
-            modalInstance.hide();
-        });
         //console.log(`Navigating to: ${path}`);
         if (!force && this.lastPath === path && !replace) {
             //console.log(`Already navigated to: ${path}`);
             return;
         }
+        const modals = document.querySelectorAll('.modal.show');
+        modals.forEach((modal) => {
+            const modalInstance = bootstrap.Modal.getInstance(modal);
+            modalInstance.hide();
+        });
+        
         this.lastPath = path;
 
         if (path === '/logout') {
@@ -89,7 +91,7 @@ const routes = {
     '/login': { path: 'pages/login.html', method: setupAuthPage },
     '/profile': { path: 'pages/profile.html', method: setupProfilePage },
     '/about': { path: 'pages/about.html', method: null },
-    // '/pong': { path: 'pages/pong.html', method: null },
+    '/ttt': { path: 'pages/ttt.html', method: setupTTT },
     '/pong2': { path: 'pages/pong2.html', method: setupGamePage },
     '/pong3': { path: 'pages/multiGame.html', method: setupMultiGamePage },
     '/tournament': { path: 'pages/tournament.html', method: setupTournamentPage },

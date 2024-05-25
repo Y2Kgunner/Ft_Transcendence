@@ -366,4 +366,4 @@ function continueGame() {
     }, { once: true });
 }
 
-export { setupGamePage };
+export { setupGamePage,fetchUserProfile,isPrintableASCII };
