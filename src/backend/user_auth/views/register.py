@@ -75,7 +75,7 @@ def register(request):
             return JsonResponse({'error': 'Username already exists'}, status=400)
         if get_user_model().objects.filter(email=email).exists():
             return JsonResponse({'error': 'Email already exists'}, status=400)
-        username.lowercase()
+        username.lower()
         user = get_user_model().objects.create_user(username=username, email=email, password=password)
         return JsonResponse({'message': 'Registration successful', 'user_id': user.id}, status=201)
     except IntegrityError as e:

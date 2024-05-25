@@ -8,7 +8,7 @@ body {
   src: url('../assets/Pixelated/pix/pix.ttf') format('truetype'); /* Update the path to your font file */
 }
 
-#loginPassword {
+#loginPassword, #registerPassword, #confirmPassword {
   font-family: sans-serif, 'Arial'; /* Change the font family to Arial or any other system font */
 }
 
