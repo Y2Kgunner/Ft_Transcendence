@@ -195,7 +195,7 @@ function setCookie(name, value, days, secure = false, sameSite = 'Lax') {
 }
 
 async function handleOAuthCallback(code) {
-    const url = `https://127.0.0.1:443/api/oauth_callback?code=${encodeURIComponent(code)}`;
+    const url = `https://127.0.0.1/api/oauth_callback?code=${encodeURIComponent(code)}`;
     try {
         const response = await fetch(url, {
             method: 'GET',
