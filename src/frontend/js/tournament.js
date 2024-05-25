@@ -1,4 +1,6 @@
 import { appRouter } from './router.js';
+import { fetchUserProfile,getCookie } from './profile.js';
+
 
 const matchPoint = 1;
 let intervalId = null;
@@ -399,43 +401,43 @@ function continueGame() {
 
 
 
-function fetchUserProfile() {
-  return fetch('https://127.0.0.1:443/api/profile', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + getCookie('jwt')
-    }
-  })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
-    .then(data => {
-      return data.username;
-    })
-    .catch(error => {
-      console.error('Failed to fetch user profile:', error);
-      return 'Unknown';
-    });
-}
+// function fetchUserProfile() {
+//   return fetch('https://127.0.0.1:443/api/profile', {
+//     method: 'GET',
+//     headers: {
+//       'Content-Type': 'application/json',
+//       'Authorization': 'Bearer ' + getCookie('jwt')
+//     }
+//   })
+//     .then(response => {
+//       if (!response.ok) {
+//         throw new Error('Network response was not ok');
+//       }
+//       return response.json();
+//     })
+//     .then(data => {
+//       return data.username;
+//     })
+//     .catch(error => {
+//       console.error('Failed to fetch user profile:', error);
+//       return 'Unknown';
+//     });
+// }
 
-function getCookie(name) {
-  let cookieValue = null;
-  if (document.cookie && document.cookie !== '') {
-    const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      if (cookie.substring(0, name.length + 1) === (name + '=')) {
-        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-        break;
-      }
-    }
-   //console.log('Cookie value:', cookieValue);
-    return cookieValue;
-}
+// function getCookie(name) {
+//   let cookieValue = null;
+//   if (document.cookie && document.cookie !== '') {
+//     const cookies = document.cookie.split(';');
+//     for (let i = 0; i < cookies.length; i++) {
+//       const cookie = cookies[i].trim();
+//       if (cookie.substring(0, name.length + 1) === (name + '=')) {
+//         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+//         break;
+//       }
+//     }
+//    //console.log('Cookie value:', cookieValue);
+//     return cookieValue;
+// }
 
 function createTournament() {
     const tournamentName = document.getElementById('tournamentName').value;
