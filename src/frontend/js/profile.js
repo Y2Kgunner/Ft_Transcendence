@@ -25,7 +25,7 @@ function fetchUserProfile() {
             updateProfilePage(data);
             loadMatchHistory(data.id);
             fetchProfilePicture();
-
+            
         })
         .catch(error => {
             console.error('There has been a problem with your fetch operation:', error);
@@ -259,12 +259,12 @@ function updateProfilePage(userData) {
                     }
                 } else {
                     console.error('Profile picture URL is missing in the response data.');
-                    document.getElementById('profilePicture').src = '../assets/profile_pictures/default.png';
+                    document.getElementById('profile-picture').src = '../assets/profile_pictures/default.png';
                 }
             })
             .catch(error => {
                 console.error('Error fetching the profile picture:', error);
-                document.getElementById('profilePicture').src = '../assets/profile_pictures/default.png';
+                document.getElementsById('profile-picture').src = '../assets/profile_pictures/default.png';
             });
     }
     function setupUploadProfilePictureButton() {

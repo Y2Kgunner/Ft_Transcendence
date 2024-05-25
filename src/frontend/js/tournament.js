@@ -83,7 +83,8 @@ function setupTournamentPage() {
     // player2AliasElement.textContent = player2Alias;
     var detailsModal = new bootstrap.Modal(document.getElementById('enterTournamentDetails'));
     detailsModal.show();
-
+    // document.getElementById('page-content').classList.add('modal-open');
+    
     const minusButton = document.querySelector('.quantity__minus');
     const plusButton = document.querySelector('.quantity__plus');
     const input = document.getElementById('numParticipants');
