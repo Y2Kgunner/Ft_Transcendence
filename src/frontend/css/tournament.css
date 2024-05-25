@@ -389,3 +389,10 @@
     transition: border-color 0.3s ease-in-out;
   }
   
+
+
+/* #enterTournamentDetails {
+  position: fixed;
+  top: 5vh;
+  height: calc(100% - 5vh);
+} */
