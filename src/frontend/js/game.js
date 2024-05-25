@@ -6,7 +6,7 @@ let pauseModalVisible = false;
 let gameOver = false;
 var startModal;
 let pauseModalInstance;
-
+let playerId;
 let paddle1Y = 0;
 let paddle2Y = 0;
 let ballX = 5;
@@ -54,18 +54,47 @@ function setupGamePage() {
 
   startModal = new bootstrap.Modal(document.getElementById('startGameModal'));
   startModal.show();
-  fetchUserProfile().then(username => {
-      console.log(username);
+  fetchUserProfile().then(data => {
+      console.log(data);
+    playerId =data.id;
+      console.log(data.username);
     player1AliasElement = document.getElementById("player_1_alias");
-    // player1Alias = document.getElementById("player1alias");
-    player1Alias = username;
+    player1Alias = data.username;
     console.log(player1Alias);
   });
   player2Alias = document.getElementById("player2alias");
+  console.log(player2Alias);
   player2alias.addEventListener('input', checkInput);
-  startGameBtn.addEventListener('click', startGame);
-  restartGameBtn.addEventListener('click', startGame);
+  startGameBtn.addEventListener('click', async function(event) { 
+      await createMatch();
+      startGame();
+    });
+  restartGameBtn.addEventListener('click', async function(event) { 
+    await createMatch();
+    startGame();
+  });
 };
+
+async function createMatch() {
+    const matchData = {
+        player_id: playerId,
+        guest_player1 : player2Alias
+    };
+    console.log(matchData)
+    const response = fetch('https://127.0.0.1:443/pongApp/create', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + getCookie('jwt')
+        },
+        body: JSON.stringify(matchData)
+    })
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      return data; 
+}
 
 function handleKeyDown(event) {
   if (event.key === "w" || event.key === "W") {
@@ -117,7 +146,8 @@ function fetchUserProfile() {
         return response.json();
       })
       .then(data => {
-        return data.username;
+          console.log(data);
+        return data;
       })
       .catch(error => {
         console.error('Failed to fetch user profile:', error);
