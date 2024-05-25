@@ -45,4 +45,5 @@ types {
     video/x-ms-wmv                        wmv;
     video/x-ms-asf                        asx asf;
     video/x-mng                           mng;
+    font/ttf                              ttf;
 }
