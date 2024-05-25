@@ -55,6 +55,7 @@ def oauth_callback(request):
             'first_name': user_info['first_name'],
             'last_name': user_info['last_name'],
             'twofa_enabled': False,
+            'profile_picture': user_info['image']['link'],
             'is_staff': True
         })
         if created:
