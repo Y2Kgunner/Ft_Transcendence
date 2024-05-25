@@ -35,7 +35,7 @@ let paddle1MovingDown = false;
 let paddle2MovingUp = false;
 let paddle2MovingDown = false;
 
-function setupGamePage() {
+function setupGamePage() { 
   board = document.getElementById("board");
   paddle1 = document.getElementById("paddle_1");
   paddle2 = document.getElementById("paddle_2");
