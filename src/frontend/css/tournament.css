@@ -119,7 +119,9 @@
     padding-top: 10vh;
     overflow:hidden;
   }
-  
+  .modal-custom {
+    overflow: hidden;
+  }
   .pseudoCanvas {
     background-color: #212121;
     width: 55vw;

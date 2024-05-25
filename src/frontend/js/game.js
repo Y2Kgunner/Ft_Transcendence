@@ -1,3 +1,4 @@
+import { getCookie } from './profile.js';
 const matchPoint = 1;
 let intervalId = null;
 let paused = false;
@@ -53,7 +54,11 @@ function setupGamePage() {
 
   startModal = new bootstrap.Modal(document.getElementById('startGameModal'));
   startModal.show();
-  
+  fetchUserProfile().then(username => {
+      console.log(username);
+    player1AliasElement = document.getElementById("player_1_alias");
+    player1AliasElement.textContent = username;
+  });
   player2Alias = document.getElementById("player2alias");
   player2alias.addEventListener('input', checkInput);
   startGameBtn.addEventListener('click', startGame);
@@ -94,6 +99,29 @@ function togglePause() {
     continueGame();
   }
 }
+
+function fetchUserProfile() {
+    return fetch('https://127.0.0.1:443/api/profile', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + getCookie('jwt')
+      }
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        return data.username;
+      })
+      .catch(error => {
+        console.error('Failed to fetch user profile:', error);
+        return 'Unknown';
+      });
+  }
 
 function updateGame() {
   if (begin && !pauseModalVisible) {
