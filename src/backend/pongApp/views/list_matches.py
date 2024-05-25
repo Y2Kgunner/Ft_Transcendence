@@ -21,7 +21,7 @@ def player_match_history(request):
     if not player_id:
         return JsonResponse({'error': 'Missing player_id'}, status=400)
     try:
-        matches = Match.objects.filter(player_id=player_id)
+        matches = Match.objects.filter(player_id=player_id, completed=True)
     except Match.DoesNotExist:
         return JsonResponse({'error': 'No matches found for the given player_id'}, status=404)
     matches_data = list(matches.values(
