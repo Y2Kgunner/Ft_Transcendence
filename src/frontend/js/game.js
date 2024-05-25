@@ -57,7 +57,9 @@ function setupGamePage() {
   fetchUserProfile().then(username => {
       console.log(username);
     player1AliasElement = document.getElementById("player_1_alias");
-    player1AliasElement.textContent = username;
+    // player1Alias = document.getElementById("player1alias");
+    player1Alias = username;
+    console.log(player1Alias);
   });
   player2Alias = document.getElementById("player2alias");
   player2alias.addEventListener('input', checkInput);
@@ -232,6 +234,8 @@ function startGame() {
   begin = true;
   gameOver = false;
   player2Alias = document.getElementById("player2alias").value;
+//   player1Alias = document.getElementById("player1alias").value;
+  player1AliasElement.textContent = player1Alias;
   player2AliasElement.textContent = player2Alias;
   if (intervalId) {
     clearInterval(intervalId);
