@@ -29,7 +29,7 @@ def update_match(request):
         match.score_guest_player1 = score_guest_player1
         match.score_guest_player2 = score_guest_player2
         match.winner = winner_name
-        match.completed = True
+        match.game_completed = True
         match.save()
 
         match.save_guest_scores(match.guest_player1, score_guest_player1)

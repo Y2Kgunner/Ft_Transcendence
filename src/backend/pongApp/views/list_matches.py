@@ -21,9 +21,9 @@ def player_match_history(request):
     if not player_id:
         return JsonResponse({'error': 'Missing player_id'}, status=400)
     try:
-        matches = Match.objects.filter(player_id=player_id, completed=True)
+        matches = Match.objects.filter(player_id=player_id, game_completed=True)
     except Match.DoesNotExist:
         return JsonResponse({'error': 'No matches found for the given player_id'}, status=404)
     matches_data = list(matches.values(
-        'id', 'guest_player1', 'guest_player2', 'match_date','score_player', 'score_guest_player1', 'score_guest_player2', 'winner', 'type'))
+        'id', 'guest_player1', 'guest_player2', 'match_date','score_player', 'score_guest_player1', 'score_guest_player2', 'winner', 'game_type'))
     return JsonResponse({'matches': matches_data}, safe=False, status=200)

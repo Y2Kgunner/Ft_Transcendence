@@ -12,8 +12,8 @@ class Match(models.Model):
     winner = models.CharField(max_length=20, null=True, blank=True)
     is_deleted = models.BooleanField(default=False)
     deleted_at = models.DateTimeField(null=True, blank=True)
-    completed = models.BooleanField(default=False)
-    type = models.CharField(max_length=4)
+    game_completed = models.BooleanField(default=False)
+    game_type = models.CharField(max_length=4, blank=True, null=True)
 
     def __str__(self):
         return f"Match {self.id} on {self.match_date}"
