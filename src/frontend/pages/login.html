@@ -1,130 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login and Registration Form</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f7f7f7;
-        }
-        .container {
-            background: white;
-            padding: 20px 25px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            max-width: 500px;
-            margin-top: 40px;
-        }
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
-        }
-        .logo-img {
-            max-width: 30px;
-            height: 30px;
-            display: block; 
-            margin: 0 auto;
-            
-        }
-
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login and Registration Form</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/login-reg.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
-<body>
 
-<div class="container mt-5">
-    <!-- otp -->
-    <div class="container p-5" style="display:none;">
-        <div class="row">
-            <div class="col-md-3"></div>
-            <div class="col-md-5 mt-5">
-                <div class="bg-white p-5 rounded-3 shadow-sm border">
-                    <div>
-                        <p class="text-center text-success" style="font-size: 5.5rem;"><i class="fa-solid fa-envelope-circle-check"></i></p>
-                        <p class="text-center text-center h5 ">Please check your email</p>
-                        <p class="text-muted text-center">We've sent a code to contact@curfcode.com</p>
-                        <div class="row pt-4 pb-2">
-                            <div class="col-3">
-                                <input class="otp-letter-input" type="text">
-                            </div>
-                            <div class="col-3">
-                                <input class="otp-letter-input" type="text">
-                            </div>
-                            <div class="col-3">
-                                <input class="otp-letter-input" type="text">
-                            </div>
-                            <div class="col-3">
-                                <input class="otp-letter-input" type="text">
-                            </div>
-                        </div>
-                        <p class="text-muted text-center">Didn't get the code? <a href="#" class="text-success">Click to resend.</a></p>
-                        <div class="row pt-5">
-                            <div class="col-6">
-                                <button class="btn btn-outline-secondary w-100">Cancel</button>
-                            </div>
-                            <div class="col-6">
-                                <button class="btn btn-success w-100">Verify</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<body class="bg-black">
+  <div id="login-form" class="container-fluid py-5 my-5">
+    <header class="text-center">
+      <img src="../assets/images/42logo.svg" class="img-fluid" alt="42 logo" />
+      <img src="../assets/images/PONG.svg" class="img-fluid" alt="42 logo" />
+    </header>
+    <section class="container my-3 w-50 rounded secForm bg-dark">
+      <form id="loginForm" class="form-floating needs-validation" novalidate>
+        <div class="form-floating mb-4">
+          <input type="username" class="form-control" id="LoginUserName" placeholder="gae" required />
+          <label for="LoginUserName" class="form-label">USERNAME</label>
+          <div class="invalid-feedback">
+            ‎ ‎ ‎ Please enter your username.
+          </div>
         </div>
-    </div>
-    <!-- login Form -->
-    <div id="login-form" style="display:block;">
-        <h2>Login</h2>
-        <form id="loginForm">
-            <div class="form-group">
-                <label for="LoginUserName">User Name</label>
-                <input type="username" class="form-control" id="LoginUserName" required>
-            </div>
-            <div class="form-group">
-                <label for="loginPassword">Password</label>
-                <input type="password" class="form-control" id="loginPassword" required>
-            </div>
-            <button type="submit" class="btn btn-primary" id="loginButton">Log In</button>
-            <p class="mt-3">Don't have an account? <a href="#" id="showRegisterForm">Register Here</a></p>
-            <p>or continue with:</p>
-            <button type="button" class="btn btn-link btn-floating mx-1" id="fortytwoLoginButton">
-                <img src="../assets/images/42_Logo.svg.png" alt="" class="logo-img">
-            </button>            
-        </form>
-    </div>
+        <div class="form-floating mb-4">
+          <input type="password" class="form-control" id="loginPassword" placeholder="Password" required />
+          <label for="loginPassword">PASSWORD</label>
+          <div class="invalid-feedback">
+            ‎ ‎ ‎ Please enter your password.
+          </div>
+        </div>
+        <div class="row">
+          <div id="loginButton" class="d-grid col-lg-6 col-12 mb-4 mx-auto">
+            <button type="submit" class="btn btn-success logColor">Log in</button>
+          </div>
+          <div id="showRegisterForm" class="d-grid gap-2 col-lg-6  mb-4 mx-auto">
+            <button type="submit" class="btn btn-info signColor">Sign up</button>
+          </div>
+        </div>
+        <div class="row row-cols-1 py-1">
+          <div class="col d-flex justify-content-center">
+            <span class="text-light">Or</span>
+          </div>
+          <div class="col d-flex justify-content-center">
+            <span class="text-light">sign in with</span>
+          </div>
+          <div id="fortytwoLoginButton" class="col d-flex justify-content-center text-light py-1">
+            <a href="#"><img src="../assets/images/42miniLogo.svg" class="img-fluid" alt="42 logo"></a>
+          </div>
+        </div>
+      </form>
+    </section>
+  </div>
+  <div id="register-form" class="container-fluid py-5 my-5" style="display: none;">
+    <header class="text-center">
+      <img src="../assets/images/42logo.svg" class="img-fluid" alt="42 logo" />
+      <img src="../assets/images/PONG.svg" class="img-fluid" alt="42 logo" />
+    </header>
+    <section class="container my-3 bg-dark w-50 rounded secForm">
+      <form id="registerForm" class="form-floating needs-validation g-3 pb-2" novalidate>
+        <div class="text-light d-flex justify-content-center pb-3">
+          <h4>SIGN UP</h4>
+        </div>
+        <div class="form-floating mb-4">
+          <input type="email" class="form-control" id="registerEmail" placeholder="gae" required />
+          <label for="registerEmail" class="form-label">EMAIL ID</label>
+          <div class="invalid-feedback">
+            ‎ ‎ ‎ Please enter a valid email.
+          </div>
+        </div>
+        <div class="form-floating mb-4">
+          <input type="username" class="form-control" id="registerUserName" placeholder="gae" required />
+          <label for="registerUserName" class="form-label">USERNAME</label>
+          <div class="invalid-feedback">
+            ‎ ‎ ‎ Please choose a valid username.
+          </div>
+        </div>
+        <div class="form-floating mb-4">
+          <input type="password" class="form-control" id="registerPassword" placeholder="Password" required />
+          <label for="registerPassword">PASSWORD</label>
+          <div class="invalid-feedback">
+            ‎ ‎ ‎ Please choose a valid password.
+          </div>
+        </div>
+        <div class="form-floating mb-4">
+          <input type="password" class="form-control" id="confirmPassword" placeholder="Password" required />
+          <label for="confirmPassword">CONFIRM PASSWORD</label>
+          <div class="invalid-feedback">
+            ‎ ‎ ‎ Please enter the same passowrd.
+          </div>
+        </div>
+        <div id="loginButton" class="d-grid my-4">
+          <button id="registerButton" type="submit" class="btn btn-info signColor">Sign in</button>
+        </div>
+        <div id="fortytwoLoginButton" class="d-flex justify-content-center col-12 text-light mb-2">
+          <p>have an account? <a href="#" class="link-success link-underline link-underline-opacity-0"
+              onclick="event.preventDefault(); showLoginForm()">LOGIN HERE</a></p>
+        </div>
+      </form>
+    </section>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+  <script>
+    (() => {
+      'use strict'
+      const forms = document.querySelectorAll('.needs-validation')
 
-    <!-- registration Form -->
-    <div id="register-form" style="display:none;">
-        <h2>Register</h2>
-        <form id="registerForm">
-            <div class="form-group">
-                <label for="registerEmail">Email address</label>
-                <input type="email" class="form-control" id="registerEmail" required>
-            </div>
-            <div class="form-group">
-                <label for="registerUserName">User name</label>
-                <input type="text" class="form-control" id="registerUserName" required>
-            </div>
-            <div class="form-group">
-                <label for="registerPassword">Password</label>
-                <input type="password" class="form-control" id="registerPassword" required>
-            </div>
-            <div class="form-group">
-                <label for="confirmPassword">Confirm Password</label>
-                <input type="password" class="form-control" id="confirmPassword" required>
-            </div>
-            <button type="submit" class="btn btn-primary" id="registerButton">Register</button>
-            <p class="mt-3">Have an account? <a href="#" onclick="event.preventDefault(); showLoginForm()">Login Here</a></p>
-        </form>
-    </div>
-</div>
+      Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+          if (!form.checkValidity()) {
+            event.preventDefault()
+            event.stopPropagation()
+          }
 
-<!-- Bootstrap and jQuery -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+          form.classList.add('was-validated')
+        }, false)
+      })
+    })()
+  </script>
+  <script type="module" src="../js/auth.js"></script>
+  <script type="module" src="../js/router.js"></script>
 </body>
+
 </html>

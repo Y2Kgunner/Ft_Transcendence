@@ -1,0 +1,89 @@
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+  }
+  
+  @font-face {
+	font-family: 'PixelatedFont';
+	src: url('../assets/Pixelated/pix/pix.ttf') format('truetype'); /* Update the path to your font file */
+  }
+  
+  body {
+	font-family: 'PixelatedFont', sans-serif; /* Use the custom font as the default font */
+	/* padding-top: 30vh; */
+  }
+  
+  #loginPassword {
+	font-family: sans-serif, 'Arial'; /* Change the font family to Arial or any other system font */
+  }
+  
+  .pongLogo {
+	width: 10vw;
+	max-width: 65px;
+	min-width: 40px;
+  }
+  
+  .secForm {
+	max-width: 650px;
+  }
+  
+  .navbar-toggler {
+	font-size: 1.25rem;
+	background-color: #c9e9c9;
+	box-shadow: 0 0 3px 3px #037e03;
+  }
+  
+  .navbar-toggler:focus, .btn-close:focus {
+	box-shadow: none;
+  }
+  
+  .nav-link {
+	margin-right: 40px;
+	color: darkgrey;
+	font-weight: 500;
+	position: relative;
+  }
+  
+  .navbar-nav {
+	/* margin-right: 20px; */
+	--bs-nav-link-hover-color: #7ce188;
+  }
+  
+  .offcanvas {
+	background-color: #212121;
+	width: 300px !important; 
+  }
+  
+  .nav-link:hover, .nav-link.active {
+	color: #c3edc4;
+  }
+  
+  @media (min-width: 991px) {
+	.nav-link::before {
+	  content: '';
+	  position: absolute;
+	  bottom: 0;
+	  left: 50%;
+	  transform: translateX(-50%);
+	  width: 0;
+	  height: 2px;
+	  background-color: #738d74;
+	  visibility: hidden;
+	  transition: 0.3s ease-in-out;
+	}
+  
+	.nav-link:hover::before, .nav-line.active::before {
+	  width: 100%;
+	  visibility: visible;
+	}
+  }
+  
+  .hero-section {
+	margin-top: 30vh;
+  }
+  
+  .player-button {
+	width: 30vw;
+	/* min-width: 300px; */
+  }

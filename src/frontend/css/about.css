@@ -1,106 +1,221 @@
-.team {
-    background: #000;
-    padding: 60px 0;
+/* body {
+	font-family: 'PixelatedFont', sans-serif;
+	font-size: 20px;
+	overflow: hidden;
 }
 
-.team .section-title h2,
-.team .section-title p {
-    color: #fff;
-    text-align: center;
-    margin-bottom: 30px;
+@font-face {
+	font-family: 'PixelatedFont';
+	src: url('../assets/Pixelated/pix/pix.ttf') format('truetype');
 }
 
-.team .member {
-    margin-bottom: 20px;
-    overflow: hidden;
-    border-radius: 5px;
-    background: #000;
-    box-shadow: 0px 2px 15px rgba(0, 255, 0, 0.1);
-    border: 2px solid green;
+section {
+	top: 150px;
+	position: relative;
+	color:rgb(255, 255, 254);
 }
 
-.team .member .member-img {
-    position: relative;
-    overflow: hidden;
+.socialIcons > a {
+	text-decoration: none;
 }
 
-.team .member .social {
-    position: absolute;
-    left: 50%;
-    bottom: -20px;
-    transform: translateX(-50%);
-    opacity: 0;
-    transition: ease-in-out 0.3s;
-    text-align: center;
+.cardHousing {
+	width: 9.4vw;
+	min-width: 230px;
+	max-width: 250px;
+	height: 38vh;
+  min-height: 450px;
+  max-height: 500px;
+	margin-top: 20px;
 }
 
-.team .member .social a {
-    color: #fff;
-    background: rgba(255, 255, 255, 0.2);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    padding: 8px;
-    box-shadow: 0 0 8px green;
-    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
-    width: 50px; /* Adjust the size as needed */
-    height: 50px; /* Adjust the size as needed */
-    border-radius: 50%; /* This makes the element circular */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-shadow: 0 0 8px green; /* Apply text shadow for glow effect */
+.cardHousing:hover > .card {
+	transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+}
+
+.card {
+	height: 100%;
+	width: 100%;
+	margin-bottom: 10px;
+	padding: 25px;
+	position: relative;
+	transition: transform 869ms;
+	transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+}
+
+.customH1 {
+	color: #f6fff4;
+	text-shadow: 5px 5px 10px #3a9a0a;
+}
+
+.front, .back {
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	box-shadow: 0 0 15px #bbf99c;
+  padding: 1px;
+
+}
+
+.back {
+	display: flex;
+	padding-left: 2px;
+	padding-right: 2px;
+	transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+    backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.customWidth {
+  width: 2vmin;
+  height: 2vmin;
+	min-width: 200px;
+	min-height: 200px;
+	max-width: 250px;
+	max-height: 250px ;
+	box-shadow: 0 0 10px #c9dbc0;
+}
+
+.btn:hover {
+	--bs-btn-hover-color: #ffffff;
+	--bs-btn-hover-bg: #9c9ea0;
+	box-shadow: 0 0 15px 3px #12190e;
+}
+
+.icon:hover {
+	box-shadow: 0 0 10px 5px #585f51;
+}
+
+.cardButton {
+	width: 75%;
 }
 
 
-.team .member .social a:hover {
-    background: #0f0;
-    box-shadow: 0 0 15px green, 0 0 20px green;
-}
 
-.team .member .social i {
-    font-size: 40px;
-}
 
-.team .member .member-info h4,
-.team .member .member-info span,
-.team .member .member-info p {
-    color: #fff;
-    text-align: center;
-    font-family: 'Press Start 2P', 'Pixelated', sans-serif;
-}
 
-.team .member .member-info h4 {
-    font-weight: 700;
-    margin-bottom: 5px;
-    font-size: 18px;
-}
 
-.team .member .member-info span {
-    display: block;
-    font-size: 13px;
-    font-weight: 400;
-}
 
-.team .member .member-info p {
-    font-style: italic;
-    font-size: 14px;
-    line-height: 26px;
-}
 
-.team .member:hover .social {
-    opacity: 1;
-    bottom: 15px;
-}
 
-.team .member .social a .bi-github {
-    font-size: 40px;
-    color: #fff;
-    text-shadow: 0 0 8px green, 0 0 10px green;
-}
+
+
+
+
+
+
+
+
+ */
+
+
+
+
 
 body {
-    font-family: 'Press Start 2P', 'Pixelated', sans-serif;
-    background-color: #000000;
+	font-family: 'PixelatedFont', sans-serif; /* Use the custom font as the default font */
+	font-size: 20px;
+	overflow: hidden;
 }
+
+@font-face {
+	font-family: 'PixelatedFont';
+	src: url('../assets/Pixelated/pix/pix.ttf') format('truetype'); /* Update the path to your font file */
+}
+
+section {
+	top: 150px;
+	position: relative;
+	color:rgb(255, 255, 254);
+}
+
+.socialIcons > a {
+	text-decoration: none;
+}
+
+.btn:hover {
+	--bs-btn-hover-color: #ffffff;
+	--bs-btn-hover-bg: #9c9ea0;
+	box-shadow: 0 0 15px 3px #12190e;
+}
+
+.icon:hover {
+	box-shadow: 0 0 10px 5px #585f51;
+}
+
+.cardButton {
+	width: 75%;
+}
+
+.customH1 {
+	color: #f6fff4;
+	text-shadow: 5px 5px 10px #3a9a0a;
+}
+
+.cardHousing:hover > .card {
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+}
+
+.cardHousing {
+	width: 9.4vw;
+	min-width: 230px;
+	max-width: 250px;
+	height: 38vh;
+  min-height: 450px;
+  max-height: 500px;
+	margin-top: 20px;
+  perspective: 1000px;
+  -webkit-perspective: 1000px;
+}
+
+.card {
+	height: 100%;
+	width: 100%;
+	margin-bottom: 10px;
+	padding: 25px;
+	position: relative;
+	transition: transform 869ms;
+	transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(-1px);
+  -webkit-transform: translateZ(-1px);
+}
+
+.front, .back {
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	box-shadow: 0 0 15px #bbf99c;
+  padding: 1px;
+}
+
+.front {
+  backface-visibility: visible;
+  -webkit-backface-visibility: visible;
+}
+
+.back {
+	display: flex;
+	padding-left: 2px;
+	padding-right: 2px;
+	transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.customWidth {
+  width: 2vmin;
+  height: 2vmin;
+	min-width: 200px;
+	min-height: 200px;
+	max-width: 250px;
+	max-height: 250px ;
+	box-shadow: 0 0 10px #c9dbc0;
+}
+

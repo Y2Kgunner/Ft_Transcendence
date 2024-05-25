@@ -1,0 +1,26 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+#navbar {
+  height: 69px; /* adjust the height of the navbar */
+}
+
+#carouselExampleDark {
+  position: absolute;
+  top: 60px; /* adjust the top position to match the height of the navbar */
+  left: 0;
+  width: 100%;
+  height: calc(100vh - 60px); /* take up the entire screen height minus the navbar height */
+}
+
+.carousel-inner {
+  height: 100%; /* take up the full height of the carousel */
+}
+
+.carousel-item img {
+  height: calc(100% - 40px); /* subtract the padding from the height */
+  object-fit: cover;
+  width: 100%;
+}

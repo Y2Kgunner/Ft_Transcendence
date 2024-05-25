@@ -400,38 +400,37 @@ function continueGame() {
 
 
 function fetchUserProfile() {
-    return fetch('https://127.0.0.1:443/api/profile', {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + getCookie('jwt')
-        }
-    })
+  return fetch('https://127.0.0.1:443/api/profile', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + getCookie('jwt')
+    }
+  })
     .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
     })
     .then(data => {
-        return data.username;
+      return data.username;
     })
     .catch(error => {
-        console.error('Failed to fetch user profile:', error);
-        return 'Unknown';
+      console.error('Failed to fetch user profile:', error);
+      return 'Unknown';
     });
 }
 
 function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-      const cookies = document.cookie.split(';');
-      for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i].trim();
-        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-          break;
-        }
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
       }
     }
    //console.log('Cookie value:', cookieValue);
@@ -459,10 +458,10 @@ function createTournament() {
         body: JSON.stringify(tournamentData)
     })
     .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
     })
     .then(data => {
         console.log('Tournament    :', data);
@@ -473,8 +472,8 @@ function createTournament() {
         // getNextMatch(data.id);
     })
     .catch(error => {
-        console.error('Failed to create tournament:', error);
-        alert('Failed to create tournament. Please try again.');
+      console.error('Failed to create tournament:', error);
+      alert('Failed to create tournament. Please try again.');
     });
 }
 
@@ -688,7 +687,7 @@ function setTournamentId(data) {
 }
 
 function getTournamentId() {
-    return localStorage.getItem('currentTournamentId');
+  return localStorage.getItem('currentTournamentId');
 }
 
 export { setupTournamentPage };

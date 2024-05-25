@@ -84,10 +84,10 @@ function updateProfilePage(userData) {
     }
 
     document.getElementById('twoFactorAuth').textContent = userData.twofa_enabled ? 'Enabled' : 'Disabled';
-    // if (userData.profile_picture) {
-    //   document.querySelector('.profile-picture').style.backgroundImage = `url('${userData.profile_picture}')`;
-    // }else {
-    //   document.querySelector('.profile-picture').style.backgroundImage = `url(/assets/profile_pictures/default.png')`;
+    if (userData.profile_picture) {
+      document.querySelector('.profile-picture').style.backgroundImage = `url('${userData.profile_picture}')`;
+    }else {
+      document.querySelector('.profile-picture').style.backgroundImage = `url('../assets/profile_pictures/default.png')`;
       //console.log('profile picture not found');
     }
 
@@ -229,27 +229,42 @@ function loadMatchHistory(playerId) {
 }
 
 function fetchProfilePicture() {
-    fetch('https://127.0.0.1:443/api/get_profile_picture/', {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${getCookie('jwt')}`
-        },
-    })
-    .then(response => {
-        console.log(response);
-        if (response.ok) {
-            return response.blob();
-        } else {
-            throw new Error('Network response was not ok.');
-        }
-    })
-    .then(blob => {
-        document.getElementById('profilePicture').src = URL.createObjectURL(blob);
-    })
-    .catch((error) => {
-        console.error('Error retrieving profile picture:', error);
-        document.getElementById('profilePicture').src = '../assets/profile_pictures/default.png';
-    });
+  const jwtToken = getCookie('jwt'); 
+  if (!jwtToken) {
+      console.error('JWT token is not available. User might not be authenticated.');
+      return;
+  }
+
+  fetch('https://127.0.0.1:443/api/get_profile_picture/', {
+      method: 'GET',
+      headers: {
+          'Authorization': `Bearer ${jwtToken}`,
+          'Content-Type': 'application/json'
+      },
+  })
+  .then(response => {
+      if (!response.ok) {
+          throw new Error(`Network response was not ok: ${response.statusText}`);
+      }
+      return response.json();
+  })
+  .then(data => {
+      if (data.profile_picture_url) {
+          const profilePictureElement = document.getElementById('profilePicture');
+          if (profilePictureElement) {
+              profilePictureElement.src = data.profile_picture_url + '?v=' + new Date().getTime();
+          } else {
+              console.error('Profile picture element not found in the document.');
+          }
+      } else {
+          console.error('Profile picture URL is missing in the response data.');
+          document.getElementById('profilePicture').src = '../assets/profile_pictures/default.png';
+      }
+  })
+  .catch(error => {
+      console.error('Error fetching the profile picture:', error);
+      document.getElementById('profilePicture').src = '../assets/profile_pictures/default.png';
+  });
 }
 
 // function fetchProfilePicture() {

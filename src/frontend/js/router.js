@@ -26,7 +26,7 @@ class Router {
             logoutUser();
             return this.loadRoute('/logout');
         } else if (path === '/login') {
-            return this.loadRoute('pages/newLogin.html', setupAuthPage);
+            return this.loadRoute('pages/login.html', setupAuthPage);
         }
     
         const route = this.routes[path] || this.routes['/login'];
@@ -79,6 +79,7 @@ class Router {
 
 const routes = {
     '/': { path: 'pages/home.html', method: null }, 
+    '/home': { path: 'pages/home.html', method: null }, 
     '/login': { path: 'pages/login.html', method: setupAuthPage },
     '/profile': { path: 'pages/profile.html', method: setupProfilePage },
     '/about': { path: 'pages/about.html', method: null },
