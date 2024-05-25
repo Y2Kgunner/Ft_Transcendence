@@ -9,10 +9,11 @@ class Match(models.Model):
     score_player = models.IntegerField(default=0)
     score_guest_player1 = models.IntegerField(default=0)
     score_guest_player2 = models.IntegerField(default=0, null=True, blank=True) 
-    winner = models.CharField(max_length=10, null=True, blank=True)
+    winner = models.CharField(max_length=20, null=True, blank=True)
     is_deleted = models.BooleanField(default=False)
     deleted_at = models.DateTimeField(null=True, blank=True)
     completed = models.BooleanField(default=False)
+    type = models.CharField(max_length=4)
 
     def __str__(self):
         return f"Match {self.id} on {self.match_date}"

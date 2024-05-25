@@ -11,10 +11,12 @@ def create_match(request):
     data = json.loads(request.body)    
     player_id = data.get('player_id')
     guest_player1 = data.get('guest_player1')
-    guest_player2 = data.get('guest_player2', None)  
+    guest_player2 = data.get('guest_player2', None)
+    type = data.get('type')
     match = Match.objects.create(
         player_id=player_id,
         guest_player1=guest_player1,
-        guest_player2=guest_player2
+        guest_player2=guest_player2,
+        type = type
     )
     return JsonResponse({'message': 'Match created successfully', 'match_id': match.id}, status=200)
