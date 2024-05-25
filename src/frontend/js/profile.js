@@ -267,21 +267,35 @@ function updateProfilePage(userData) {
                 document.getElementById('profilePicture').src = '../assets/profile_pictures/default.png';
             });
     }
-
     function setupUploadProfilePictureButton() {
         const uploadButton = document.getElementById('uploadPicButton');
         const fileInput = document.getElementById('profilePictureInput');
-
+        console.log(uploadButton);
+        console.log(fileInput);
         if (uploadButton && fileInput) {
             uploadButton.addEventListener('click', () => {
                 fileInput.click();
             });
-
+      
             fileInput.addEventListener('change', uploadProfilePicture);
         } else {
             console.error('Elements not found: uploadButton or fileInput is null');
         }
-    };
+      }
+    // function setupUploadProfilePictureButton() {
+    //     const uploadButton = document.getElementById('uploadPicButton');
+    //     const fileInput = document.getElementById('profilePictureInput');
+
+    //     if (uploadButton && fileInput) {
+    //         uploadButton.addEventListener('click', () => {
+    //             fileInput.click();
+    //         });
+
+    //         fileInput.addEventListener('change', uploadProfilePicture);
+    //     } else {
+    //         console.error('Elements not found: uploadButton or fileInput is null');
+    //     }
+    // };
 
     function uploadProfilePicture() {
         const fileInput = document.getElementById('profilePictureInput');
