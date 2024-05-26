@@ -3,7 +3,7 @@ all: build up make-and-apply-migrations bash
 SRC_DIR=src
 
 build:
-	cd $(SRC_DIR) && docker-compose build --no-cache
+	cd $(SRC_DIR) && docker-compose build
 	
 up:
 	cd $(SRC_DIR) && docker-compose up -d
