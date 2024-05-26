@@ -66,24 +66,24 @@ function setupGamePage() {
     console.log(player2Alias);
     player2alias.addEventListener('input', checkInput);
     startGameBtn.addEventListener('click', async function (event) {
-        await createMatch();
+        await createMatch("Pong");
         startGame();
-        await waitGameFinish();
+        await waitGameFinish(gameOver);
         updateMatch();
     });
     restartGameBtn.addEventListener('click', async function (event) {
-        await createMatch();
+        await createMatch("Pong");
         startGame();
-        await waitGameFinish();
+        await waitGameFinish(gameOver);
         updateMatch();
     });
     
 };
 
-function waitGameFinish(interval = 100) {
+function waitGameFinish(gameStatus,interval = 100) {
     return new Promise(resolve => {
       const check = () => {
-        if(gameOver) {
+        if(gameStatus) {
           console.log("game over")
           resolve();
         } else {
@@ -95,10 +95,11 @@ function waitGameFinish(interval = 100) {
     })
   }
 
-async function createMatch() {
+async function createMatch(type) {
     const matchData = {
         player_id: playerId,
-        guest_player1: player2Alias
+        guest_player1: player2Alias,
+        game_type : type
     };
     console.log(matchData)
     const response = await fetch('https://127.0.0.1:443/pongApp/create', {
@@ -366,4 +367,4 @@ function continueGame() {
     }, { once: true });
 }
 
-export { setupGamePage,fetchUserProfile,isPrintableASCII };
+export { setupGamePage,fetchUserProfile,isPrintableASCII ,createMatch,waitGameFinish,updateMatch};

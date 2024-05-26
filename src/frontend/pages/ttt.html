@@ -40,6 +40,26 @@
         </div>
       </div>
       
+      <div class="modal rounded-3" id="restartGame" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+      aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="container-fluid gradientHousing rounded-3">
+          <div class="modal-content custoModal">
+            <div class="modal-header bg-dark justify-content-center">
+              <h5 class="modal-title gradientText h2" id="staticBackdropLabel">Game Over!</h5>
+            </div>
+            <div class="modal-body text-center bg-dark">
+              <h5 id="GameWinner" class="gradientText"></h5>
+            </div>
+            <div class="modal-footer justify-content-center pb-4 bg-dark">
+              <div class="gradientHousingBtn">
+                <button type="button" class="btn custoModal" id="restartGameBtn" data-bs-dismiss="modal">Restart Game</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
         <div id="game-container" class="game" >
             <div class="player-names"></div>
             <p class="turn">Mouse Turn</p>
