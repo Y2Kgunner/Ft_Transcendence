@@ -10,5 +10,6 @@ urlpatterns = [
     path('complete/<int:tournament_id>', complete_tournament, name='complete_tournament'),
     path('get-next-match/<int:tournament_id>', get_next_match, name='get_next_match'),    
     path('submit', submit_match_result_by_details, name='submit_match_result_by_details'),
-    path('update-match-result/<int:match_id>/', update_match_result, name='update_match_result')
+    path('update-match-result/<int:match_id>/', update_match_result, name='update_match_result'),
+    path('get_second_round_matches/<int:tournament_id>', get_second_round_matches, name='get_second_round_matches')
 ]
