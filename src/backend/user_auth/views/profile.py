@@ -101,16 +101,18 @@ def delete_profile_picture(request):
 @require_http_methods(["GET"])
 def get_profile_picture(request):
     user = request.user
-    if user.profile_picture:
-        picture_url = request.build_absolute_uri(user.profile_picture.url)
-        print(picture_url)
-        print(user.profile_picture.url)
-        img_path = "/backend" + user.profile_picture.url
-        img=open(img_path,'rb')
-        
-        res = FileResponse(img)
-        
-        return res
-        # return JsonResponse({'profile_picture_url': picture_url}, status=200)
-    else:
-        return JsonResponse({'error': 'No profile picture set.'}, status=201)
+    try:    
+        if user.profile_picture:
+            picture_url = request.build_absolute_uri(user.profile_picture.url)
+            print(picture_url)
+            print(user.profile_picture.url)
+            img_path = "/backend" + user.profile_picture.url
+            img=open(img_path,'rb')
+            res = FileResponse(img)
+            
+            return res
+            # return JsonResponse({'profile_picture_url': picture_url}, status=200)
+        else:
+            return JsonResponse({'error': 'No profile picture set.'}, status=201)
+    except FileNotFoundError:
+            return JsonResponse({'error': 'No profile picture set.'}, status=201)

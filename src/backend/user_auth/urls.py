@@ -25,5 +25,7 @@ urlpatterns = [
     path('delete_account', delete_user_account),
     path('auth_status', check_auth_status, name='check_auth_status'),
     path('get_profile_picture/', get_profile_picture, name='get_profile_picture'),
-    path('upload_profile_picture/', upload_profile_picture, name='upload_profile_picture')
-]
+    path('upload_profile_picture/', upload_profile_picture, name='upload_profile_picture'),
+    path('forgot_password_send_email',forgot_password_send_email),
+    path('reset_password/<str:token>/', reset_password, name='reset_password')
+    ]
