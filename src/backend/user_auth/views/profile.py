@@ -96,23 +96,18 @@ def delete_profile_picture(request):
         return JsonResponse({'message': 'Profile picture deleted successfully.'}, status=200)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
-
-@csrf_exempt
 @require_http_methods(["GET"])
 def get_profile_picture(request):
     user = request.user
-    try:    
-        if user.profile_picture:
-            picture_url = request.build_absolute_uri(user.profile_picture.url)
-            print(picture_url)
-            print(user.profile_picture.url)
-            img_path = "/backend" + user.profile_picture.url
-            img=open(img_path,'rb')
-            res = FileResponse(img)
-            
-            return res
-            # return JsonResponse({'profile_picture_url': picture_url}, status=200)
-        else:
-            return JsonResponse({'error': 'No profile picture set.'}, status=201)
-    except FileNotFoundError:
-            return JsonResponse({'error': 'No profile picture set.'}, status=201)
+    if not user.is_authenticated:
+        return JsonResponse({'error': 'User not authenticated.'}, status=401)
+
+    if not user.profile_picture:
+        return JsonResponse({'error': 'No profile picture set.', 'profile_picture_url': None}, status=200)
+
+    if not user.profile_picture.storage.exists(user.profile_picture.name):
+        default_picture_url = request.build_absolute_uri('/media/default-profile-picture.jpg')
+        return JsonResponse({'error': 'Profile picture not found.', 'profile_picture_url': default_picture_url}, status=302)
+
+    picture_url = request.build_absolute_uri(user.profile_picture.url)
+    return JsonResponse({'profile_picture_url': picture_url}, status=200)

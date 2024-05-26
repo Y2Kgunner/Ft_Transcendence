@@ -47,7 +47,11 @@ def oauth_callback(request):
         headers = {'Authorization': f'Bearer {access_token}'}
         user_info_response = requests.get(user_info_url, headers=headers)
         user_info_response.raise_for_status()
-        user_info = user_info_response.json()
+        user_info = user_info_response.json()     
+        image_versions = user_info.get('image', {}).get('versions', {})
+        small_image_url = image_versions.get('small', 'default-profile-picture-url.jpg')
+        
+        # print("Profile Picture URL:", small_image_url)
         
         UserModel = get_user_model()
         user, created = UserModel.objects.get_or_create(username=user_info['login'], defaults={
@@ -55,10 +59,10 @@ def oauth_callback(request):
             'first_name': user_info['first_name'],
             'last_name': user_info['last_name'],
             'twofa_enabled': False,
-            'profile_picture': user_info['image']['link']['versions']['small'],
+            'profile_picture': small_image_url,
             'is_staff': True
         })
-        print(profile_picture)
+        
         if created:
             user.set_unusable_password()
             user.save()

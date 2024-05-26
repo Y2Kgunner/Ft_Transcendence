@@ -235,38 +235,68 @@ function updateProfilePage(userData) {
             console.error('JWT token is not available. User might not be authenticated.');
             return;
         }
-
+    
         fetch('https://127.0.0.1:443/api/get_profile_picture/', {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${jwtToken}`,
-                'Content-Type': 'application/json'
             },
         })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Network response was not ok: ${response.statusText}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.profile_picture_url) {
-                    const profilePictureElement = document.getElementById('profilePicture');
-                    if (profilePictureElement) {
-                        profilePictureElement.src = data.profile_picture_url + '?v=' + new Date().getTime();
-                    } else {
-                        console.error('Profile picture element not found in the document.');
-                    }
-                } else {
-                    console.error('Profile picture URL is missing in the response data.');
-                    document.getElementById('profile-picture').src = '../assets/profile_pictures/default.png';
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching the profile picture:', error);
-                document.getElementsById('profile-picture').src = '../assets/profile_pictures/default.png';
-            });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Network response was not ok: ${response.statusText}`);
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            const url = URL.createObjectURL(blob);
+            document.getElementById('profilePicture').src = url + '?v=' + new Date().getTime();
+        })
+        .catch(error => {
+            // console.error('Error fetching the profile picture:', error);
+            document.getElementById('profilePicture').src = '../assets/profile_pictures/default.png';
+        });
     }
+    
+    // function fetchProfilePicture() {
+    //     const jwtToken = getCookie('jwt');
+    //     if (!jwtToken) {
+    //         console.error('JWT token is not available. User might not be authenticated.');
+    //         return;
+    //     }
+
+    //     fetch('https://127.0.0.1:443/api/get_profile_picture/', {
+    //         method: 'GET',
+    //         headers: {
+    //             'Authorization': `Bearer ${jwtToken}`,
+    //             'Content-Type': 'application/json'
+    //         },
+    //     })
+    //         .then(response => {
+    //             if (!response.ok) {
+    //                 throw new Error(`Network response was not ok: ${response.statusText}`);
+    //             }
+    //             return response.json();
+    //         })
+    //         .then(data => {get_profile_pictur
+    //             if (data.profile_picture_url) {
+    //                 const profilePictureElement = document.getElementById('profilePicture');
+    //                 if (profilePictureElement) {
+    //                     profilePictureElement.src = data.profile_picture_url + '?v=' + new Date().getTime();
+    //                 } else {
+    //                     console.error('Profile picture element not found in the document.');
+    //                 }
+    //             } else {
+    //                 console.error('Profile picture URL is missing in the response data.');
+    //                 document.getElementById('profile-picture').src = '../assets/profile_pictures/default.png';
+    //             }
+    //         })
+    //         // .catch(error => {
+    //         //     console.error('Error fetching the profile picture:', error);
+    //         //     document.getElementsById('profile-picture').src = '../assets/profile_pictures/default.png';
+    //         // });
+    // }
+
     function setupUploadProfilePictureButton() {
         const uploadButton = document.getElementById('uploadPicButton');
         const fileInput = document.getElementById('profilePictureInput');
