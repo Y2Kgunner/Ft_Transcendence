@@ -2,7 +2,7 @@ import { setupAuthPage, logoutUser, isAuthenticated } from './auth.js';
 import { fetchUserProfile, setupAnonymizeButton, setupDeleteProfileButton, setupCloseButton, setUpVerifyDeleteOtpButton, setupUploadProfilePictureButton } from './profile.js';
 import { setupTournamentPage } from './tournament.js';
 import { setupGamePage } from './game.js';
-import { setupMultiGamePage } from './multiGame.js';
+import { init3PlyrPong } from './pong3.js';
 import { setupTTT } from './ttt.js';
 
 async function removeOpenModals() {
@@ -36,14 +36,14 @@ class Router {
         const modal = document.getElementById('myModal');
         if (modal && !modal.hasAttribute('data-loaded')) {
             // The modal is present but not fully loaded
-            return new Promise((resolve) => {
+            // return new Promise((resolve) => {
                 const modalInstance = bootstrap.Modal.getInstance(modal);
                 modalInstance.show();
                 modalInstance._element.addEventListener('loaded', function () {
                     modal.setAttribute('data-loaded', 'true');
                     resolve();
                 }, { once: true });
-            });
+            // });
         }
         removeOpenModals();
 
@@ -112,7 +112,7 @@ const routes = {
     '/about': { path: 'pages/about.html', method: null },
     '/ttt': { path: 'pages/ttt.html', method: setupTTT },
     '/pong2': { path: 'pages/pong2.html', method: setupGamePage },
-    '/pong3': { path: 'pages/multiGame.html', method: setupMultiGamePage },
+    '/pong3': { path: 'pages/pong3.html', method: init3PlyrPong },
     '/tournament': { path: 'pages/tournament.html', method: setupTournamentPage },
     '/logout': { path: '', method: null }
 };
