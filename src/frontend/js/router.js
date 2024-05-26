@@ -4,8 +4,18 @@ import { setupTournamentPage } from './tournament.js';
 import { setupGamePage } from './game.js';
 import { setupMultiGamePage } from './multiGame.js';
 import { setupTTT } from './ttt.js';
+
+async function removeOpenModals() {
+    const modals = document.querySelectorAll('.modal.show');
+    modals.forEach((modal) => {
+        const modalInstance = bootstrap.Modal.getInstance(modal);
+        modalInstance.hide();
+        modalInstance._element.addEventListener('hidden.bs.modal', function () {
+        }, { once: true });
+    });
+}
 class Router {
-    constructor (routes) {
+    constructor(routes) {
         this.routes = routes;
     }
 
@@ -22,12 +32,21 @@ class Router {
             //console.log(`Already navigated to: ${path}`);
             return;
         }
-        const modals = document.querySelectorAll('.modal.show');
-        modals.forEach((modal) => {
-            const modalInstance = bootstrap.Modal.getInstance(modal);
-            modalInstance.hide();
-        });
-        
+
+        const modal = document.getElementById('myModal');
+        if (modal && !modal.hasAttribute('data-loaded')) {
+            // The modal is present but not fully loaded
+            return new Promise((resolve) => {
+                const modalInstance = bootstrap.Modal.getInstance(modal);
+                modalInstance.show();
+                modalInstance._element.addEventListener('loaded', function () {
+                    modal.setAttribute('data-loaded', 'true');
+                    resolve();
+                }, { once: true });
+            });
+        }
+        removeOpenModals();
+
         this.lastPath = path;
 
         if (path === '/logout') {
