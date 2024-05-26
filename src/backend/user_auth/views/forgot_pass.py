@@ -43,7 +43,8 @@ def forgot_password_send_email(request):
         reset_url = f"https://127.0.0.1:443/api/reset_password/{token}/"
         send_email(user, f'Click the link to reset your password: https://127.0.0.1:443/api/reset_password/{user.id}/')
         #response = JsonResponse({'message': 'If an account with this email exists, a reset link has been sent.'}, status=200)
-        #for testing 
+        #response.set_cookie('jwt', token, httponly=True, expires=datetime.now() + timedelta(hours=1))
+        #for testing through insomnia - remove this once the frontend is ready
         response =  JsonResponse({"token":token}, status=200)
         return response
     except json.JSONDecodeError:
