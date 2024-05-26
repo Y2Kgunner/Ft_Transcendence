@@ -5,6 +5,7 @@ from django.views.decorators.http import require_http_methods
 from pongApp.models import Match
 import json
 from pongApp.models import Match, update_guest_stats, update_player_stats
+from django.db import transaction
 
 @csrf_exempt
 @require_http_methods(["POST"])
@@ -18,35 +19,33 @@ def update_match(request):
     score_player = data.get('score_player')
     score_guest_player1 = data.get('score_guest_player1')
     score_guest_player2 = data.get('score_guest_player2', 0)
-    winner_name = data.get('winner')
-
-    if not all([match_id, score_player is not None, score_guest_player1 is not None, winner_name]):
+    is_draw = data.get('is_draw')
+    if not all([match_id, score_player is not None, score_guest_player1 is not None]):
         return JsonResponse({'error': 'Missing required fields'}, status=400)
-
     try:
-        match = Match.objects.get(id=match_id)
-        match.score_player = score_player
-        match.score_guest_player1 = score_guest_player1
-        match.score_guest_player2 = score_guest_player2
-        match.winner = winner_name
-        match.game_completed = True
-        match.save()
+        with transaction.atomic():
+            match = Match.objects.select_for_update().get(id=match_id)
+            match.score_player = score_player
+            match.score_guest_player1 = score_guest_player1
+            match.score_guest_player2 = score_guest_player2
+            match.is_draw = is_draw
+            if is_draw:
+                match.winner = "darw"
+            else:
+                match.winner = data.get('winner')
+            match.game_completed = True
+            match.save()
 
-        match.save_guest_scores(match.guest_player1, score_guest_player1)
-        match.save_guest_scores(match.guest_player2, score_guest_player2)
+            if match.player:
+                update_player_stats(match.winner, match.player.username, match)
 
-        if match.player:
-            try:
-                update_player_stats(winner_name, match.player.username, match)
-            except (AttributeError, Exception) as e:
-                print(f"Error updating player stats: {e}")
+            if match.guest_player1:
+                update_guest_stats(match.winner, match.guest_player1, match)
 
-        if match.guest_player1:
-            update_guest_stats(winner_name, match.guest_player1, match)
-
-            if winner_name != match.guest_player1 and match.guest_player2:
-                update_guest_stats(winner_name, match.guest_player2, match)
+                if match.guest_player2:
+                    update_guest_stats(match.winner, match.guest_player2, match)
 
     except Match.DoesNotExist:
         return JsonResponse({'error': 'Match not found'}, status=404)
     return JsonResponse({'message': 'Match updated successfully', 'match_id': match.id}, status=200)
+

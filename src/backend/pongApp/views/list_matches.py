@@ -25,5 +25,5 @@ def player_match_history(request):
     except Match.DoesNotExist:
         return JsonResponse({'error': 'No matches found for the given player_id'}, status=404)
     matches_data = list(matches.values(
-        'id', 'guest_player1', 'guest_player2', 'match_date','score_player', 'score_guest_player1', 'score_guest_player2', 'winner', 'game_type'))
+        'id', 'guest_player1', 'guest_player2', 'match_date','score_player', 'score_guest_player1', 'score_guest_player2', 'winner', 'game_type','is_draw'))
     return JsonResponse({'matches': matches_data}, safe=False, status=200)

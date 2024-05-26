@@ -14,6 +14,7 @@ class Match(models.Model):
     deleted_at = models.DateTimeField(null=True, blank=True)
     game_completed = models.BooleanField(default=False)
     game_type = models.CharField(max_length=4, blank=True, null=True)
+    is_draw = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Match {self.id} on {self.match_date}"
