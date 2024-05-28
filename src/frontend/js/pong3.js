@@ -43,7 +43,7 @@ let paddle3MovingLeft = false;
 let paddle3MovingRight = false;
 
 // Input validation
-var inputField;
+// var inputField;
 var startGameBtn;
 var startModal;
 var form;
@@ -51,10 +51,6 @@ var modalInit = false;
 const inputIds = ["player2alias", "player3alias"];
 
 let pauseModalInstance;
-
-// window.onload = function () {
-//   checkInput();
-// }
 
 function init3PlyrPong() {
   startModal = new bootstrap.Modal(document.getElementById('startGameModal'));

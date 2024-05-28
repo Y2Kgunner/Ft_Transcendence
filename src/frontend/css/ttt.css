@@ -1,187 +1,166 @@
 @font-face {
-    font-family: 'PixelatedFont';
-    src: url('../assets/Pixelated/pix/pix.ttf') format('truetype');
-    /* Update the path to your font file */
+  font-family: 'PixelatedFont';
+  src: url('../assets/Pixelated/pix/pix.ttf') format('truetype');
 }
 
 body {
-    font-family: 'PixelatedFont', sans-serif; /* Use the custom font as the default font */
-    overflow: hidden;
-    /* text-align: center;
-    background-color: black;
-    margin: 0;
-    padding: 0; */
-}
-
-.name-entry {
-    margin-top: 50px;
+  font-family: 'PixelatedFont', sans-serif;
+  overflow: hidden;
 }
 
 
-#player2alias {
-    background-color: #181915;
-    color: #51a40c;
-    border: none;
-    padding-left: 1em;
+#player2Name {
+  background-color: #181915;
+  color: #ffd900;
+  border: none;
+  padding-left: 1em;
 }
 
-#player2alias:focus {
-    box-shadow: 0 0 5px #57ae10;
-    /* Add a box shadow for a more prominent effect */
+#player2Name:focus {
+  box-shadow: 0 0 5px #ff8c00;
 }
 
 
 .modal-content {
-    background-color: transparent;
+  background-color: transparent;
 }
 
 
 .custoModal {
-    color: #357c10;
-    --bs-modal-header-border-color: none;
-    --bs-modal-footer-border-color: none;
+  color: rgb(180, 116, 19);
+  --bs-modal-header-border-color: none;
+  --bs-modal-footer-border-color: none;
 }
 
 .btn {
-    --bs-btn-bg: #282c2f;
-    --bs-btn-border-color: none;
-    --bs-btn-color: #f2f2f2;
-    --bs-btn-hover-bg: #1f7016;
-    --bs-btn-hover-border-color: #1f7016;
-    --bs-btn-active-color: #101010;
-    --bs-btn-active-bg: #1f7016;
-    --bs-btn-active-border-color: #1f7016;
-    --bs-btn-hover-color: #101010;
-    box-shadow: inset 0 0 3px 2px #1f7016;
+  --bs-btn-bg: #282c2f;
+  --bs-btn-border-color: none;
+  --bs-btn-color: #f2f2f2;
+  --bs-btn-hover-bg: #de7b01;
+  --bs-btn-hover-border-color: #de7b01;
+  --bs-btn-active-color: #101010;
+  --bs-btn-active-bg: #de7b01;
+  --bs-btn-active-border-color: #de7b01;
+  --bs-btn-hover-color: #101010;
+  box-shadow: inset 0 0 3px 2px #de7b01;
 }
 
 .custoModalbtn:hover {
-    box-shadow: 0 0 5px 2px #161616;
+  box-shadow: 0 0 5px 2px #161616;
 }
 
 .gradientHousing {
-    position: absolute;
-    padding: 5px;
-    overflow: hidden;
+  position: absolute;
+  padding: 5px;
+  overflow: hidden;
 }
 
 .gradientHousing:before {
-    content: "";
-    position: absolute;
-    left: -27%;
-    top: -125%;
-    height: 369%;
-    width: 150%;
-    /* background-image: conic-gradient(#1bd215, #a9940d, #1bd215, #a9940d, #1bd215, #a9940d, #1bd215, #a9940d, #1bd215); */
-    /* background-image: conic-gradient(#40e10f, #f06a05, #40e10f, #f06a05, #40e10f, #f06a05, #40e10f, #f06a05, #40e10f); */
-    background-image: conic-gradient(#3cff00, #2c5519, #3cff00, #2c5519, #3cff00);
-    animation: spin 4s infinite linear;
+  content: "";
+  position: absolute;
+  left: -27%;
+  top: -125%;
+  height: 369%;
+  width: 150%;
+  background-image: conic-gradient(#ff8c00, #552019, #ff8c00, #552019, #ff8c00);
+  animation: spin 4s infinite linear;
 }
 
 @keyframes spin {
-    100% {
-        transform: rotate(360deg);
-    }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 input[type="text"] {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 8px 12px;
-    font-size: 16px;
-    outline: none;
-    transition: border-color 0.3s ease-in-out;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 8px 12px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s ease-in-out;
 }
 
 
 input[type="text"]::placeholder {
-    color: #504e45;
+  color: #504e45;
+}
+
+.gradientPlayerNames {
+  background: linear-gradient(to right, #7c0a0a, #ff6a00, #e5ff00, #ff6a00, #7c0a0a, #ff6a00, #e5ff00, #ff6a00, #7c0a0a, #ff6a00, #e5ff00, #ff6a00, #7c0a0a, #ff6a00, #e5ff00, #ff6a00, #7c0a0a);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-size: 200% 100%;
+  animation: gradient 1s linear infinite;
 }
 
 .gradientText {
-    /* font-style: oblique; */
-    font-style: italic;
-    /* background: linear-gradient(to right,#40e10f, #f06a05, #40e10f, #f06a05, #40e10f); */
-    background: linear-gradient(to right, #3cff00, #2c5519, #3cff00, #2c5519, #3cff00, #2c5519, #3cff00, #2c5519, #3cff00, #2c5519, #3cff00, #2c5519, #3cff00);
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-    background-size: 200% 100%;
-    animation: gradient 5s linear infinite;
+  font-style: italic;
+  background: linear-gradient(to right, #7c0a0a, #e5ff00, #7c0a0a, #e5ff00, #7c0a0a, #e5ff00, #7c0a0a, #e5ff00, #7c0a0a, #e5ff00, #7c0a0a, #e5ff00, #7c0a0a);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-size: 200% 100%;
+  animation: gradient 2s linear infinite;
 }
 
 @keyframes gradient {
-    0% {
-        background-position: 100% 50%;
-    }
+  0% {
+    background-position: 100% 50%;
+  }
 
-    100% {
-        background-position: 0% 50%;
-    }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
-main {
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.game {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-    width: 100%;
-    max-width: 480px;
-    height: 480px;
+#game-container {
+  padding-top: 20vh;
 }
 
 .box {
-    width: 160px;
-    height: 160px;
-    color: #ff4500;
-    /* Fiery red */
-    text-shadow: 1px 1px 2px #ff8c00, 0 0 25px #ff4500, 0 0 5px #ff0000;
-    background: grey;
-    border: 1px solid black;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11rem;
-    font-weight: 600;
-    outline: none;
+  width: 14vmin;
+  height: 14vmin;
+  color: #ff4500;
+  background: #d0c600;
+  font-size: 11rem;
+  font-weight: 600;
+  outline: none;
+  box-shadow: inset 0 0 15px 5px #ff8c00, 0 0 5px #ff4500, 0 0 5px #ff0000;
+  margin: .3vmin;
 }
 
 p {
-    font-size: 1.4rem;
-    color: #e5ff00;
-    /* Fiery red */
-    text-shadow: 1px 1px 2px #ff8c00, 0 0 25px #ff4500, 0 0 5px #ff0000;
+  font-size: 1.4rem;
+  color: #e5ff00;
+  text-shadow: 0 0 2px #ff8c00, 0 0 25px #ff4500, 0 0 5px #ff0000;
 }
 
 .turn,
 .winner {
-    font-size: 1.5em;
-    margin: 10px 0;
+  font-size: 1.5em;
+  margin: 10px 0;
 }
 
-/* Add this to your CSS file (ttt.css) */
 
 .box.focus {
-    outline: 1px solid #ff4500;
-    /* Red outline to indicate focus */
+  box-shadow: inset 0 0 30px 10px #ff0000;
 }
 
 .player-names {
-    font-size: 2em;
-    color: #ff4500;
-    /* Fiery red */
-    text-shadow: 1px 1px 2px #ff8c00, 0 0 25px #ff4500, 0 0 5px #ff0000;
-    margin-bottom: 20px;
+  font-size: 3vw;
+}
+
+#startTTTModal {
+  --bs-modal-width: 550px;
+}
+
+.input-group .valid-feedback,
+.input-group .invalid-feedback {
+  display: none;
 }

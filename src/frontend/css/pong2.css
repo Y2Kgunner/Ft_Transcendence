@@ -219,6 +219,7 @@ body {
   color: #51a40c;
   border: none;
   padding-left: 1em;
+  width: 280px;
 }
 
 #player2alias:focus {
