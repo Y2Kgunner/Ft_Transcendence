@@ -27,5 +27,13 @@ urlpatterns = [
     path('get_profile_picture/', get_profile_picture, name='get_profile_picture'),
     path('upload_profile_picture/', upload_profile_picture, name='upload_profile_picture'),
     path('forgot_password_send_email',forgot_password_send_email),
-    path('reset_password/<str:token>/', reset_password, name='reset_password')
+    path('reset_password/<str:token>/', reset_password, name='reset_password'),
+    #friendship
+    path('add_friend/<int:user_id>', add_friend, name='add_friend'),
+    path('remove_friend/<int:user_id>', remove_friend, name='remove_friend'),
+    path('list_friends/', list_friends, name='list_friends'),
+    path('accept_friend_request/<int:user_id>', accept_friend_request),
+    path('reject_friend/<int:user_id>', reject_friend_request, name='reject_friend'),
+    path('check_username/<str:username>', check_username, name='check_username'),
+    path('pending_frinship_requets', pending_frinship_requets, name='pending_frinship_requets')
     ]

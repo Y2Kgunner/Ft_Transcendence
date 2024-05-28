@@ -23,6 +23,9 @@ def fortytwo(request):
     oauth_url = f'https://api.intra.42.fr/oauth/authorize?client_id={settings.CLIENT_ID_42}&redirect_uri={settings.CALLBACK_URL_42}&response_type=code'
     return redirect(oauth_url)
 
+
+
+
 @require_GET
 def oauth_callback(request):
     code = request.GET.get('code')
@@ -50,8 +53,9 @@ def oauth_callback(request):
         user_info = user_info_response.json()     
         image_versions = user_info.get('image', {}).get('versions', {})
         small_image_url = image_versions.get('small', 'default-profile-picture-url.jpg')
-        
-        # print("Profile Picture URL:", small_image_url)
+        print("********************************************************")
+        # print("User Info:", user_info)
+        print("Profile Picture URL:", small_image_url)
         
         UserModel = get_user_model()
         user, created = UserModel.objects.get_or_create(username=user_info['login'], defaults={

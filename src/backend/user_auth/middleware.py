@@ -51,7 +51,7 @@ class JWTAuthenticationMiddleware(MiddlewareMixin):
                         request.user = user
                         request.auth = payload
                         return None
-                except User.DoesNotExist:
+                except user.DoesNotExist:
                     return JsonResponse({'error': 'User not found'}, status=401)
                 except Exception as e:
                     return JsonResponse({'error': str(e)}, status=500)
@@ -59,29 +59,6 @@ class JWTAuthenticationMiddleware(MiddlewareMixin):
                 return JsonResponse({'error': payload['error']}, status=401)
         else:
             return JsonResponse({'error': 'Authentication required'}, status=401)
-
-
-    # def authenticate_request(self, request):
-    #     auth_header = request.headers.get('Authorization', '')
-    #     token = None
-    #     if auth_header.startswith('Bearer '):
-    #         token = auth_header.split(' ')[1]
-    #     if not token:
-    #         token = request.COOKIES.get('jwt', None)
-    #     if token:
-    #         payload = JWTHandler.decode_jwt(token)
-    #         if 'error' not in payload:
-    #             user = JWTHandler.get_user_from_token(token)
-    #             if user:
-    #                 request.user = user
-    #                 request.auth = payload
-    #                 return None
-    #             else:
-    #                 return JsonResponse({'error': 'User not found'}, status=401)
-    #         else:
-    #             return JsonResponse({'error': payload['error']}, status=401)
-    #     else:
-    #         return JsonResponse({'error': 'Authentication required'}, status=401)
 
 class UpdateLastActivityMiddleware(MiddlewareMixin):
     def process_request(self, request):
@@ -93,9 +70,12 @@ class UpdateLastActivityMiddleware(MiddlewareMixin):
                     request.user.is_active = False
                 else:
                     request.user.last_activity = current_time
+                    request.user.last_seen = timezone.now()
+                request.user.save(update_fields=['last_seen'])
                 request.user.save()
             except Exception as e:
                 print(f"Error updating user's last activity: {e}")
+    
 
 class LogHeadersMiddleware:
     def __init__(self, get_response):

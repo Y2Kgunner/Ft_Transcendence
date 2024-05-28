@@ -17,3 +17,4 @@ from user_auth.views.fortytwo import *
 from user_auth.views.GDPR import *
 from user_auth.views.auth import *
 from user_auth.views.forgot_pass import *
+from user_auth.views.friendship import *

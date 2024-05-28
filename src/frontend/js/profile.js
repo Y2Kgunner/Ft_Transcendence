@@ -235,67 +235,31 @@ function updateProfilePage(userData) {
             console.error('JWT token is not available. User might not be authenticated.');
             return;
         }
-    
+
+        console.log('Fetching profile picture with JWT:', jwtToken);
+
         fetch('https://127.0.0.1:443/api/get_profile_picture/', {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${jwtToken}`,
+                'Accept': 'application/json',
             },
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Network response was not ok: ${response.statusText}`);
+        .then(response => response.json())
+        .then(data => {
+            console.log('Received data  for profile picture:', data);
+            if (data.profile_picture_url) {
+                console.log('Setting profile picture URL:', data.profile_picture_url);
+                document.getElementById('profilePicture').src = data.profile_picture_url + '?v=' + new Date().getTime();
+            } else {
+                throw new Error('No image URL provided in the response.');
             }
-            return response.blob();
-        })
-        .then(blob => {
-            const url = URL.createObjectURL(blob);
-            document.getElementById('profilePicture').src = url + '?v=' + new Date().getTime();
         })
         .catch(error => {
-            // console.error('Error fetching the profile picture:', error);
+            console.error('Error fetching the profile picture:', error);
             document.getElementById('profilePicture').src = '../assets/profile_pictures/default.png';
         });
     }
-    
-    // function fetchProfilePicture() {
-    //     const jwtToken = getCookie('jwt');
-    //     if (!jwtToken) {
-    //         console.error('JWT token is not available. User might not be authenticated.');
-    //         return;
-    //     }
-
-    //     fetch('https://127.0.0.1:443/api/get_profile_picture/', {
-    //         method: 'GET',
-    //         headers: {
-    //             'Authorization': `Bearer ${jwtToken}`,
-    //             'Content-Type': 'application/json'
-    //         },
-    //     })
-    //         .then(response => {
-    //             if (!response.ok) {
-    //                 throw new Error(`Network response was not ok: ${response.statusText}`);
-    //             }
-    //             return response.json();
-    //         })
-    //         .then(data => {get_profile_pictur
-    //             if (data.profile_picture_url) {
-    //                 const profilePictureElement = document.getElementById('profilePicture');
-    //                 if (profilePictureElement) {
-    //                     profilePictureElement.src = data.profile_picture_url + '?v=' + new Date().getTime();
-    //                 } else {
-    //                     console.error('Profile picture element not found in the document.');
-    //                 }
-    //             } else {
-    //                 console.error('Profile picture URL is missing in the response data.');
-    //                 document.getElementById('profile-picture').src = '../assets/profile_pictures/default.png';
-    //             }
-    //         })
-    //         // .catch(error => {
-    //         //     console.error('Error fetching the profile picture:', error);
-    //         //     document.getElementsById('profile-picture').src = '../assets/profile_pictures/default.png';
-    //         // });
-    // }
 
     function setupUploadProfilePictureButton() {
         const uploadButton = document.getElementById('uploadPicButton');
@@ -312,58 +276,44 @@ function updateProfilePage(userData) {
             console.error('Elements not found: uploadButton or fileInput is null');
         }
       }
-    // function setupUploadProfilePictureButton() {
-    //     const uploadButton = document.getElementById('uploadPicButton');
-    //     const fileInput = document.getElementById('profilePictureInput');
-
-    //     if (uploadButton && fileInput) {
-    //         uploadButton.addEventListener('click', () => {
-    //             fileInput.click();
-    //         });
-
-    //         fileInput.addEventListener('change', uploadProfilePicture);
-    //     } else {
-    //         console.error('Elements not found: uploadButton or fileInput is null');
-    //     }
-    // };
 
     function uploadProfilePicture() {
         const fileInput = document.getElementById('profilePictureInput');
         const file = fileInput.files[0];
-
+    
         if (file) {
             const formData = new FormData();
             formData.append('profile_picture', file);
-
+    
             fetch('https://127.0.0.1:443/api/upload_profile_picture/', {
                 method: 'POST',
                 body: formData,
                 headers: {
-                    'Authorization': `Bearer ${getCookie('jwt')}`
-                    // Removed 'Content-Type': 'application/json'
+                    'Authorization': `Bearer ${getCookie('jwt')}`,
                 },
             })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok: ' + response.statusText);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.message) {
-                        //console.log('Success:', data.message);
-                        document.getElementById('profilePicture').src = URL.createObjectURL(file);
-                    } else {
-                        console.error('Error:', data.error);
-                        document.getElementById('profilePicture').src = '/assets/profile_pictures/default.png';
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.message) {
+                    document.getElementById('profilePicture').src = URL.createObjectURL(file);
+                    console.log('Success:', data.message);
+                } else {
+                    console.error('Error:', data.error);
                     document.getElementById('profilePicture').src = '/assets/profile_pictures/default.png';
-                });
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                document.getElementById('profilePicture').src = '/assets/profile_pictures/default.png';
+            });
         }
     };
+    
 
     function deleteProfilePicture() {
         fetch('https://127.0.0.1:443/api/delete_profile_picture/', {

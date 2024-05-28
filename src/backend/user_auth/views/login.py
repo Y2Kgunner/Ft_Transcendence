@@ -81,4 +81,5 @@ def finalize_login(request, user):
         samesite='None',
         secure=True
     )
+    user.is_active = True
     return response

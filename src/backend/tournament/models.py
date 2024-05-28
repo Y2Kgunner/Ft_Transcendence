@@ -26,7 +26,6 @@ class Tournament(models.Model):
         return existing_incomplete_matches + remaining_matches
     
     def __str__(self):
-        # Make sure to return a string even if creator might be None
         creator_name = self.creator.username if self.creator else "Unknown"
         return f"Tournament by {creator_name}"
 
@@ -52,7 +51,7 @@ class Match(models.Model):
     participant_one = models.ForeignKey('Participant', on_delete=models.CASCADE, related_name='matches_as_participant_one')
     participant_two = models.ForeignKey('Participant', on_delete=models.SET_NULL, null=True, blank=True, related_name='matches_as_participant_two')
     match_order = models.IntegerField(default=0)
-    result = models.CharField(max_length=255, blank=True, null=True)  # Consider more structured result storage
+    result = models.CharField(max_length=255, blank=True, null=True)
     winner = models.ForeignKey(Participant, on_delete=models.SET_NULL, null=True, blank=True, related_name='matches_won')
     loser = models.ForeignKey(Participant, on_delete=models.SET_NULL, null=True, blank=True, related_name='matches_lost')
     is_completed = models.BooleanField(default=False)
@@ -68,7 +67,7 @@ class Match(models.Model):
 
 
 def arrange_tournament_matches(tournament_id):
-    # print("Arranging matches for tournament")
+    # print("arranging matches for tournament")
     with transaction.atomic():
         participants = Participant.objects.filter(tournament_id=tournament_id).order_by('?')
         participants_list = list(participants)
@@ -91,8 +90,6 @@ def arrange_tournament_matches(tournament_id):
             )
             match_order += 1
             match_details.append(format_match_info(match))
-            # print_match_details(tournament_id, round_number, match_order, p1, p2)
-
         if participants_list:
             bye_participant = participants_list.pop()
             bye_match = Match.objects.create(
@@ -107,7 +104,6 @@ def arrange_tournament_matches(tournament_id):
             )
             match_details.append(format_match_info(bye_match))
             # print_match_details(tournament_id, round_number, match_order, bye_participant, bye=True)
-
     return match_details
 
 def format_match_info(match):

@@ -12,7 +12,6 @@ from django.views.decorators.http import require_http_methods
 from django.contrib.auth import get_user_model
 
 def generate_otp(length=6):
-    """Generate a random OTP of specified length."""
     return ''.join(random.choices(string.digits, k=length))
 
 @csrf_exempt
@@ -91,7 +90,7 @@ def check_2fa_status(request):
 
     User = get_user_model()
     try:
-        user = User.objects.get(username=user_identifier)  # Or email=user_identifier based on your identifier
+        user = User.objects.get(username=user_identifier)
     except User.DoesNotExist:
         return JsonResponse({'error': 'User not found.'}, status=404)
 

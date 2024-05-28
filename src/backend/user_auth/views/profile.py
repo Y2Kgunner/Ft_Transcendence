@@ -21,8 +21,8 @@ class UserProfileView(View):
         return super(UserProfileView, self).dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        print("Type of request.user:", type(request.user)) 
-        print("Is authenticated:", request.user.is_authenticated)  
+        # print("Type of request.user:", type(request.user)) 
+        # print("Is authenticated:", request.user.is_authenticated)  
         if not request.user.is_authenticated:
             return JsonResponse({'error': 'User is not authenticated'}, status=401)
         user = request.user  
@@ -74,17 +74,27 @@ class UserProfileView(View):
             except json.JSONDecodeError:
                 return JsonResponse({'error': 'Invalid JSON'}, status=400)
 
+
+def save_profile_picture(user, file):
+    form = ProfilePictureForm({'username': user.username}, {'profile_picture': file}, instance=user)
+    if form.is_valid():
+        user = form.save()
+        print("Saved profile picture for user:", user.username)
+        print("New profile picture path:", user.profile_picture.url)
+        return user
+    else:
+        raise ValueError(form.errors)
+
 @csrf_exempt
 def upload_profile_picture(request):
-    if request.method == 'POST' and request.FILES['profile_picture']:
-        form = ProfilePictureForm(request.POST, request.FILES, instance=request.user)
-        if form.is_valid():
-            user = form.save()
-            print("Saved profile picture for user:", user.username)  
-            print("New profile picture path:", user.profile_picture.url)
+    if request.method == 'POST' and request.FILES.get('profile_picture'):
+        try:
+            user = request.user
+            user.profile_picture = request.FILES['profile_picture']
+            user.save()
             return JsonResponse({'message': 'Profile picture updated successfully.', 'profile_picture_url': user.profile_picture.url}, status=200)
-        else:
-            return JsonResponse(form.errors, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
     return JsonResponse({'error': 'No file uploaded.'}, status=400)
 
 
@@ -96,12 +106,10 @@ def delete_profile_picture(request):
         return JsonResponse({'message': 'Profile picture deleted successfully.'}, status=200)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
+
 @require_http_methods(["GET"])
 def get_profile_picture(request):
     user = request.user
-    if not user.is_authenticated:
-        return JsonResponse({'error': 'User not authenticated.'}, status=401)
-
     if not user.profile_picture:
         return JsonResponse({'error': 'No profile picture set.', 'profile_picture_url': None}, status=200)
 
@@ -110,4 +118,5 @@ def get_profile_picture(request):
         return JsonResponse({'error': 'Profile picture not found.', 'profile_picture_url': default_picture_url}, status=302)
 
     picture_url = request.build_absolute_uri(user.profile_picture.url)
+    print("Profile picture URL:", picture_url)
     return JsonResponse({'profile_picture_url': picture_url}, status=200)

@@ -4,6 +4,8 @@ from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 import uuid
 from django.contrib.auth import get_user_model
+from django.utils import timezone
+from datetime import timedelta
 
 
 class WebUserManager(BaseUserManager):
@@ -66,42 +68,32 @@ class CustomPermissionsMixin(PermissionsMixin):
     )
 
 class WebUser(AbstractBaseUser, PermissionsMixin):
-    # basic info
     username = models.CharField(_('username'), max_length=20, unique=True)
     email = models.EmailField(_('email address'), max_length=50, unique=True)
-    # additional info
     first_name = models.CharField(_('first name'), max_length=20, blank=True)
     last_name = models.CharField(_('last name'), max_length=20, blank=True)
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message=_("Phone number must be entered in the format: '+971-XX-XXX-XXXX'."))
-    # phone_number = models.CharField(_('phone number'), validators=[phone_regex], max_length=17, blank=True)
     phone_number = models.CharField(_('phone number'), validators=[phone_regex], max_length=17, blank=True, null=True)
     address = models.CharField(_('address'), max_length=100, blank=True)
     profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
-    # permissions
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    # other 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     GDPR_agreement = models.BooleanField(default=False)
     GDPR_agreement_date = models.DateTimeField(null=True, blank=True)
     is_deleted = models.BooleanField(default=False)
     deleted_at = models.DateTimeField(null=True, blank=True)
-    # auth
     google_auth = models.BooleanField(default=False)
     intra_auth = models.BooleanField(default=False)
     github_auth = models.BooleanField(default=False)
-    # 2FA
     twofa_enabled = models.BooleanField(default=False)
     twofa_secret = models.CharField(max_length=255, blank=True, null=True)
-
-    #game_manager 
     pong_games_played = models.IntegerField(default=0)
     pong_wins = models.IntegerField(default=0)
     pong_losses = models.IntegerField(default=0)
     pong_scored = models.IntegerField(default=0)
-
-    
+    last_seen = models.DateTimeField(default=timezone.now)
     ttt_games_played = models.IntegerField(default=0)
     ttt_wins = models.IntegerField(default=0)
     ttt_losses = models.IntegerField(default=0)
@@ -122,10 +114,44 @@ class WebUser(AbstractBaseUser, PermissionsMixin):
     def anonymize_user(self):
         unique_suffix = uuid.uuid4().hex[:8] 
         self.username = f'anonymous_{unique_suffix}'
-        # self.email = f'anonymous_{unique_suffix}@example.com'
         self.first_name = ''
         self.last_name = ''
         self.phone_number = None
         self.address = ''
         self.profile_picture = None
         self.save()
+    
+    def is_online(self):
+        return timezone.now() - self.last_seen < timedelta(minutes=5)
+
+
+class Friendship(models.Model):
+    PENDING = 'pending'
+    ACCEPTED = 'accepted'
+    REJECTED = 'rejected'
+    STATUS_CHOICES = [(PENDING, 'Pending'),(ACCEPTED, 'Accepted'),(REJECTED, 'Rejected'),]
+    creator = models.ForeignKey(WebUser, on_delete=models.CASCADE, related_name="friendships_started")
+    friend = models.ForeignKey(WebUser, on_delete=models.CASCADE, related_name="friendships_received")
+    created_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default=PENDING)
+
+    class Meta:
+        unique_together = ('creator', 'friend')
+
+    def __str__(self):
+        return f"{self.creator.username} - {self.friend.username} ({self.status})"
+
+    def get_friends(self):
+        friendships = Friendship.objects.filter(
+            models.Q(creator=self, accepted=True) | models.Q(friend=self, accepted=True)
+        )
+        friends = set()
+        for friendship in friendships:
+            if friendship.creator == self:
+                friends.add(friendship.friend)
+            else:
+                friends.add(friendship.creator)
+        return friends
+
+    def __str__(self):
+        return self.username
