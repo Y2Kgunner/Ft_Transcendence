@@ -63,7 +63,7 @@ body {
   top: -125%;
   height: 369%;
   width: 150%;
-  background-image: conic-gradient(#00ff00, #8ef08e, #00ff00, #8ef08e, #00ff00);
+  background-image: conic-gradient(#00ff00, #005100, #00ff00, #005100, #00ff00);
   animation: spin 4s infinite linear;
 }
 
@@ -102,7 +102,7 @@ input[type="text"]::placeholder {
 
 .gradientText {
   font-style: italic;
-  background: linear-gradient(to right, #8ef08e, #00ff00, #8ef08e, #00ff00, #8ef08e, #00ff00, #8ef08e, #00ff00, #8ef08e);
+  background: linear-gradient(to right, #00ff00, #005100, #00ff00, #005100, #00ff00, #005100, #00ff00, #005100, #00ff00);
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
@@ -203,5 +203,5 @@ p {
 
 
 .customBg {
-  background-color: #131413;
+  background-color: #1d1f1d;
 }

@@ -3,24 +3,120 @@ body {
   padding: 0;
 }
 
-#navbar {
-  height: 69px; /* adjust the height of the navbar */
+
+#carouselExampleCaptions {
+  top: 5vh;
+  height: calc(100vh - 69px);
+  position: relative;
 }
 
-#carouselExampleDark {
+.carousel-item {
+  height: calc(100vh - 69px);
+  min-height: 300px;
+  background: no-repeat scroll center center;
+  -webkit-background-size: cover;
+  background-size: cover;
+}
+
+.carousel-item::before {
+  content: "";
+  display: block;
   position: absolute;
-  top: 60px; /* adjust the top position to match the height of the navbar */
+  top: 0;
+  bottom: 0;
   left: 0;
-  width: 100%;
-  height: calc(100vh - 60px); /* take up the entire screen height minus the navbar height */
+  right: 0;
+  background-color: #000;
+  opacity: .5;
 }
 
-.carousel-inner {
-  height: 100%; /* take up the full height of the carousel */
+.carousel-caption {
+  bottom: 20%;
+  padding-left: 100px;
+  padding-right: 100px;
+  text-align: start;
 }
 
-.carousel-item img {
-  height: calc(100% - 40px); /* subtract the padding from the height */
-  object-fit: cover;
-  width: 100%;
+.gradientText {
+  background: linear-gradient(110deg, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-size: 200% 100%;
+  animation: gradient 2s linear infinite;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 100% 50%;
+  }
+  
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.bruh {
+  text-shadow: 0 0 10px #d0ffd0;
+}
+
+.flip-horizontal {
+  display: inline-block;
+  transform: scaleX(-1);
+}
+
+.carousel-caption h5{
+  color: #c9d5bf;
+  text-shadow: 0 0 10px #00ff00;
+  font-weight: bold;
+  font-size: 6vw;
+  /* width: 35vw; */
+  
+}
+
+.carousel-caption p{
+  color: #c9d5bf;
+  text-shadow: 0 0 5px #00ff00;
+  font-size: 1vw;
+  width: 45vw;
+}
+
+.slider-btn .btn {
+  font-size: 1vw;
+}
+
+.btn {
+  --bs-btn-bg: #000;
+  --bs-btn-border-color: none;
+  --bs-btn-color: #c9d5bf;
+  --bs-btn-hover-bg: #d6ffd2;
+  --bs-btn-hover-border-color: none;
+  --bs-btn-active-color: #101010;
+  --bs-btn-active-bg: #d6ffd2;
+  --bs-btn-active-border-color: none;
+  --bs-btn-hover-color: #101010;
+  position: relative;
+}
+
+.gradientHousing {
+  position: absolute;
+  padding: .4vh;
+  overflow: hidden;
+}
+
+.gradientHousing:before {
+  content: "";
+  position: absolute;
+  left: -25%;
+  top: -250%;
+  height: 600%;
+  width: 150%;
+  background-image: conic-gradient(#3cff00, #2c5519, #3cff00, #2c5519, #3cff00, #2c5519, #3cff00, #2c5519, #3cff00);
+  animation: spin 5s infinite linear;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
 }
