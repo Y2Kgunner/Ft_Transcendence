@@ -94,16 +94,19 @@ def check_username(request, username):
     except WebUser.DoesNotExist:
         return JsonResponse({"message": "User not found."}, status=404)
 
-@csrf_exempt
 @require_http_methods(["GET"])
 def pending_frinship_requets(request):
     user = request.user
     pending_requests = Friendship.objects.filter(friend=user, status='pending')
     notifications = []
     for req in pending_requests:
-        notifications.append(f"Friend request from {req.creator.username}")    
-    return JsonResponse({"notifications": notifications}, status=200)
+        notification = {
+            "message": f"Friend request from {req.creator.username}",
+            "sender_id": req.creator.id
+        }
+        notifications.append(notification)
 
+    return JsonResponse({"notifications": notifications}, status=200)
 
 
 def send_friendship_request_email(friend, user):
