@@ -11,13 +11,14 @@ body {
 
 #player2Name {
   background-color: #181915;
-  color: #ffd900;
+  color: rgb(35, 162, 35);
   border: none;
   padding-left: 1em;
+  box-shadow: 0 0 5px #00ff00;
 }
 
 #player2Name:focus {
-  box-shadow: 0 0 5px #ff8c00;
+  box-shadow: 0 0 5px #92ff92;
 }
 
 
@@ -27,7 +28,7 @@ body {
 
 
 .custoModal {
-  color: rgb(180, 116, 19);
+  color: #017701;
   --bs-modal-header-border-color: none;
   --bs-modal-footer-border-color: none;
 }
@@ -36,13 +37,13 @@ body {
   --bs-btn-bg: #282c2f;
   --bs-btn-border-color: none;
   --bs-btn-color: #f2f2f2;
-  --bs-btn-hover-bg: #de7b01;
-  --bs-btn-hover-border-color: #de7b01;
+  --bs-btn-hover-bg: #00b000;
+  --bs-btn-hover-border-color: #00b000;
   --bs-btn-active-color: #101010;
-  --bs-btn-active-bg: #de7b01;
-  --bs-btn-active-border-color: #de7b01;
+  --bs-btn-active-bg: #00b000;
+  --bs-btn-active-border-color: #00b000;
   --bs-btn-hover-color: #101010;
-  box-shadow: inset 0 0 3px 2px #de7b01;
+  box-shadow: inset 0 0 3px 2px #00b000;
 }
 
 .custoModalbtn:hover {
@@ -62,7 +63,7 @@ body {
   top: -125%;
   height: 369%;
   width: 150%;
-  background-image: conic-gradient(#ff8c00, #552019, #ff8c00, #552019, #ff8c00);
+  background-image: conic-gradient(#00ff00, #8ef08e, #00ff00, #8ef08e, #00ff00);
   animation: spin 4s infinite linear;
 }
 
@@ -91,23 +92,42 @@ input[type="text"]::placeholder {
 }
 
 .gradientPlayerNames {
-  background: linear-gradient(to right, #7c0a0a, #ff6a00, #e5ff00, #ff6a00, #7c0a0a, #ff6a00, #e5ff00, #ff6a00, #7c0a0a, #ff6a00, #e5ff00, #ff6a00, #7c0a0a, #ff6a00, #e5ff00, #ff6a00, #7c0a0a);
+  background: linear-gradient(120deg, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00);
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
   background-size: 200% 100%;
-  animation: gradient 1s linear infinite;
+  animation: gradient 3s linear infinite;
 }
 
 .gradientText {
   font-style: italic;
-  background: linear-gradient(to right, #7c0a0a, #e5ff00, #7c0a0a, #e5ff00, #7c0a0a, #e5ff00, #7c0a0a, #e5ff00, #7c0a0a, #e5ff00, #7c0a0a, #e5ff00, #7c0a0a);
+  background: linear-gradient(to right, #8ef08e, #00ff00, #8ef08e, #00ff00, #8ef08e, #00ff00, #8ef08e, #00ff00, #8ef08e);
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
   background-size: 200% 100%;
   animation: gradient 2s linear infinite;
 }
+
+.gradientInput {
+  background: linear-gradient(120deg, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00);
+  /* background: conic-gradient(#157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00); */
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-size: 200% 100%;
+  animation: gradient 5s linear infinite;
+  /* animation: spin 4s infinite linear; */
+}
+
+/* .sbinner {
+  background: linear-gradient(120deg, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00);
+  background-clip: text;
+  -webkit-background-clip: text;
+  background-size: 200% 100%;
+  animation: spin 4s infinite linear;
+} */
 
 @keyframes gradient {
   0% {
@@ -123,33 +143,49 @@ input[type="text"]::placeholder {
   padding-top: 20vh;
 }
 
-.box {
+.Lbox {
   width: 14vmin;
   height: 14vmin;
-  color: #ff4500;
-  background: #d0c600;
+  color: #017701;
+  background: #ccddcc;
   font-size: 11rem;
   font-weight: 600;
   outline: none;
-  box-shadow: inset 0 0 15px 5px #ff8c00, 0 0 5px #ff4500, 0 0 5px #ff0000;
+  box-shadow: inset 0 0 25px 10px #47cb47, 0 0 5px #00ff00, 0 0 5px #017701;
   margin: .3vmin;
+}
+
+.box {
+  width: 14vmin;
+  height: 14vmin;
+  /* color: #00ff00; */
+  /* background: #dbefd0; */
+  font-size: 11rem;
+  font-weight: 600;
+  outline: none;
+  box-shadow: inset 0 0 15px 10px #47cb47, 0 0 5px #00ff00, 0 0 5px #017701;
+  margin: .3vmin;
+  padding-left: .85vw;
+  padding-bottom: .35vw;
+  font-size: 7vw;
 }
 
 p {
   font-size: 1.4rem;
-  color: #e5ff00;
-  text-shadow: 0 0 2px #ff8c00, 0 0 25px #ff4500, 0 0 5px #ff0000;
+  color: #d3e2cb;
+  text-shadow: 0 0 5px #017701, 0 0 10px #00ff00;
 }
 
 .turn,
 .winner {
-  font-size: 1.5em;
+  font-size: 1.4vw;
   margin: 10px 0;
 }
 
 
 .box.focus {
-  box-shadow: inset 0 0 30px 10px #ff0000;
+  background-color: #12d712;
+  box-shadow: inset 0 0 15px 10px #d4fcd4, 0 0 5px #017701, 0 0 5px #ffffff;
 }
 
 .player-names {
@@ -163,4 +199,9 @@ p {
 .input-group .valid-feedback,
 .input-group .invalid-feedback {
   display: none;
+}
+
+
+.customBg {
+  background-color: #131413;
 }
