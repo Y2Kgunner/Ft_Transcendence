@@ -68,3 +68,11 @@ body {
   background-color: #212121;
   max-width: 500px;
 }
+
+#forgotPasswordLink {
+  color: #007bff;
+  cursor: pointer;
+}
+#forgotPasswordLink:hover {
+  text-decoration: underline;
+}

@@ -36,7 +36,10 @@ ALLOWED_HOSTS = ['127.0.0.1','localhost']
 #This allows cookies for CSRF protection from the specified origins.
 CSRF_TRUSTED_ORIGINS = ['https://127.0.0.1:8080']
 # This allows requests from both your frontend and your backend itself (useful for API calls within application).
-CORS_ALLOWED_ORIGINS = ['https://127.0.0.1:8080', 'https://127.0.0.1:443', 'https://127.0.0.1:8000']
+CORS_ALLOWED_ORIGINS = ['https://127.0.0.1:8080',
+                        'https://127.0.0.1:443', 
+                        'https://127.0.0.1:8000']
+
 #This allows sending cookies across origins, necessary for authentication scenarios involving cookies.
 CORS_ALLOW_CREDENTIALS = True
 #This defines allowed HTTP methods for CORS requests.
@@ -49,6 +52,7 @@ CORS_ALLOW_METHODS = [
     "PUT",
 ]
 CORS_ORIGIN_ALLOW_ALL = True
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -63,19 +67,6 @@ INSTALLED_APPS = [
     'user_auth' 
 ]
 
-# MIDDLEWARE = [
-#     'corsheaders.middleware.CorsMiddleware', #do not change the order 
-#     'django.middleware.common.CommonMiddleware',
-#     'django.middleware.security.SecurityMiddleware',
-#     'django.contrib.sessions.middleware.SessionMiddleware',
-#     'user_auth.middleware.JWTAuthenticationMiddleware',
-#     'django.middleware.csrf.CsrfViewMiddleware',
-#     'django.contrib.auth.middleware.AuthenticationMiddleware',
-#     'django.contrib.messages.middleware.MessageMiddleware',
-#     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-#     'user_auth.middleware.UpdateLastActivityMiddleware']
-
-
 #change the order to allow the middleware to be executed before the authentication middleware
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -89,7 +80,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'user_auth.middleware.UpdateLastActivityMiddleware',
 ]
-
 
 ROOT_URLCONF = 'core.urls'
 TEMPLATES = [

@@ -6,9 +6,15 @@ async function initApp() {
     try {
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
+        const token = urlParams.get('token');
        //console.log('Code:', code);
         if (code) {
             await handleOAuthCallback(code);
+        }
+        if (token) {
+            window.history.pushState({}, '', `/forgot-password?token=${token}`);
+            await appRouter.navigate('/forgot-password', { replace: true });
+            return;
         }
         await checkAndNavigateBasedOnAuth();
         appRouter.init();

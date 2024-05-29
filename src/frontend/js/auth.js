@@ -154,6 +154,7 @@ function setupEventListeners() {
     document.getElementById('registerButton')?.addEventListener('click', register);
     document.getElementById('loginForm')?.addEventListener('submit', login);
     document.getElementById('registerForm')?.addEventListener('submit', register);
+    document.getElementById('forgotPasswordLink')?.addEventListener('click', forgetPassword);
 }
 
 export async function setupAuthPage() {
@@ -169,18 +170,6 @@ export async function setupAuthPage() {
     };
     setupEventListeners();
 }
-
-// function setCookie(name, value, days, secure = false, sameSite = 'Lax') {
-//     let expires = '';
-//     if (days) {
-//         const date = new Date();
-//         date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-//         expires = `; expires=${date.toUTCString()}`;
-//     }
-//     const secureFlag = secure ? '; Secure' : '';
-//     const sameSitePolicy = `; SameSite=${sameSite}`;
-//     document.cookie = `${name}=${value || ''}${expires}; path=/${secureFlag}${sameSitePolicy}`;
-// }
 
 function setCookie(name, value, days, secure = false, sameSite = 'Lax') {
     let expires = '';
@@ -246,6 +235,31 @@ async function logoutUser() {
     } catch (error) {
         console.error('Logout error:', error);
     }
+}
+
+function forgetPassword() {
+    event.preventDefault();
+    const username = document.getElementById('LoginUserName').value;
+    if (!username) {
+        alert('Please enter your username to reset your password.');
+        return;
+    }
+
+    fetch('/api/forgot_password_send_email', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username: username })
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to reset password. Please try again later.');
+    });
 }
 
 function showOtpForm(show) {

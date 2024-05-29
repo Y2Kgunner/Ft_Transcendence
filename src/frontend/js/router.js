@@ -95,7 +95,7 @@ class Router {
         const path = window.location.pathname;
         const authStatus = await isAuthenticated();
 
-        if (!authStatus && path !== '/login') {
+        if (!authStatus && path !== '/login' && path !== '/forgot-password') {
             this.navigate('/login', { replace: true });
         } else {
             this.navigate(path, { replace: true });
@@ -114,7 +114,8 @@ const routes = {
     '/pong2': { path: 'pages/pong2.html', method: setupGamePage },
     '/pong3': { path: 'pages/pong3.html', method: init3PlyrPong },
     '/tournament': { path: 'pages/tournament.html', method: setupTournamentPage },
-    '/logout': { path: '', method: null }
+    '/logout': { path: '', method: null },
+    '/forgot-password': { path: 'pages/forgot-password.html', method: setupPasswordResetPage }
 };
 
 async function setupProfilePage() {
@@ -132,6 +133,39 @@ async function setupProfilePage() {
     }
 }
 
+async function setupPasswordResetPage() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    if (!token) {
+        alert('Invalid or missing token.');
+        appRouter.navigate('/login', { replace: true });
+        return;
+    }
+
+    document.getElementById('passwordResetForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const newPassword = document.getElementById('registerPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        if (newPassword !== confirmPassword) {
+            alert('Passwords do not match!');
+            return;
+        }
+        const url = `https://127.0.0.1/api/reset_password/${token}/`;
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ new_password: newPassword })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            appRouter.navigate('/login', { replace: true });
+        })
+        .catch(error => console.error('Error:', error));
+            })
+}
 export const appRouter = new Router(routes);
-
-

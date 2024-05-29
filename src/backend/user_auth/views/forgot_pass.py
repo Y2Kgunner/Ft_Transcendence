@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 from django.http import JsonResponse
+from user_auth.models import WebUser
 from django.views.decorators.http import require_POST
 from user_auth.jwt_utils import JWTHandler
 from django.conf import settings
@@ -29,49 +30,39 @@ def send_email(user, message):
 def forgot_password_send_email(request):
     try:
         data = json.loads(request.body)
-        email = data.get('email')
-        if not email:
-            return JsonResponse({'error': 'Email is required'}, status=400)
+        username = data.get('username')
+        if not username:
+            return JsonResponse({'error': 'Username is required'}, status=400)
 
         UserModel = get_user_model()
         try:
-            user = UserModel.objects.get(email=email)
-        #add this for the case where the email is not found // user should not know if the email exists or not
+            user = UserModel.objects.get(username=username)
         except UserModel.DoesNotExist:
             return JsonResponse({'message': 'If an account with this email exists, a reset link has been sent.'}, status=200)
         token = JWTHandler.generate_jwt(user)
-        reset_url = f"https://127.0.0.1:443/api/reset_password/{token}/"
-        send_email(user, f'Click the link to reset your password: https://127.0.0.1:443/api/reset_password/{user.id}/')
-        #response = JsonResponse({'message': 'If an account with this email exists, a reset link has been sent.'}, status=200)
-        #response.set_cookie('jwt', token, httponly=True, expires=datetime.now() + timedelta(hours=1))
-        #for testing through insomnia - remove this once the frontend is ready
-        response =  JsonResponse({"token":token}, status=200)
-        return response
+        reset_url = f"https://127.0.0.1:443/forget-password.html?token={token}"
+        send_email(user, f'Click the link to reset your password: {reset_url}')
+        return JsonResponse({'message': 'If an account with this email exists, a reset link has been sent.'}, status=200)
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid JSON'}, status=400)
-
 
 @csrf_exempt
 @require_POST
 def reset_password(request, token):
     try:
         payload = JWTHandler.decode_jwt(token)
-        if 'error' in payload:
-            return JsonResponse({'error': payload['error']}, status=400)
+        user_id = payload.get('user_id')
+        if not user_id:
+            return JsonResponse({'error': 'Invalid token or user ID not found'}, status=400)
 
-        user_id = payload['user_id']
-        UserModel = get_user_model()
-        user = UserModel.objects.get(id=user_id)
-
+        user = WebUser.objects.get(pk=user_id)
         data = json.loads(request.body)
-        new_password = data.get('new_password')
-        if not new_password:
-            return JsonResponse({'error': 'New password is required'}, status=400)
-
+        new_password = data['new_password']
         user.set_password(new_password)
         user.save()
-        return JsonResponse({'message': 'Password has been reset successfully'}, status=200)
-    except UserModel.DoesNotExist:
-        return JsonResponse({'error': 'Invalid token or user does not exist'}, status=400)
+
+        return JsonResponse({'message': 'Password successfully reset'}, status=200)
+    except WebUser.DoesNotExist:
+        return JsonResponse({'error': 'User not found'}, status=404)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)

@@ -6,76 +6,68 @@ from .jwt_utils import JWTHandler
 from django.contrib.auth.models import AnonymousUser
 from django.utils import timezone
 import datetime
+import re
+
+from django.utils.deprecation import MiddlewareMixin
+from django.http import JsonResponse
+from .jwt_utils import JWTHandler
+import re
 
 class JWTAuthenticationMiddleware(MiddlewareMixin):
-
     def __init__(self, get_response):
         self.get_response = get_response
-        self.excluded_paths = ['/api/login', '/api/register','/api/login','/api/fortytwo','api/logout',
-                               '/api/oauth_callback','/api/auth_status','/api/proceed_with_login','/api/finalize_login','/api/check_2fa_status', '/api/verify_otp', '/api/reset_password' ,'/api/forgot_password_send_email',
-                               #to be removed for test only 
-                               '/pong/create' , '/pong/delete', '/pong/list', '/pong/finish_and_update_match','/pong/leaderboard' ,'/pong/leaderboard_by_wins' ,'/pong/leaderboard_by_scored']
-        
-    # def __call__(self, request):
-    #     print("JWT Middleware called")  # debugging
+        self.excluded_patterns = [
+            re.compile(r'^/api/login$'),
+            re.compile(r'^/api/register$'),
+            re.compile(r'^/api/fortytwo$'),
+            re.compile(r'^/api/logout$'),
+            re.compile(r'^/api/oauth_callback$'),
+            re.compile(r'^/api/auth_status$'),
+            re.compile(r'^/api/proceed_with_login$'),
+            re.compile(r'^/api/finalize_login$'),
+            re.compile(r'^/api/check_2fa_status$'),
+            re.compile(r'^/api/verify_otp$'),
+            re.compile(r'^/api/forgot_password_send_email$'),
+            re.compile(r'^/api/reset_password/.+/$'),
+        ]
 
-    def process_request(self, request):
-        if request.path_info in self.excluded_paths:
-            if request.path_info == '/api/auth_status':
-                return self.get_response(request)
-            return None
+    def __call__(self, request):
+        if any(pattern.match(request.path_info) for pattern in self.excluded_patterns):
+            return self.get_response(request)
+        
         return self.authenticate_request(request)
     
-    def process_view(self, request, view_func, view_args, view_kwargs):
-        # in case server side rendering is used - check with the team 
-        pass
-
     def authenticate_request(self, request):
-        # print("JWT Middleware called")
-        # print(request.user)
         auth_header = request.headers.get('Authorization', '')
-        token = None
-        if auth_header.startswith('Bearer '):
-            token = auth_header.split(' ')[1]
-        if not token:
-            token = request.COOKIES.get('jwt', None)
+        token = auth_header.split(' ')[1] if auth_header.startswith('Bearer ') else request.COOKIES.get('jwt', None)
 
         if token:
-            payload = JWTHandler.decode_jwt(token)
-            if 'error' not in payload:
-                try:
-                    user = JWTHandler.get_user_from_token(token)
-                    # print('from middleware')
-                    # print(user)
-                    if user:
-                        request.user = user
-                        request.auth = payload
-                        return None
-                except user.DoesNotExist:
-                    return JsonResponse({'error': 'User not found'}, status=401)
-                except Exception as e:
-                    return JsonResponse({'error': str(e)}, status=500)
-            else:
-                return JsonResponse({'error': payload['error']}, status=401)
-        else:
-            return JsonResponse({'error': 'Authentication required'}, status=401)
+            try:
+                payload = JWTHandler.decode_jwt(token)
+                user = JWTHandler.get_user_from_token(token)
+                if user:
+                    request.user = user
+                    request.auth = payload
+                    return self.get_response(request)
+            except Exception as e:
+                return JsonResponse({'error': str(e)}, status=500)
+        
+        return JsonResponse({'error': 'Authentication required'}, status=401)
+
 
 class UpdateLastActivityMiddleware(MiddlewareMixin):
-    def process_request(self, request):
-        if request.user.is_authenticated and hasattr(request, 'auth') and 'exp' in request.auth:
+    def __call__(self, request):
+        if request.user.is_authenticated:
             try:
-                token_expiration = datetime.datetime.fromtimestamp(request.auth['exp'], tz=timezone.utc)
-                current_time = timezone.now()
-                if current_time > token_expiration:
+                token_expiration = datetime.datetime.fromtimestamp(request.auth.get('exp'), tz=timezone.utc)
+                if timezone.now() > token_expiration:
                     request.user.is_active = False
                 else:
-                    request.user.last_activity = current_time
-                    request.user.last_seen = timezone.now()
-                request.user.save(update_fields=['last_seen'])
-                request.user.save()
+                    request.user.last_activity = timezone.now()
+                    request.user.save(update_fields=['last_seen'])
             except Exception as e:
                 print(f"Error updating user's last activity: {e}")
-    
+        return self.get_response(request)
 
 class LogHeadersMiddleware:
     def __init__(self, get_response):
@@ -83,5 +75,4 @@ class LogHeadersMiddleware:
 
     def __call__(self, request):
         print(request.headers)
-        response = self.get_response(request)
-        return response
+        return self.get_response(request)

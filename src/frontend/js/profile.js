@@ -5,7 +5,7 @@ let userName = '';
 
 function fetchUserProfile() {
     const jwt = getCookie('jwt');
-    console.log('Token from cookie:', jwt);
+    // console.log('Token from cookie:', jwt);
 
     fetch('https://127.0.0.1:443/api/profile', {
         method: 'GET',
@@ -264,8 +264,8 @@ function updateProfilePage(userData) {
     function setupUploadProfilePictureButton() {
         const uploadButton = document.getElementById('uploadPicButton');
         const fileInput = document.getElementById('profilePictureInput');
-        console.log(uploadButton);
-        console.log(fileInput);
+        // console.log(uploadButton);
+        // console.log(fileInput);
         if (uploadButton && fileInput) {
             uploadButton.addEventListener('click', () => {
                 fileInput.click();
