@@ -102,11 +102,6 @@ function setupTTT() {
       winner = player1Name;
     updateMatch();
   });
-  // startTTTBtn.addEventListener('keypress', async function (event) {
-  //   if (event.keyCode === 13) {
-  //     event.preventDefault();
-  //   }
-  // });
 
   restartTTTBtn.addEventListener('click', async function (event) {
     await createMatch("TTT").then(data => {
@@ -117,6 +112,15 @@ function setupTTT() {
     gameOver = false;
     useMouse = true;
     currentFocusIndex = 0;
+
+    // Clear the board
+    boxes.forEach(box => {
+        box.innerHTML = "";
+    });
+
+    // Remove previous event listeners to avoid double-triggering "Arrow key was moving 2 boxes instead of 1 after restarting the game"
+    document.removeEventListener('keydown', handleKeyPress);
+
     Game();
     await waitGameFinish(gameOver);
     if (nextMove == "X")
@@ -275,9 +279,6 @@ function checkWinner() {
   }
 }
 
-
-//?
-//? 
 function realTimeChecker() {
   var inputField = document.getElementById("player2Name");
   inputField.addEventListener('input', function () {
@@ -357,8 +358,5 @@ function closeModal() {
   var modalInstance = bootstrap.Modal.getInstance(modal);
   modalInstance.hide();
 }
-
-//? 
-//?
 
 export { setupTTT };
