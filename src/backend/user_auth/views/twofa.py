@@ -15,26 +15,25 @@ def generate_otp(length=6):
     return ''.join(random.choices(string.digits, k=length))
 
 @csrf_exempt
+@require_http_methods(["POST"])
 def enable_2fa_api(request):
-    if request.method == 'POST':
-        if not request.user.twofa_enabled:
-            request.user.enable_totp()  
-            return JsonResponse({'message': '2FA enabled successfully'})
-        else:
-            return JsonResponse({'error': '2FA is already enabled for this user'}, status=400)
+    if not request.user.twofa_enabled:
+        request.user.twofa_enabled = True
+        request.user.save()
+        return JsonResponse({'message': '2FA enabled successfully'})
     else:
-        return JsonResponse({'error': 'Method not allowed'}, status=405)
+        return JsonResponse({'error': '2FA is already enabled for this user'}, status=400)
+
 
 @csrf_exempt
+@require_http_methods(["POST"])
 def disable_2fa_api(request):
-    if request.method == 'POST':
-        if request.user.twofa_enabled:
-            request.user.disable_totp()  
-            return JsonResponse({'message': '2FA disabled successfully'})
-        else:
-            return JsonResponse({'error': '2FA is not enabled for this user'}, status=400)
+    if request.user.twofa_enabled:
+        request.user.twofa_enabled = False
+        request.user.save()
+        return JsonResponse({'message': '2FA disabled successfully'})
     else:
-        return JsonResponse({'error': 'Method not allowed'}, status=405)
+        return JsonResponse({'error': '2FA is not enabled for this user'}, status=400)
 
 @csrf_exempt
 def send_otp_email_api(request):

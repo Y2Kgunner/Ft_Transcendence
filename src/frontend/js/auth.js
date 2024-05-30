@@ -41,45 +41,22 @@ async function login(event) {
     
     if (response.ok) {
         const data = await response.json();
-       //console.log('Login successful:', data);
-        setCookie('authToken', data.token, 1, true, 'None');
-        setUserId(data.userId);
-        updateMainContentVisibility(true);
-        appRouter.navigate('/');
-    }
-    else 
-    {
+        if (data.requires_otp) {
+            showOtpForm(true);
+        } else {
+            finalizeLogin(data);
+        }
+    } else {
         const error = await response.json();
-        console.error('Login failed:', error);
+        console.error('Login failed:', error.error);
         alert(error.error || 'Login failed');
     }
 }
 
-async function loginOtpUser(event) {
-    event.preventDefault();
-    const username = document.getElementById('LoginUserName').value;
-    const password = document.getElementById('loginPassword').value;
-    
-    const response = await fetch('https://127.0.0.1:443/api/login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-    });
-    
-    if (response.ok) {
-        const data = await response.json();
-       //console.log('Login successful:', data);
-        setCookie('authToken', data.token, 1, true, 'None');
-        appRouter.navigate('/');
-    }
-    else 
-    {
-        const error = await response.json();
-        console.error('Login failed:', error);
-        alert(error.error || 'Login failed');
-    }
+function finalizeLogin(data) {
+    setCookie('authToken', data.token, 1, true, 'None'); 
+    updateMainContentVisibility(true);  
+    appRouter.navigate('/');
 }
 
 async function register(event) {
@@ -104,7 +81,6 @@ async function register(event) {
 
     if (response.ok) {
         const data = await response.json();
-       //console.log('Registration successful:', data);
         await appRouter.navigate('/login', { force: true });
     } else {
         const error = await response.json();
@@ -113,19 +89,25 @@ async function register(event) {
     }
 }
 
-async function verifyOtp(otp) {
+export async function verifyOtp(event) {
+    event.preventDefault();
+    const otp = document.getElementById('otpInput').value;
+
     const response = await fetch('https://127.0.0.1:443/api/verify_otp', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({ otp }),
-        credentials: 'include',
+        credentials: 'include', 
     });
     if (response.ok) {
-        return true;
+        const data = await response.json();
+        alert('OTP verification successful');
+        finalizeLogin(data); 
     } else {
-        return false;
+        console.error('OTP verification failed');
+        alert('Invalid or expired OTP. Please try again.');
     }
 }
 
@@ -155,6 +137,7 @@ function setupEventListeners() {
     document.getElementById('loginForm')?.addEventListener('submit', login);
     document.getElementById('registerForm')?.addEventListener('submit', register);
     document.getElementById('forgotPasswordLink')?.addEventListener('click', forgetPassword);
+    document.getElementById('otpButton')?.addEventListener('click', verifyOtp);
 }
 
 export async function setupAuthPage() {
@@ -199,12 +182,10 @@ async function handleOAuthCallback(code) {
         const data = await response.json();
         console.log('OAuth callback data:', data);
         if (data.success) {
-            ////console.log('OAuth callback handled successfully:', data.message);
             setCookie('authToken', data.token, 1, true, 'None');
             updateMainContentVisibility(true);
             await appRouter.navigate('/'); 
         } else {
-            // console.error('Authentication failed after OAuth callback:', data.message);
             alert('Authentication failed: ' + data.message);
             updateMainContentVisibility(false);
             await navigateBasedOnAuth(false);
@@ -263,12 +244,35 @@ function forgetPassword() {
 }
 
 function showOtpForm(show) {
-    if (show === true) {
-        document.getElementById('otp-form').style.display = 'block';
-        document.getElementById('login-form').style.display = 'none';
-    }else{
-        document.getElementById('otp-form').style.display = 'none';
-        document.getElementById('login-form').style.display = 'block';
+    const otpForm = document.getElementById('otp-form');
+    otpForm.style.display = show ? 'block' : 'none';
+}
+
+async function submitOtp(event) {
+    event.preventDefault();
+    const otp = document.getElementById('otpInput').value;
+
+    const response = await fetch('https://127.0.0.1:443/api/verify_otp', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ otp }),
+    });
+
+    if (response.ok) {
+        const data = await response.json();
+        if (data.message === 'Login successful') {
+            updateMainContentVisibility(true);
+            appRouter.navigate('/');
+        } else {
+            alert('Invalid or expired OTP. Please try again.');
+            showOtpForm(true); 
+        }
+    } else {
+        const error = await response.json();
+        console.error('OTP verification failed:', error);
+        alert(error.error || 'OTP verification failed');
     }
 }
 
