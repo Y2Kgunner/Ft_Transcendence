@@ -2,3 +2,6 @@
 ft_transcendence_env/
 __pycache__/
 src/frontend/testD
+
+src/frontend/pages/newHome.html
+tmpTest/

@@ -472,7 +472,6 @@ function setupGamePage() {
     await waitGameFinish(gameOver);
     updateMatch();
   });
-
 }
 
 function waitGameFinish(gameStatus, interval = 100) {
@@ -734,12 +733,13 @@ function pauseGame() {
 }
 
 function continueGame() {
-  pauseModalInstance.hide();
   pauseModalInstance._element.addEventListener('hidden.bs.modal', function () {
     pauseModalVisible = false;
-    if (!intervalId)
+    if (!intervalId) {
       intervalId = setInterval(updateGame, 16);
+    }
   }, { once: true });
+  pauseModalInstance.hide();
 }
 
 //? modal input validation

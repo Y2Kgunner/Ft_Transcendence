@@ -92,12 +92,12 @@ input[type="text"]::placeholder {
 }
 
 .gradientPlayerNames {
-  background: linear-gradient(120deg, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00);
+  background: linear-gradient(120deg, #005100, #00ff00, #005100, #00ff00, #005100, #00ff00, #005100, #00ff00, #005100, #00ff00, #005100, #00ff00, #005100, #00ff00, #005100, #00ff00, #005100, #00ff00, #005100, #00ff00, #005100, #00ff00);
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
   background-size: 200% 100%;
-  animation: gradient 3s linear infinite;
+  animation: gradient 10s linear infinite;
 }
 
 .gradientText {
@@ -111,23 +111,20 @@ input[type="text"]::placeholder {
 }
 
 .gradientInput {
-  background: linear-gradient(120deg, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00);
-  /* background: conic-gradient(#157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00); */
-  background-clip: text;
-  -webkit-background-clip: text;
+  background: linear-gradient(120deg, #0d3f0d, #00ff00, #0d3f0d, #00ff00, #0d3f0d, #00ff00, #0d3f0d, #00ff00, #0d3f0d, #00ff00, #0d3f0d, #00ff00, #0d3f0d, #00ff00, #0d3f0d, #00ff00, #0d3f0d, #00ff00, #0d3f0d, #00ff00);
   color: transparent;
   background-size: 200% 100%;
   animation: gradient 5s linear infinite;
-  /* animation: spin 4s infinite linear; */
+  z-index: 5;
 }
 
-/* .sbinner {
+.sbinner {
   background: linear-gradient(120deg, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00, #157815, #00ff00);
   background-clip: text;
   -webkit-background-clip: text;
   background-size: 200% 100%;
-  animation: spin 4s infinite linear;
-} */
+  animation: spin 15s infinite linear;
+}
 
 @keyframes gradient {
   0% {
@@ -135,7 +132,7 @@ input[type="text"]::placeholder {
   }
 
   100% {
-    background-position: 0% 50%;
+    background-position: 0% 100%;
   }
 }
 
@@ -147,7 +144,7 @@ input[type="text"]::placeholder {
   width: 14vmin;
   height: 14vmin;
   color: #017701;
-  background: #ccddcc;
+  background: #000;
   font-size: 11rem;
   font-weight: 600;
   outline: none;
@@ -158,8 +155,6 @@ input[type="text"]::placeholder {
 .box {
   width: 14vmin;
   height: 14vmin;
-  /* color: #00ff00; */
-  /* background: #dbefd0; */
   font-size: 11rem;
   font-weight: 600;
   outline: none;
@@ -168,6 +163,19 @@ input[type="text"]::placeholder {
   padding-left: .85vw;
   padding-bottom: .35vw;
   font-size: 7vw;
+  position: relative;
+  z-index: 2; /* Ensure this is higher than .boxBg */
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+.boxBg {
+  width: 14vmin;
+  height: 14vmin;
+  background-color: black;
+  position: absolute;
+  z-index: 1; /* Ensure this is lower than .box */
 }
 
 p {
@@ -184,7 +192,7 @@ p {
 
 
 .box.focus {
-  background-color: #12d712;
+  /* background-color: #12d712; */
   box-shadow: inset 0 0 15px 10px #d4fcd4, 0 0 5px #017701, 0 0 5px #ffffff;
 }
 
@@ -204,4 +212,9 @@ p {
 
 .customBg {
   background-color: #1d1f1d;
+}
+
+
+.grid-fade {
+  /* opacity: 0; */
 }
