@@ -17,6 +17,8 @@ let pauseModalInstance;
 let startModal;
 var restartModal;
 var finishTournamentModal;
+var matchModal;
+let roundDetails;
 
 let paddle1Y = 0;
 let paddle2Y = 0;
@@ -105,6 +107,7 @@ function setupTournamentPage() {
     tournamentName = document.getElementById("tournamentName");
     tournamentName.addEventListener('input', checkInput);
     startModal = new bootstrap.Modal(document.getElementById('startGameModal'));
+    matchModal = new bootstrap.Modal(document.getElementById('gameDetailsModal'));
     continueBtn.addEventListener('click', handleNewTournamentFormSubmit)
 
     function handleNewTournamentFormSubmit(event) {
@@ -113,8 +116,12 @@ function setupTournamentPage() {
         const numParticipants = parseInt(input.value, 10);
         generateParticipantFields(numParticipants);
         detailsModal.hide();
+        //add game preview modal here
+        // matchModal.show()
         startModal.show();
     }
+
+    // startModal.show();
     continueBtn.addEventListener('submit', handleNewTournamentFormSubmit);
     setupcreateTournamentForm();
     // startModal.hide();
@@ -453,6 +460,7 @@ function createTournament() {
         // alert('Tournament created successfully!');
         // setTournamentId(data.id);
         // console.log(data.id);
+
         getMatchData();
         // getNextMatch(data.id);
     })
@@ -514,7 +522,6 @@ function completeTournament() {
   });
 }
 function getMatchData() {
-    console.log();
     fetch(`https://127.0.0.1:443/tournament_api/detail`, {
         method: 'GET',
         headers: {
@@ -531,15 +538,17 @@ function getMatchData() {
         return response.json();
     })
     .then(data => {
-       //console.log('Tournament    :', data);
+       console.log('Tournament    :', data);
       //  alert('Tournament details pulled successfully!');
       participants = data.participants;
       creator = data.creator;
       participants[0].username = creator.username;
       console.log(creator);
       console.log(participants);
-        setTournamentId(data);
+      setTournamentId(data);
+      // matchModal.show();
 
+      // startNextGameBtn.addEventListener('submit',  startTournament(data.id));
         // completeTournament();
         startTournament(data.id);
         // arrangeNextRound(data.id);
@@ -564,37 +573,140 @@ function waitGameFinish(interval = 100) {
   })
 }
 
+async function arrangeNextRound() {
+  const tournamentData = {
+    tournament_id: getTournamentId()
+};
+  const response = await fetch(`https://127.0.0.1:443/tournament_api/arrange-matches/${getTournamentId()}`, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + getCookie('jwt')
+      },
+      body: JSON.stringify(tournamentData)
+  })
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  const data = await response.json();
+  return data;
+}
+
+async function getRoundDetails(round) {
+  const response = await fetch(`https://127.0.0.1:443/tournament_api/get_second_round_matches/${getTournamentId()}/${round}`, {
+      method: 'GET',
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + getCookie('jwt')
+      }
+  })
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  const data = await response.json();
+  console.log(data);
+  return data;
+}
+
 async function startGameLoop() {
-  var p1,p2,win,remaining = 0,match_id;
+  var p1,p2,win,remaining = 0,match_id,round=1,roundMsg,matchMsg,matchNumber=0,matchDetail;
+  startModal.hide();
+
   for(let i = 0; i!= 1;i=remaining)
   {
     try {
-      const data = await getNextMatch();
+      // if(round == 1 )
+      // {
+        if(i==0)
+        {
+        roundDetails = await arrangeNextRound();
+        matchDetail = roundDetails.match_details;
+        console.log("round details : " +matchDetail);
+        }
+        else if(round == 2 )
+        {
+          roundDetails = await getRoundDetails(round);
+        }
+        // console.log(roundDetails);
+        roundMsg = "Round : " + round + "\n";
+        for ( let i = 0; i < matchDetail.length; i++)
+        {
+          // console.log(roundDetails.match_details[i]);
+          p1 = participants.find(element => Object.values(element).includes(matchDetail[i].participant_one_id));
+          // p2 = participants.find(element => Object.values(element).includes(roundDetails.participant_two_id));
+          // console.log(p1);
+          if (matchDetail[i].is_bye)
+          {
+            matchMsg = p1.username + " vs PASS\n";
+          }
+          else 
+          {
+            p2 = participants.find(element => Object.values(element).includes(matchDetail[i].participant_two_id));
+            matchMsg = p1.username + " vs " + p2.username +"\n";
+          }
+          roundMsg+=matchMsg;
+        }
+        document.getElementById("gameDetail").innerHTML= roundMsg.replace(/\n/g,"<br>");
+        if (round ==2)
+        {
+          matchModal.show();
+          await waitSubmission(startNextGameBtn);
+
+        }
+        // console.log(roundMsg);
+      
+      // else if(round == 2)
+      // {
+      //   roundDetails = await getRoundDetails(round);
+      // }
       if (i == 0)
+      {
+        // roundDetails = await getRoundDetails(round);
+        // roundDetails = await arrangeNextRound();
+        // console.log(roundDetails);
         startModal.hide();
-      // console.log(data);
+
+        matchModal.show();
+        await waitSubmission(startNextGameBtn);
+      }
+
+      const data = await getNextMatch();
+      round = data.next_match.round_number;
+      // console.log(round);
       p1 = participants.find(element => Object.values(element).includes(data.next_match.participant_one));
       p2 = participants.find(element => Object.values(element).includes(data.next_match.participant_two));
-
+      // round = data.next_match.round_number;
       player1Alias = p1.username;
       player2Alias = p2.username;
       remaining = data.next_match.remaining_matches;
       // i = remaining;
       match_id =  data.next_match.match_id;
       // console.log(remaining);
-      console.log(p1);
-      console.log(p2);
+      // console.log(p1);
+      // console.log(p2);
+      // console.log(participants.length);
+      console.log("round :" + round);
       startGame();
 
       await waitGameFinish();
+      // console.log("winner:" + winner);
       win = participants.find(element => Object.values(element).includes(winner));
       await updateMatchResult(match_id,win.id);
-      
-      restartModal.show();
-      
       restartGameButton = document.getElementById("restartGameBtn");
-
       await waitSubmission(restartGameButton);
+      if (round != 3)
+      {
+      matchModal.show();
+      await waitSubmission(startNextGameBtn);
+      }
+      matchNumber +=1;
+      console.log(matchNumber + " -- " + matchDetail.length -1 );
+      if (matchNumber == matchDetail.length -1 )
+        round+=1;
+      // matchModal.show();
+      // restartGameButton = document.getElementById("restartGameBtn");
+
+      // await waitSubmission(restartGameButton);
       // });
       } catch (error){
       console.error('Failed to get next match:', error);
@@ -652,6 +764,7 @@ async function getNextMatch() {
       throw new Error('Network response was not ok');
     }
     const data = await response.json();
+    // console.log(data);
     return data;
 }
 

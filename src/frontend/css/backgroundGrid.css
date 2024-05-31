@@ -1,0 +1,474 @@
+
+
+ /* succ attempt no1 */
+/* .grid-container {
+  overflow: hidden;
+  height: 100vh;
+  perspective: 100px;
+  position: relative;
+}
+
+.grid {
+  background: linear-gradient(180deg, #00000000 0px, #00ff0083 0%, #00ff0083 1px, #00000000 0px), linear-gradient(90deg, #00000000 0px, #00ff0083 0%, #00ff0083 1px, #00000000 0px);
+  background-size: 2em 1em, 8em 1em;
+  background-color: black;
+  height: 20em;
+  width: 250%;
+  position: relative;
+  top: 75%;
+  right: 50%;
+  animation: gridAnimation 10s infinite linear;
+}
+
+@keyframes gridAnimation {
+  0% {
+    transform: rotateX(60deg) translateY(-25%) scale(2);
+  }
+  100% {
+    transform: rotateX(60deg) translateY(25%) scale(2);
+  }
+} */
+
+
+
+
+
+
+
+
+
+/* normal version */
+/* .grid-container {
+  overflow: hidden;
+  height: 100vh;
+  perspective: 100px;
+}
+
+.grid {
+  background: linear-gradient(180deg, #00000000 0px, #00ff0083 0%, #00ff0083 1px, #00000000 0px),
+              linear-gradient(90deg, #00000000 0px, #00ff0083 0%, #00ff0083 1px, #00000000 0px);
+  background-size: 2em 1em, 8em 1em;
+  background-color: black;
+  height: 20em;
+  width: 250%;
+  position: relative;
+  top: 75%;
+  right: 50%;
+  transform: rotateX(60deg) scale(2);
+  animation: gridAnimation 10s infinite linear;
+}
+
+@keyframes gridAnimation {
+  0% {
+    background-position: 0 0, 0 0;
+  }
+  100% {
+    background-position: 0 10em, 0 10em;
+  }
+} */
+
+
+
+
+
+
+
+
+
+
+
+
+/* blur version */
+/* .grid-container {
+  overflow: hidden;
+  height: 100vh;
+  perspective: 100px;
+  position: relative;
+}
+
+.grid {
+  background: linear-gradient(180deg, #00000000 0px, #00ff0083 0%, #00ff0083 1px, #00000000 0px),
+              linear-gradient(90deg, #00000000 0px, #00ff0083 0%, #00ff0083 1px, #00000000 0px);
+  background-size: 2em 1em, 8em 1em;
+  background-color: black;
+  height: 20em;
+  width: 250%;
+  position: relative;
+  top: 75%;
+  right: 50%;
+  transform: rotateX(60deg) scale(2);
+  animation: gridAnimation 10s infinite linear;
+}
+
+@keyframes gridAnimation {
+  0% {
+    background-position: 0 0, 0 0;
+  }
+  100% {
+    background-position: 0 10em, 0 10em;
+  }
+}
+
+.grid-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle, transparent, transparent 30%, rgba(0, 0, 0, 0.5) 70%);
+  pointer-events: none;
+  z-index: 1;
+  filter: blur(10px);
+}
+ */
+
+
+
+
+
+/* blank to color side blurs */
+ /* .grid-container {
+  overflow: hidden;
+  height: 100vh;
+  perspective: 100px;
+  position: relative;
+}
+
+.grid {
+  background: linear-gradient(180deg, #00000000 0px, #00ff0083 0%, #00ff0083 1px, #00000000 0px),
+              linear-gradient(90deg, #00000000 0px, #00ff0083 0%, #00ff0083 1px, #00000000 0px);
+  background-size: 2em 1em, 8em 1em;
+  background-color: black;
+  height: 20em;
+  width: 250%;
+  position: relative;
+  top: 75%;
+  right: 50%;
+  transform: rotateX(60deg) scale(2);
+  animation: gridAnimation 10s infinite linear, blurAnimation 2s forwards;
+}
+
+@keyframes gridAnimation {
+  0% {
+    background-position: 0 0, 0 0;
+  }
+  100% {
+    background-position: 0 10em, 0 10em;
+  }
+}
+
+@keyframes blurAnimation {
+  0% {
+    filter: blur(10px);
+  }
+  100% {
+    filter: blur(0);
+  }
+}
+
+.grid-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle, transparent, transparent 30%, rgba(0, 0, 0, 0.5) 70%);
+  pointer-events: none;
+  z-index: 1;
+  filter: blur(10px);
+}
+
+ */
+
+
+
+
+
+
+
+
+
+
+
+
+ /* .grid-container {
+  overflow: hidden;
+  height: 100vh;
+  perspective: 100px;
+  position: relative;
+  z-index: 1;
+}
+
+.grid {
+  background: linear-gradient(180deg, #00000000 0px, #00ff0083 0%, #00ff0083 1px, #00000000 0px),
+              linear-gradient(90deg, #00000000 0px, #00ff0083 0%, #00ff0083 1px, #00000000 0px);
+  background-size: 2em 1em, 8em 1em;
+  background-color: black;
+  height: 20em;
+  width: 250%;
+  position: relative;
+  top: 75%;
+  right: 50%;
+  transform: rotateX(60deg) scale(2);
+  animation: gridAnimation 10s infinite linear;
+}
+
+@keyframes gridAnimation {
+  0% {
+    background-position: 0 0, 0 0;
+  }
+  100% {
+    background-position: 0 10em, 0 10em;
+  }
+}
+
+.grid::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1em; Adjust this value to control the height of the blur
+  background: rgba(0, 0, 0, 0.5); Adjust this value to control the color of the blur
+  filter: blur(5px); Adjust this value to control the amount of blur
+  pointer-events: none;
+  z-index: 1;
+}
+
+.grid-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle, transparent, transparent 30%, rgba(0, 0, 0, 0.5) 70%);
+  pointer-events: none;
+  z-index: 1;
+  filter: blur(50px);
+} */
+
+
+
+/* .grid-container {
+  overflow: hidden;
+  top: 75%;/cmt
+  height: 100%;
+  perspective: 100px;
+  position: absolute;
+  z-index: -1;
+}
+
+.grid {
+  background: linear-gradient(180deg, #00000000 0px, #00ff0083 0%, #00ff0083 1px, #00000000 0px),
+              linear-gradient(90deg, #00000000 0px, #00ff0083 0%, #00ff0083 1px, #00000000 0px);
+  background-size: 2em 1em, 8em 1em;
+  background-color: black;
+  height: 20em;
+  width: 250%;
+  position: absolute;
+  top: 75%;/cmt
+  right: 0%;
+  transform: rotateX(60deg) scale(2);
+  animation: gridAnimation 10s infinite linear;
+  z-index: -1;
+}
+
+@keyframes gridAnimation {
+  0% {
+    background-position: 0 0, 0 0;
+  }
+  100% {
+    background-position: 0 10em, 0 10em;
+  }
+}
+
+.grid::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1em; Adjust this value to control the height of the blur
+  background: rgba(0, 0, 0, 0.8); Adjust this value to control the color of the blur
+  filter: blur(5px); Adjust this value to control the amount of blur
+  pointer-events: none;
+  z-index: -1; Lower z-index
+}
+
+.grid-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle, transparent, transparent 30%, rgba(0, 0, 0, 0.5) 70%);
+  pointer-events: none;
+  z-index: -1;
+  filter: blur(50px);
+}
+ */
+
+
+
+
+
+
+
+/* .grid-container {
+  overflow: hidden;
+  height: 100%;
+  perspective: 100px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.grid {
+  background: linear-gradient(180deg, #00000000 0px, #00ff0083 0%, #00ff0083 .3px, #00000000 0px),
+              linear-gradient(90deg, #00000000 0px, #00ff0083 0%, #00ff0083 1px, #00000000 0px);
+  background-size: 2em 1em, 8em 1em;
+  background-color: black;
+  height: 20em;
+  width: 300%;
+  top: 75%;
+  position: absolute;
+  right: 0%;
+  transform: rotateX(60deg) scale(2);
+  animation: gridAnimation 15s infinite linear;
+  z-index: -1;
+}
+
+.gridFlip {
+  background: linear-gradient(180deg, #00000000 0px, #00ff0083 0%, #00ff0083 .3px, #00000000 0px),
+              linear-gradient(90deg, #00000000 0px, #00ff0083 0%, #00ff0083 1px, #00000000 0px);
+  background-size: 2em 1em, 8em 1em;
+  background-color: black;
+  height: 20em;
+  width: 300%;
+  position: absolute;
+  right: 0%;
+  transform: rotateX(60deg) scale(2);
+  animation: gridAnimation 15s infinite linear;
+  z-index: -1;
+}
+
+@keyframes gridAnimation {
+  0% {
+    background-position: 0 0, 0 0;
+  }
+  100% {
+    background-position: 0 10em, 0 10em;
+  }
+}
+
+.grid::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1em;
+  background: rgba(0, 0, 0, 0.8);
+  filter: blur(5px);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.gridFlip::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1em;
+  background: rgba(0, 0, 0, 0.8);
+  filter: blur(20px);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.grid-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle, transparent, transparent 30%, rgba(0, 0, 0, 0.5) 70%);
+  pointer-events: none;
+  z-index: -1;
+  filter: blur(50px);
+} */
+
+
+
+.grid-container {
+  overflow: hidden;
+  height: 100%;
+  perspective: 100px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.grid {
+  /* background: linear-gradient(180deg, #00000000 0px, #00fbff83 0%, #00fbff83 1px, #00000000 0px), #ffdd0083*/
+  background: linear-gradient(180deg, #00000000 0px, #11ff0083 0%, #11ff0083 1px, #00000000 0px),
+  linear-gradient(90deg, #00000000 0px, #11ff0083 0%, #11ff0083 1px, #00000000 0px);
+  background-size: 2em 1em, 10em 1em;
+  background-color: black;
+  height: 20em;
+  width: 300%;
+  position: absolute;
+  top: 80%;
+  right: 0;
+  transform: rotateX(90deg) scale(2);
+  animation: gridAnimation 10s infinite linear;
+  z-index: -1;
+  opacity: 1;
+}
+
+@keyframes gridAnimation {
+  0% {
+    background-position: 0 0, 0 0;
+  }
+  100% {
+    background-position: 0 10em, 0 10em;
+  }
+}
+
+.grid::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1em; /* Adjust this value to control the height of the blur */
+  background: rgba(0, 0, 0, 0.8); /* Adjust this value to control the color of the blur */
+  filter: blur(10px); /* Adjust this value to control the amount of blur */
+  pointer-events: none;
+  z-index: -1;
+}
+
+.grid-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle, transparent, transparent 30%, rgba(0, 0, 0, 0.5) 69%);
+  pointer-events: none;
+  z-index: 1;
+  filter: blur(50px);
+}

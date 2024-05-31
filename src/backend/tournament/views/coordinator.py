@@ -34,10 +34,10 @@ def get_next_match(request, tournament_id=None):
     
 @csrf_exempt
 @require_http_methods(["GET"])
-def get_second_round_matches(request, tournament_id):
+def get_second_round_matches(request, tournament_id,round):
     try:
         tournament = Tournament.objects.get(id=tournament_id, is_active=True, is_completed=False)
-        second_round_matches = tournament.matches.filter(round_number=2, is_completed=False).order_by('match_order')
+        second_round_matches = tournament.matches.filter(round_number=round, is_completed=False).order_by('match_order')
         if second_round_matches:
             response_data = [{
                 "match_id": match.id,

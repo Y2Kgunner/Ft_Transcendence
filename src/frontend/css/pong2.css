@@ -1,18 +1,17 @@
 @font-face {
   font-family: 'PixelatedFont';
-  src: url('../assets/Pixelated/pix/pix.ttf') format('truetype'); /* Update the path to your font file */
+  src: url('../assets/Pixelated/pix/pix.ttf') format('truetype');
 }
 
 body {
-  font-family: 'PixelatedFont', sans-serif; /* Use the custom font as the default font */
+  font-family: 'PixelatedFont', sans-serif;
   overflow: hidden;
 }
 
 .mainContext {
-  /* background-color: brown; */
-  min-height: calc(100vh - 71px); /* Subtract navbar height */
+  min-height: calc(100vh - 71px);
   max-width: 100vw;
-  margin-top: 71px; /* Start after the navbar */
+  margin-top: 71px;
   padding-top: 10vh;
   overflow:hidden;
 }
@@ -22,7 +21,6 @@ body {
   width: 55vw;
   height: 55vh;
   position: relative;
-  /* margin-bottom: 50px; */
 }
 
 .dottedLine {
@@ -44,32 +42,8 @@ body {
   min-width: 5px;
   height: 7.5vh;
   min-height: 40px;
-  /* background-color: #958b20; */
-}
-
-.paddle:before {
-  content: "";
-  position: absolute;
-  left: -25%;
-  top: -100%;
-  height: 300%;
-  width: 150%;
   background-color: #1f7016;
-  /* background-image: linear-gradient(to bottom, #1bd215, #4c8a0a, #1bd215, #4c8a0a); */
-  background-size: 100% 200%; /* Add this line */
-  /* animation: paddleGradient 5s infinite linear; */
 }
-
-/* @keyframes paddleGradient {
-  0% {
-    background-position: 50% 100%;
-  }
-  100% {
-    background-position: 50% 0%;
-  }
-} */
-
-/* --- --- --- --- --- --- --- --- */
 
 #paddle_1 {
   top: calc(50% - (7.5vh / 2));
@@ -159,8 +133,6 @@ body {
   top: -125%;
   height: 369%;
   width: 150%;
-  /* background-image: conic-gradient(#1bd215, #a9940d, #1bd215, #a9940d, #1bd215, #a9940d, #1bd215, #a9940d, #1bd215); */
-  /* background-image: conic-gradient(#40e10f, #f06a05, #40e10f, #f06a05, #40e10f, #f06a05, #40e10f, #f06a05, #40e10f); */
   background-image: conic-gradient(#3cff00, #2c5519, #3cff00, #2c5519, #3cff00);
   animation: spin 4s infinite linear;
 }
@@ -187,16 +159,12 @@ body {
   top: -200%;
   height: 500%;
   width: 550%;
-  /* background-image: conic-gradient(#07b66d, #d6095b, #07b66d, #d6095b, #07b66d, #d6095b, #07b66d); */
-  /* background-image: conic-gradient(#40e10f, #f06a05, #40e10f, #f06a05, #40e10f); */
   background-image: conic-gradient(#3cff00, #2c5519, #3cff00, #2c5519, #3cff00, #2c5519, #3cff00, #2c5519, #3cff00, #2c5519, #3cff00, #2c5519, #3cff00, #2c5519, #3cff00);
   animation: spin 8s infinite linear;
 }
 
 .gradientText {
-  /* font-style: oblique; */
   font-style: italic;
-  /* background: linear-gradient(to right,#40e10f, #f06a05, #40e10f, #f06a05, #40e10f); */
   background: linear-gradient(to right,#3cff00, #2c5519, #3cff00, #2c5519, #3cff00, #2c5519, #3cff00, #2c5519, #3cff00, #2c5519, #3cff00, #2c5519, #3cff00);
   background-clip: text;
   -webkit-background-clip: text;
@@ -223,7 +191,7 @@ body {
 }
 
 #player2alias:focus {
-  box-shadow: 0 0 5px #57ae10; /* Add a box shadow for a more prominent effect */
+  box-shadow: 0 0 5px #57ae10;
 }
 
 .modal-content {

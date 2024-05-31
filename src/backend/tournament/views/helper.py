@@ -17,7 +17,7 @@ def start_tournament(request):
         tournament.is_started = True
         tournament.save()
         tournament_id = tournament.id
-        arrange_tournament_matches(tournament_id)
+        # arrange_tournament_matches(tournament_id)
         return JsonResponse({"message": "Tournament started successfully."}, status=200)
     except Tournament.DoesNotExist:
         return JsonResponse({"error": "Tournament not found."}, status=404)

@@ -9,9 +9,10 @@ body {
 }
 
 section {
-	top: 150px;
+	top: 20vh;
 	position: relative;
 	color:rgb(255, 255, 254);
+  z-index: 1;
 }
 
 .socialIcons > a {
@@ -52,6 +53,7 @@ section {
 	margin-top: 20px;
   perspective: 1000px;
   -webkit-perspective: 1000px;
+  z-index: 1;
 }
 
 .card {
@@ -101,3 +103,6 @@ section {
 	box-shadow: 0 0 10px #c9dbc0;
 }
 
+.grid-fade {
+  opacity: 0.5;
+}
