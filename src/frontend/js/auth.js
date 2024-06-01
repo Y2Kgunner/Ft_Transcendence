@@ -26,31 +26,62 @@ function getAuthToken() {
     return token ? token : null;
 }
 
+
 async function login(event) {
     event.preventDefault();
     const username = document.getElementById('LoginUserName').value;
     const password = document.getElementById('loginPassword').value;
-    
-    const response = await fetch('https://127.0.0.1:443/api/login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-    });
-    
-    if (response.ok) {
+
+    try {
+        const response = await fetch('https://127.0.0.1:443/api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, password }),
+            credentials: 'include'
+        });
+
         const data = await response.json();
-        if (data.requires_otp) {
-            showOtpForm(true);
+        if (response.ok) {
+            if (data.requires_otp) {
+                showOtpModal();
+            } else {
+                finalizeLogin(data);
+            }
         } else {
-            finalizeLogin(data);
+            throw new Error(data.error || 'Login failed');
         }
-    } else {
-        const error = await response.json();
-        console.error('Login failed:', error.error);
-        alert(error.error || 'Login failed');
+    } catch (error) {
+        console.error('Login failed:', error);
+        alert(error.message || 'Login failed');
     }
+}
+
+function showOtpModal() {
+    const otpModalElement = document.getElementById('otpModal');
+    // console.log(otpModalElement);
+    const otpModal = new bootstrap.Modal(otpModalElement, {
+        keyboard: false,
+        backdrop: 'static'
+    });
+    otpModal.show();
+}
+
+
+function initializeModals() {
+    const allModals = document.querySelectorAll('.modal');
+    allModals.forEach(modal => {
+        if (!bootstrap.Modal.getInstance(modal)) {
+            new bootstrap.Modal(modal);
+        }
+    });
+}
+
+
+function disableButtonTemporarily(button, duration) {
+    button.disabled = true;
+    setTimeout(() => button.disabled = false, duration);
 }
 
 function finalizeLogin(data) {
@@ -89,55 +120,51 @@ async function register(event) {
     }
 }
 
-export async function verifyOtp(event) {
+async function verifyOtp(event) {
     event.preventDefault();
     const otp = document.getElementById('otpInput').value;
+    const otpModal = bootstrap.Modal.getInstance(document.getElementById('otpModal'));
 
-    const response = await fetch('https://127.0.0.1:443/api/verify_otp', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ otp }),
-        credentials: 'include', 
-    });
-    if (response.ok) {
+    try {
+        const response = await fetch('https://127.0.0.1:443/api/verify_otp', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ otp }),
+            credentials: 'include',
+        });
+
         const data = await response.json();
-        alert('OTP verification successful');
-        finalizeLogin(data); 
-    } else {
-        console.error('OTP verification failed');
-        alert('Invalid or expired OTP. Please try again.');
+        if (response.ok) {
+            otpModal.hide();
+            finalizeLogin(data);
+        } else {
+            throw new Error(data.error || 'Invalid or expired OTP. Please try again.');
+        }
+    } catch (error) {
+        console.error('OTP verification failed:', error);
+        alert(error.message);
     }
 }
 
 function setupEventListeners() {
     document.getElementById('showRegisterForm')?.addEventListener('click', function(event) {
         event.preventDefault();
-       //console.log('Switching to register form...'); 
         showRegisterForm();
-        // appRouter.navigate('/register')
     });
 
     document.getElementById('showLoginForm')?.addEventListener('click', function(event) {
         event.preventDefault();
-       //console.log('Switching to login form...'); 
         showLoginForm();
     });
 
-    const fortyTwoButtonLog = document.getElementById("fortytwoLoginButton");
-    if (fortyTwoButtonLog) {
-        fortyTwoButtonLog.addEventListener('click', function(event) {
-            window.location.href = "https://127.0.0.1/api/fortytwo";
-        });
-    }
-
     document.getElementById('loginButton')?.addEventListener('click', login);
+    document.getElementById('otpButton')?.addEventListener('click', verifyOtp);
     document.getElementById('registerButton')?.addEventListener('click', register);
-    document.getElementById('loginForm')?.addEventListener('submit', login);
     document.getElementById('registerForm')?.addEventListener('submit', register);
     document.getElementById('forgotPasswordLink')?.addEventListener('click', forgetPassword);
-    document.getElementById('otpButton')?.addEventListener('click', verifyOtp);
+    initializeModals();
 }
 
 export async function setupAuthPage() {

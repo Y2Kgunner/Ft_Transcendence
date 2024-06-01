@@ -140,3 +140,28 @@ body {
   z-index: 1;
   filter: blur(50px);
 }
+
+
+.custoModal {
+  color: #c6c6c6;
+  background-color: #1a1a1a;
+  box-shadow: 0 0 10px 2px #114e0e;
+  --bs-modal-header-border-color: #114e0e;
+  --bs-modal-footer-border-color: #114e0e;
+}
+
+.custoModalbtn {
+  --bs-btn-bg: #114e0e;
+  --bs-btn-border-color: none;
+  --bs-btn-color: #b9b9b9;
+  --bs-btn-hover-bg: #3f1927;
+  --bs-btn-hover-border-color: #3f1927;
+  --bs-btn-active-color: #c4c4c4;
+  --bs-btn-active-bg: #3f1927;
+  --bs-btn-active-border-color: #3f1927;
+  --bs-btn-hover-color: #c4c4c4;
+}
+
+.custoModalbtn:hover {
+  box-shadow: 0 0 5px 0 #b9b9b9;
+}
