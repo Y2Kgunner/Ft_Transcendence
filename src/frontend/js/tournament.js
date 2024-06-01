@@ -55,7 +55,24 @@ let paddle2MovingDown = false;
 
 
 
+let gameInProgressTour = false;
 
+export function startGameSession() {
+  gameInProgressTour = true;
+  window.addEventListener('beforeunload', handleBeforeUnload);
+}
+
+export function endGameSession() {
+  gameInProgressTour = false;
+  window.removeEventListener('beforeunload', handleBeforeUnload);
+}
+function handleBeforeUnload(event) {
+  if (gameInProgressTour) {
+      const message = "You have an ongoing game. Are you sure you want to leave and lose your progress?";
+      event.returnValue = message; 
+      return message;
+  }
+}
 
 function setupTournamentPage() {
   // Get elements
@@ -277,6 +294,7 @@ function haltGame(winning_player) {
   paused = false;
   pauseModalVisible = false;
   gameOver = true;
+  endGameSession();
   winnerMsg = document.getElementById('GameWinner');
   winnerMsg.textContent = winning_player.toString() + " wins!";
   score1 = 0;
@@ -309,6 +327,7 @@ function startGame() {
   restartModal = new bootstrap.Modal(document.getElementById('restartGame'));
   begin = true;
   gameOver = false;
+  startGameSession();
   tournamentName = document.getElementById("tournamentName").value;
   player1AliasElement.textContent = player1Alias;
   player2AliasElement.textContent = player2Alias;
@@ -740,4 +759,4 @@ function getTournamentId() {
   return localStorage.getItem('currentTournamentId');
 }
 
-export { setupTournamentPage };
+export { setupTournamentPage, gameInProgressTour };

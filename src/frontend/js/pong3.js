@@ -52,6 +52,25 @@ const inputIds = ["player2alias", "player3alias"];
 
 let pauseModalInstance;
 
+let gameInProgress3 = false;
+
+export function startGameSession() {
+  gameInProgress3 = true;
+  window.addEventListener('beforeunload', handleBeforeUnload);
+}
+
+export function endGameSession() {
+  gameInProgress3 = false;
+  window.removeEventListener('beforeunload', handleBeforeUnload);
+}
+function handleBeforeUnload(event) {
+  if (gameInProgress3) {
+      const message = "You have an ongoing game. Are you sure you want to leave and lose your progress?";
+      event.returnValue = message; 
+      return message;
+  }
+}
+
 function init3PlyrPong() {
   startModal = new bootstrap.Modal(document.getElementById('startGameModal'));
   startModal.show();
@@ -296,7 +315,7 @@ function haltGame() {
   paddle1.style.top = initialVPaddlePos;
   paddle2.style.top = initialVPaddlePos;
   paddle3.style.left = initialHPaddlePos;
-
+  endGameSession();
   var restartModal = new bootstrap.Modal(document.getElementById('restartGame'));
   restartModal.show();
 
@@ -309,7 +328,7 @@ function startGame() {
   player3AliasElement = document.getElementById("player_3_alias");
   player2AliasElement.textContent = player2Alias;
   player3AliasElement.textContent = player3Alias;
-  
+  startGameSession();
   begin = true;
   gameOver = false;
   intervalId = setInterval(updateGame, 16);
@@ -442,4 +461,4 @@ function closeModal() {
   modalInstance.hide();
 }
 
-export { init3PlyrPong };
+export { init3PlyrPong , gameInProgress3};
