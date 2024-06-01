@@ -826,4 +826,4 @@ function closeModal() {
 //?
 //? end of modal input validation
 
-export { setupGamePage, fetchUserProfile, isPrintableASCII, createMatch, waitGameFinish, updateMatch };
+export { setupGamePage, fetchUserProfile, isPrintableASCII, waitGameFinish, updateMatch };
