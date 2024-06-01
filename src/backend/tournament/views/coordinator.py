@@ -41,8 +41,8 @@ def get_second_round_matches(request, tournament_id,round):
         if second_round_matches:
             response_data = [{
                 "match_id": match.id,
-                "participant_one": match.participant_one.id if match.participant_one else None,
-                "participant_two": match.participant_two.id if match.participant_two else None,"round_number": match.round_number,} for match in second_round_matches]
+                "participant_one_id": match.participant_one.id if match.participant_one else None,
+                "participant_two_id": match.participant_two.id if match.participant_two else None,"round_number": match.round_number,} for match in second_round_matches]
             return JsonResponse({"second_round_matches": response_data}, status=200)
     except Tournament.DoesNotExist:
         return JsonResponse({"error": "Tournament not found."}, status=404)

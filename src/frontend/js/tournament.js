@@ -609,9 +609,15 @@ async function getRoundDetails(round) {
 }
 
 async function startGameLoop() {
-  var p1,p2,win,remaining = 0,match_id,round=1,roundMsg,matchMsg,matchNumber=0,matchDetail;
+  var p1,p2,win,remaining = 0,match_id,round=1,roundMsg,matchMsg,matchNumber=0,matchDetail,totalRounds;
   startModal.hide();
-
+  console.log("particpants nem : " + participants.length);
+  if(participants.length > 4)
+  {
+    totalRounds = 3;
+  }
+  else
+    totalRounds = 2;
   for(let i = 0; i!= 1;i=remaining)
   {
     try {
@@ -626,6 +632,8 @@ async function startGameLoop() {
         else if(round == 2 )
         {
           roundDetails = await getRoundDetails(round);
+          console.log(roundDetails)
+          matchDetail = roundDetails.second_round_matches;
         }
         // console.log(roundDetails);
         roundMsg = "Round : " + round + "\n";
@@ -694,7 +702,7 @@ async function startGameLoop() {
       await updateMatchResult(match_id,win.id);
       restartGameButton = document.getElementById("restartGameBtn");
       await waitSubmission(restartGameButton);
-      if (round != 3)
+      if (round != totalRounds)
       {
       matchModal.show();
       await waitSubmission(startNextGameBtn);
