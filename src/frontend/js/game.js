@@ -410,6 +410,25 @@ var startGameBtn;
 var startModal;
 var form;
 
+let gameInProgress = false;
+
+export function startGameSession() {
+  gameInProgress = true;
+  window.addEventListener('beforeunload', handleBeforeUnload);
+}
+
+export function endGameSession() {
+  gameInProgress = false;
+  window.removeEventListener('beforeunload', handleBeforeUnload);
+}
+function handleBeforeUnload(event) {
+  if (gameInProgress) {
+      const message = "You have an ongoing game. Are you sure you want to leave and lose your progress?";
+      event.returnValue = message; 
+      return message;
+  }
+}
+
 function setupGamePage() {
   board = document.getElementById("board");
   paddle1 = document.getElementById("paddle_1");
@@ -496,6 +515,7 @@ async function updateMatch() {
         score_guest_player1: score2,
         winner : winner_match
     };
+    endGameSession();
     console.log(matchData)
     const response = await fetch('https://127.0.0.1:443/pongApp/update_match', {
         method: 'POST',
@@ -504,6 +524,7 @@ async function updateMatch() {
             'Authorization': 'Bearer ' + getCookie('jwt')
         },
         body: JSON.stringify(matchData)
+        
     })
     if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -542,7 +563,8 @@ async function createMatch(type) {
     guest_player1: player2Alias,
     game_type: type
   };
-  console.log(matchData)
+  console.log(matchData);
+  startGameSession();
   const response = await fetch('https://127.0.0.1:443/pongApp/create', {
     method: 'POST',
     headers: {
@@ -826,4 +848,4 @@ function closeModal() {
 //?
 //? end of modal input validation
 
-export { setupGamePage, fetchUserProfile, isPrintableASCII, waitGameFinish, updateMatch };
+export { setupGamePage, fetchUserProfile, isPrintableASCII, waitGameFinish, updateMatch, gameInProgress };

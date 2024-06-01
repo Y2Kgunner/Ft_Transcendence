@@ -1,7 +1,7 @@
 import { setupAuthPage, logoutUser, isAuthenticated } from './auth.js';
 import { fetchUserProfile, setupAnonymizeButton, setupDeleteProfileButton, setupCloseButton, setUpVerifyDeleteOtpButton, setupUploadProfilePictureButton , setupFriends} from './profile.js';
 import { setupTournamentPage } from './tournament.js';
-import { setupGamePage } from './game.js';
+import { setupGamePage , gameInProgress } from './game.js';
 import { init3PlyrPong } from './pong3.js';
 import { setupTTT } from './ttt.js';
 
@@ -32,6 +32,12 @@ class Router {
             //console.log(`Already navigated to: ${path}`);
             return;
         }
+        
+        console.log(gameInProgress);
+        if (gameInProgress && this.lastPath == '/pong2' && !confirm('You have an ongoing game. Are you sure you want to leave and lose your progress?')) {
+            return;
+        }
+        
 
         const modal = document.getElementById('myModal');
         if (modal && !modal.hasAttribute('data-loaded')) {
