@@ -40,8 +40,8 @@ def get_second_round_matches(request, tournament_id):
         second_round_matches = tournament.matches.filter(round_number=2).order_by('match_order')
         response_data = [{
             "match_id": match.id,
-            "participant_one": match.participant_one.id if match.participant_one else None,
-            "participant_two": match.participant_two.id if match.participant_two else None,
+            "participant_one_id": match.participant_one.id if match.participant_one else None,
+            "participant_two_id": match.participant_two.id if match.participant_two else None,
             "round_number": match.round_number,
             "is_bye": match.is_bye
         } for match in second_round_matches]
