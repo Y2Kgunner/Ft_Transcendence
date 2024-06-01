@@ -133,7 +133,7 @@ async function setupProfilePage() {
         setupCloseButton();
         setUpVerifyDeleteOtpButton();
         setupUploadProfilePictureButton();
-        setupFriends();
+        await setupFriends();
     } else {
         //console.log('User is not authenticated, redirecting to login');
         appRouter.navigate('/login', { replace: true });

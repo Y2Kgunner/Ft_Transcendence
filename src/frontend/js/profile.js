@@ -3,25 +3,124 @@ import { appRouter } from './router.js';
 
 let userName = '';
 
-function setupFriends()
+async function updateFriendList()
 {
+    let friendList = await getFriendslist();
+    console.log(friendList);
+    //update html table;
+}
+
+async function addUser(userId) {
+  const response = await fetch(`https://127.0.0.1:443/api/add_friend/${userId}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + getCookie('jwt')
+    }
+  })
+  if (!response.ok) {
+    return null;
+  }
+  alert("request has been sent to user! ")
+  const data = await response.json();
+  return data;
+}
+
+async function checkUsername(username) {
+  const response = await fetch(`https://127.0.0.1:443/api/check_username/${username}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + getCookie('jwt')
+    }
+  })
+  if (!response.ok) {
+    return null;
+  }
+  const data = await response.json();
+  return data;
+}
+
+async function getPendingFriends() {
+  const response = await fetch(`https://127.0.0.1:443/api/pending_frinship_requets`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + getCookie('jwt')
+    }
+  })
+  if (!response.ok) {
+    return null;
+  }
+  const data = await response.json();
+  return data;
+}
+
+async function addFriend()
+{
+  let userInfo
+  const friendUserName = document.getElementById('friendUserName');
+  console.log(friendUserName);
+  let username = friendUserName.value;
+  console.log(username);
+  const friendData = await checkUsername(username);
+  if(friendData == null)
+    alert(" friend not found!");
+  else
+  {
+    console.log(friendData);
+    userInfo=friendData.user_info;
+    console.log(userInfo);
+    await addUser(userInfo.user_id);
+  }
+
+}
+async function showInvites()
+{
+  const pendingFriends = await getPendingFriends();
+  console.log(pendingFriends);
+  let freindRequestDiv = ''
+  if(pendingFriends.notifications.length)
+  {
+    console.log("has requests");
+    for(let i = 0; i < pendingFriends.notifications.length; i++)
+    {
+
+    }
+  }
+  else
+  {
+    console.log("empty");
+  }
+}
+
+async function setupFriends()
+{ 
   const addFriendForm = document.getElementById('addFriendForm');
+
+  const addFriendBtn = document.getElementById('addFriendBtn');
     const invitationzDiv = document.getElementById('invitationz');
     const radioButtons = document.getElementsByName('btnradio');
-
+    updateFriendList();
     radioButtons.forEach((radioButton) => {
       radioButton.addEventListener('click', (e) => {
         if (e.target.id === 'btnradio1') {
           addFriendForm.style.display = 'block';
-          invitationzDiv.style.display = 'none';
+          invitationzDiv.style.display = 'none'
+          //show invites
+          updateFriendList();
         } else if (e.target.id === 'btnradio3') {
           addFriendForm.style.display = 'none';
           invitationzDiv.style.display = 'block';
+          showInvites();
         }
       });
     });
+    addFriendBtn.addEventListener('click', async function() {
+      await addFriend();
+    });
+    // console.log()
 
-    
 }
 
 async function getFriendslist() {
