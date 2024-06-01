@@ -1,6 +1,7 @@
 import { setupAuthPage, logoutUser , isAuthenticated} from './auth.js';
 import { fetchUserProfile , setupAnonymizeButton , setupDeleteProfileButton, setupCloseButton, setUpVerifyDeleteOtpButton, setupUploadProfilePictureButton} from './profile.js';
 import { setupTournamentPage } from './tournament.js';
+import { initPongGame } from './pong2.js';
 
 class Router {
     constructor(routes) {
@@ -20,7 +21,12 @@ class Router {
             return;
         }
         this.lastPath = path;
-    
+        
+        // if (path === '/pong2') {
+        //     await this.loadRoute('pages/pong2.html', initPongGame);
+        //     const startGameModal = new bootstrap.Modal(document.getElementById('startGameModal'));
+        //     startGameModal.show(); // <--- Add this line to show the modal
+        // }
         if (path === '/logout') {
             logoutUser();
             return this.loadRoute('/logout');
@@ -82,9 +88,8 @@ const routes = {
     '/login': { path: 'pages/login.html', method: setupAuthPage },
     '/profile': { path: 'pages/profile.html', method: setupProfilePage },
     '/about': { path: 'pages/about.html', method: null },
-    '/pong2': { path: 'pages/pong2.html', method: null },
     '/pong3': { path: 'pages/pong3.html', method: null },
-    // '/multiplayer': { path: 'pages/multiGame.html', method: null },
+    '/pong2': { path: 'pages/pong2.html', method: initPongGame },
     '/tournament': { path: 'pages/tournament.html', method: setupTournamentPage },
     '/logout': { path: '', method: null }
 };
@@ -105,5 +110,3 @@ async function setupProfilePage() {
 }
 
 export const appRouter = new Router(routes);
-
-

@@ -1,5 +1,3 @@
-import { getCookie } from './profile.js';
-
 const matchPoint = 11;
 let intervalId = null;
 let paused = false;
@@ -7,6 +5,9 @@ let pauseModalVisible = false;
 let gameOver = false;
 let modalInit = false;
 
+
+let paddle1Y = 0;
+let paddle2Y = 0;
 let ballX = 5;
 let ballY = 5;
 let ballSpeedX = 10;
@@ -32,14 +33,8 @@ let paddle1MovingUp = false;
 let paddle1MovingDown = false;
 let paddle2MovingUp = false;
 let paddle2MovingDown = false;
-let pauseModalInstance;
 
-var inputField;
-var startGameBtn;
-var startModal;
-var form;
-
-function initPongGame() {
+document.addEventListener("DOMContentLoaded", function () {
   board = document.getElementById("board");
   paddle1 = document.getElementById("paddle_1");
   paddle2 = document.getElementById("paddle_2");
@@ -54,84 +49,9 @@ function initPongGame() {
 
   score1Element.textContent = score1;
   score2Element.textContent = score2;
-
-  pauseModalInstance = new bootstrap.Modal(document.getElementById('pauseGameModal'));
-  startModal = new bootstrap.Modal(document.getElementById('startGameModal'));
+  var startModal = new bootstrap.Modal(document.getElementById('startGameModal'));
   startModal.show();
-
-  fetchUserProfile().then(data => {
-    console.log(data);
-    playerId = data.id;
-    console.log(data.username);
-    player1AliasElement = document.getElementById("player_1_alias");
-    player1Alias = data.username;
-    console.log(player1Alias);
-  });
-
-  startGameBtn = document.getElementById("startGameBtn");
-  startGameBtn.addEventListener("click", function () {
-    checkInput();
-  });
-
-  form = document.querySelector('.needs-validation');
-  form.addEventListener('keyup', function (event) {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      checkInput();
-    }
-  });
-
-  inputField = document.getElementById("player2alias");
-  inputField.addEventListener('input', function () {
-    updateValidationIcon();
-  });
-
-  restartGameBtn.addEventListener('click', async function (event) {
-    await createMatch("Pong");
-    startGame();
-    await waitGameFinish(gameOver);
-    updateMatch();
-  });
-}
-
-function waitGameFinish(gameStatus, interval = 100) {
-  return new Promise(resolve => {
-    const check = () => {
-      if (gameStatus) {
-        console.log("game over")
-        resolve();
-      } else {
-        setTimeout(check, interval);
-      }
-    };
-    check();
-
-  })
-}
-
-async function createMatch(type) {
-  const matchData = {
-    player_id: playerId,
-    guest_player1: player2Alias,
-    game_type: type
-  };
-  console.log(matchData)
-  const response = await fetch('https://127.0.0.1:443/pongApp/create', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + getCookie('jwt')
-    },
-    body: JSON.stringify(matchData)
-  })
-  // if (!response.ok) {
-  //     throw new Error('Network response was not ok');
-  // }
-  const data = await response.json();
-  console.log(data.match_id);
-  matchId = data.match_id;
-  return data;
-}
+});
 
 function handleKeyDown(event) {
   if (event.key === "w" || event.key === "W") {
@@ -168,8 +88,82 @@ function togglePause() {
   }
 }
 
+// function updateGame() {
+//   if (begin && !pauseModalVisible) {
+//     if (paddle1MovingUp && paddle1.offsetTop > 0) {
+//       paddle1.style.top = `${paddle1.offsetTop - 10}px`;
+//     } else if (paddle1MovingDown && paddle1.offsetTop + paddle1.offsetHeight < board.offsetHeight) {
+//       paddle1.style.top = `${paddle1.offsetTop + 10}px`;
+//     }
+
+//     if (paddle2MovingUp && paddle2.offsetTop > 0) {
+//       paddle2.style.top = `${paddle2.offsetTop - 10}px`;
+//     } else if (paddle2MovingDown && paddle2.offsetTop + paddle2.offsetHeight < board.offsetHeight) {
+//       paddle2.style.top = `${paddle2.offsetTop + 10}px`;
+//     }
+
+//     ballX += ballSpeedX;
+//     ballY += ballSpeedY;
+//     ball.style.left = `${ballX}px`;
+//     ball.style.top = `${ballY}px`;
+
+//     if (ballX <= 0) {
+//       score2++;
+//       score2Element.textContent = score2;
+//       resetBall();
+//     } else if (ballX + ball.offsetWidth >= board.offsetWidth) {
+//       score1++;
+//       score1Element.textContent = score1;
+//       resetBall();
+//     }
+//     if (score1 === matchPoint || score2 === matchPoint) {
+//       haltGame(score1 === matchPoint ? player1Alias : player2Alias);
+//     }
+
+//     if (ballY <= 0 || ballY + ball.offsetHeight >= board.offsetHeight)
+//         ballSpeedY = -ballSpeedY;
+
+//     const ballRect = ball.getBoundingClientRect();
+//     const paddle1Rect = paddle1.getBoundingClientRect();
+//     const paddle2Rect = paddle2.getBoundingClientRect();
+
+//     let paddleCollision =
+//       (ballRect.right >= paddle1Rect.left &&
+//         ballRect.left <= paddle1Rect.right &&
+//         ballRect.top <= paddle1Rect.bottom &&
+//         ballRect.bottom >= paddle1Rect.top &&
+//         ballSpeedX < 0) ||
+//       (ballRect.right >= paddle2Rect.left &&
+//         ballRect.left <= paddle2Rect.right &&
+//         ballRect.top <= paddle2Rect.bottom &&
+//         ballRect.bottom >= paddle2Rect.top &&
+//         ballSpeedX > 0);
+
+//     if (paddleCollision) {
+//       const ballCenterY = ballY + ball.offsetHeight / 2;
+//       const paddle1CenterY = paddle1.offsetTop + paddle1.offsetHeight / 2;
+//       const paddle2CenterY = paddle2.offsetTop + paddle2.offsetHeight / 2;
+
+//       let paddleCenterY;
+//       if (ballSpeedX < 0) {
+//         paddleCenterY = paddle1CenterY;
+//       } else {
+//         paddleCenterY = paddle2CenterY;
+//       }
+
+//       const collisionOffset = ballCenterY - paddleCenterY;
+//       const maxOffset = paddle1.offsetHeight / 2;
+
+//       const angle = collisionOffset / maxOffset;
+//       ballSpeedY = initialBallSpeedY * angle;
+//       ballSpeedX = -ballSpeedX;
+//     }
+//   }
+// }
+
 function updateGame() {
   if (begin && !pauseModalVisible) {
+    // Move paddles
     if (paddle1MovingUp && paddle1.offsetTop > 0) {
       paddle1.style.top = `${paddle1.offsetTop - 10}px`;
     } else if (paddle1MovingDown && paddle1.offsetTop + paddle1.offsetHeight < board.offsetHeight) {
@@ -181,9 +175,11 @@ function updateGame() {
       paddle2.style.top = `${paddle2.offsetTop + 10}px`;
     }
 
+    // Move the ball
     ballX += ballSpeedX;
     ballY += ballSpeedY;
 
+    // Check for collisions with walls
     if (ballX <= 0) {
       score2++;
       score2Element.textContent = score2;
@@ -194,12 +190,14 @@ function updateGame() {
       resetBall();
     }
 
+    // Check for collisions with top/bottom walls
     if (ballY <= 0 || ballY + ball.offsetHeight >= board.offsetHeight)
       ballSpeedY = -ballSpeedY;
 
     ball.style.left = `${ballX}px`;
     ball.style.top = `${ballY}px`;
 
+    // Check for collisions with paddles
     const ballRect = ball.getBoundingClientRect();
     const paddle1Rect = paddle1.getBoundingClientRect();
     const paddle2Rect = paddle2.getBoundingClientRect();
@@ -230,12 +228,15 @@ function updateGame() {
       const maxOffset = paddle1.offsetHeight / 2;
       const angle = collisionOffset / maxOffset;
 
+      // Check if the ball is hitting the bottom part of the paddle near the bottom wall
+      //! not doing its job at the moment! lmao
       const paddle1BottomThreshold = board.offsetHeight - paddle1.offsetHeight / 2;
       const paddle2BottomThreshold = board.offsetHeight - paddle2.offsetHeight / 2;
       if (
         (ballSpeedX < 0 && paddle1.offsetTop > paddle1BottomThreshold && angle > 0) ||
         (ballSpeedX > 0 && paddle2.offsetTop > paddle2BottomThreshold && angle > 0)
       ) {
+        // Adjust the ball's direction to go upwards
         ballSpeedY = -initialBallSpeedY * Math.abs(angle);
       } else {
         ballSpeedY = initialBallSpeedY * angle;
@@ -244,6 +245,7 @@ function updateGame() {
       ballSpeedX = -ballSpeedX;
     }
 
+    // Check for game over
     if (score1 === matchPoint || score2 === matchPoint) {
       haltGame(score1 === matchPoint ? player1Alias : player2Alias);
     }
@@ -286,8 +288,9 @@ function startGame() {
   gameOver = false;
   player2Alias = document.getElementById("player2alias").value;
   player2AliasElement.textContent = player2Alias;
-  if (intervalId)
+  if (intervalId) {
     clearInterval(intervalId);
+  }
   intervalId = setInterval(updateGame, 16);
   document.addEventListener("keydown", handleKeyDown);
   document.addEventListener("keyup", handleKeyUp);
@@ -297,6 +300,13 @@ function isPrintableASCII(str) {
   var printableASCIIRegex = /^[!-~]+$/;
   return printableASCIIRegex.test(str);
 }
+
+// function hideOverflow() {
+//   const content = document.getElementsById('board');
+//   content.style.opacity = 1;
+// }
+
+let pauseModalInstance = new bootstrap.Modal(document.getElementById('pauseGameModal'));
 
 function pauseGame() {
   clearInterval(intervalId);
@@ -310,13 +320,36 @@ function continueGame() {
   pauseModalInstance._element.addEventListener('hidden.bs.modal', function () {
     pauseModalVisible = false;
     if (!intervalId)
-      intervalId = setInterval(updateGame, 16);
+    intervalId = setInterval(updateGame, 16);
   }, { once: true });
 }
+
 
 //? modal input validation
 //?
 //?
+window.onload = function() {
+  checkInput();
+}
+
+var startGameBtn = document.getElementById("startGameBtn");
+startGameBtn.addEventListener("click", function() {
+  checkInput();
+});
+
+var form = document.querySelector('.needs-validation');
+form.addEventListener('keyup', function(event) {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    checkInput();
+  }
+});
+
+var inputField = document.getElementById("player2alias");
+inputField.addEventListener('input', function() {
+  updateValidationIcon();
+});
+
 function updateValidationIcon() {
   var invalidFeedback = inputField.nextElementSibling;
   var validFeedback = invalidFeedback.nextElementSibling;
@@ -356,8 +389,8 @@ function checkInput() {
   inputField.classList.remove("is-invalid", "is-valid");
 
   if (!modalInit) modalInit = true;
-  else if (player2Alias === '') {
-    invalidFeedback.textContent = "Player 2 alias cannot be empty!";
+  else if (player2Alias.length > 10 || player2Alias.length < 3) {
+    invalidFeedback.textContent = "Player 2 alias must be between 3 and 10 characters long!";
     inputField.classList.add("is-invalid");
     clearTimeout(window.timeoutId);
     window.timeoutId = setTimeout(clearErrorMessage, 5000, invalidFeedback, inputField);
@@ -371,8 +404,8 @@ function checkInput() {
     inputField.classList.add("is-invalid");
     clearTimeout(window.timeoutId);
     window.timeoutId = setTimeout(clearErrorMessage, 5000, invalidFeedback, inputField);
-  } else if (player2Alias.length > 10 || player2Alias.length < 3) {
-    invalidFeedback.textContent = "Player 2 alias must be between 3 and 10 characters long!";
+  } else if (player2Alias === '') {
+    invalidFeedback.textContent = "Player 2 alias cannot be empty!";
     inputField.classList.add("is-invalid");
     clearTimeout(window.timeoutId);
     window.timeoutId = setTimeout(clearErrorMessage, 5000, invalidFeedback, inputField);
@@ -380,12 +413,7 @@ function checkInput() {
     validFeedback.style.display = "block";
     inputField.classList.add("is-valid");
     closeModal();
-    startGameBtn.addEventListener('click', async function (event) {
-      await createMatch("Pong");
-      startGame();
-      await waitGameFinish(gameOver);
-      updateMatch();
-    });
+    startGame();
   }
 }
 
@@ -403,5 +431,3 @@ function closeModal() {
 //?
 //?
 //? end of modal input validation
-
-export { initPongGame };
