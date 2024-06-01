@@ -90,7 +90,10 @@ def check_username(request, username):
         user = WebUser.objects.get(username=username)
         return JsonResponse({
             "message": "User exists.",
-            "user_info": {"username": user.username,"profile_picture_url": user.profile_picture.url if user.profile_picture else None}}, status=200)
+            "user_info": {
+                "username": user.username,
+                "user_id": user.id,
+                "profile_picture_url": user.profile_picture.url if user.profile_picture else None }}, status=200)
     except WebUser.DoesNotExist:
         return JsonResponse({"message": "User not found."}, status=404)
 
