@@ -182,7 +182,7 @@ function updateProfilePage(userData) {
                     alert(data.error);
                 } else {
                     alert(data.message);
-                    appRouter.navigate('/login');
+                    appRouter.navigate('/logout');
                 }
             })
             .catch(error => {
