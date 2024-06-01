@@ -181,6 +181,13 @@ function setupEventListeners() {
         debouncedVerifyOtp(event);
     });
 
+    const fortyTwoButtonLog = document.getElementById("fortytwoLoginButton");
+    if (fortyTwoButtonLog) {
+        fortyTwoButtonLog.addEventListener('click', function(event) {
+            window.location.href = "https://127.0.0.1/api/fortytwo";
+        });
+    }
+
     document.getElementById('registerButton')?.addEventListener('click', register);
     document.getElementById('registerForm')?.addEventListener('submit', register);
     document.getElementById('forgotPasswordLink')?.addEventListener('click', forgetPassword);
