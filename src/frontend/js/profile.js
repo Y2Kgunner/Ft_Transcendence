@@ -3,6 +3,43 @@ import { appRouter } from './router.js';
 
 let userName = '';
 
+function setupFriends()
+{
+  const addFriendForm = document.getElementById('addFriendForm');
+    const invitationzDiv = document.getElementById('invitationz');
+    const radioButtons = document.getElementsByName('btnradio');
+
+    radioButtons.forEach((radioButton) => {
+      radioButton.addEventListener('click', (e) => {
+        if (e.target.id === 'btnradio1') {
+          addFriendForm.style.display = 'block';
+          invitationzDiv.style.display = 'none';
+        } else if (e.target.id === 'btnradio3') {
+          addFriendForm.style.display = 'none';
+          invitationzDiv.style.display = 'block';
+        }
+      });
+    });
+
+    
+}
+
+async function getFriendslist() {
+  const response = await fetch(`https://127.0.0.1:443/api/list_friends`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + getCookie('jwt')
+    }
+  })
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  const data = await response.json();
+  return data;
+}
+
+
 function fetchUserProfile() {
   const jwt = getCookie('jwt');
   // console.log('Token from cookie:', jwt);
@@ -335,4 +372,4 @@ function deleteProfilePicture() {
 
   
 
-export { fetchUserProfile, getCookie, setupAnonymizeButton, setupDeleteProfileButton, setupCloseButton, setUpVerifyDeleteOtpButton, setupUploadProfilePictureButton };
+export { fetchUserProfile, getCookie, setupAnonymizeButton, setupDeleteProfileButton, setupCloseButton, setUpVerifyDeleteOtpButton, setupUploadProfilePictureButton,setupFriends };

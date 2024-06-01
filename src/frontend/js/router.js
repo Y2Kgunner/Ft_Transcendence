@@ -1,5 +1,5 @@
 import { setupAuthPage, logoutUser, isAuthenticated } from './auth.js';
-import { fetchUserProfile, setupAnonymizeButton, setupDeleteProfileButton, setupCloseButton, setUpVerifyDeleteOtpButton, setupUploadProfilePictureButton } from './profile.js';
+import { fetchUserProfile, setupAnonymizeButton, setupDeleteProfileButton, setupCloseButton, setUpVerifyDeleteOtpButton, setupUploadProfilePictureButton , setupFriends} from './profile.js';
 import { setupTournamentPage } from './tournament.js';
 import { setupGamePage } from './game.js';
 import { init3PlyrPong } from './pong3.js';
@@ -127,6 +127,7 @@ async function setupProfilePage() {
         setupCloseButton();
         setUpVerifyDeleteOtpButton();
         setupUploadProfilePictureButton();
+        setupFriends();
     } else {
         //console.log('User is not authenticated, redirecting to login');
         appRouter.navigate('/login', { replace: true });
