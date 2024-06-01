@@ -29,6 +29,55 @@ var startTTTBtn;
 var form;
 var modalInit = false;
 
+function handleKeyPress(event) {
+  if (useMouse || gameOver) return;
+
+  const key = event.key;
+  switch (key) {
+    case 'ArrowUp':
+      if (currentFocusIndex >= 3) moveFocus(currentFocusIndex - 3);
+      break;
+    case 'ArrowDown':
+      if (currentFocusIndex < 6) moveFocus(currentFocusIndex + 3);
+      break;
+    case 'ArrowLeft':
+      if (currentFocusIndex % 3 !== 0) moveFocus(currentFocusIndex - 1);
+      break;
+    case 'ArrowRight':
+      if (currentFocusIndex % 3 !== 2) moveFocus(currentFocusIndex + 1);
+      break;
+    case 'Enter':
+      if (boxIndexValues[currentFocusIndex] === "") {
+        boxIndexValues[currentFocusIndex] = nextMove;
+        boxes[currentFocusIndex].innerHTML = nextMove;
+        checkWinner();
+        changeNextMove();
+      }
+      break;
+  }
+}
+
+function moveFocus(newIndex) {
+  boxes[currentFocusIndex].classList.remove('focus');
+  currentFocusIndex = newIndex;
+  updateFocus();
+}
+
+function updateFocus() {
+  if (useMouse || gameOver) {
+    boxes[currentFocusIndex].classList.remove('focus');
+  } else {
+    boxes[currentFocusIndex].classList.add('focus');
+  }
+}
+
+function changeNextMove() {
+  nextMove = nextMove === "X" ? "O" : "X";
+  useMouse = !useMouse; // Alternate input method
+  nextMoveElement.innerHTML = nextMoveMessage();
+  updateFocus();
+}
+
 function setupTTT() {
   winningConditions = [
     [0, 1, 2],
@@ -118,7 +167,7 @@ function setupTTT() {
         box.innerHTML = "";
     });
 
-    // Remove previous event listeners to avoid double-triggering "Arrow key was moving 2 boxes instead of 1 after restarting the game"
+    // Remove previous event listeners to avoid double-triggering
     document.removeEventListener('keydown', handleKeyPress);
 
     Game();
@@ -126,7 +175,7 @@ function setupTTT() {
     if (nextMove == "X")
       winner = player2Alias;
     else
-      winner = player1Name
+      winner = player1Name;
     updateMatch();
   });
   realTimeChecker();
@@ -137,14 +186,14 @@ function waitGameFinish(gameStatus, interval = 100) {
     const check = () => {
       checkWinner();
       if (gameOver) {
-        console.log("game over")
+        console.log("game over");
         resolve();
       } else {
         setTimeout(check, interval);
       }
     };
     check();
-  })
+  });
 }
 
 async function updateMatch() {
@@ -156,8 +205,7 @@ async function updateMatch() {
       score_guest_player1: 0,
       is_draw: draw,
     };
-  }
-  else {
+  } else {
     matchData = {
       match_id: matchId,
       score_player: 0,
@@ -173,7 +221,7 @@ async function updateMatch() {
       'Authorization': 'Bearer ' + getCookie('jwt')
     },
     body: JSON.stringify(matchData)
-  })
+  });
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
@@ -205,56 +253,7 @@ function Game() {
     checkWinner();
     changeNextMove();
   }
-
-  function handleKeyPress(event) {
-    if (useMouse || gameOver) return;
-
-    const key = event.key;
-    switch (key) {
-      case 'ArrowUp':
-        if (currentFocusIndex >= 3) moveFocus(currentFocusIndex - 3);
-        break;
-      case 'ArrowDown':
-        if (currentFocusIndex < 6) moveFocus(currentFocusIndex + 3);
-        break;
-      case 'ArrowLeft':
-        if (currentFocusIndex % 3 !== 0) moveFocus(currentFocusIndex - 1);
-        break;
-      case 'ArrowRight':
-        if (currentFocusIndex % 3 !== 2) moveFocus(currentFocusIndex + 1);
-        break;
-      case 'Enter':
-        if (boxIndexValues[currentFocusIndex] === "") {
-          boxIndexValues[currentFocusIndex] = nextMove;
-          boxes[currentFocusIndex].innerHTML = nextMove;
-          checkWinner();
-          changeNextMove();
-        }
-        break;
-    }
-  }
-
-  function moveFocus(newIndex) {
-    boxes[currentFocusIndex].classList.remove('focus');
-    currentFocusIndex = newIndex;
-    updateFocus();
-  }
-
-  function updateFocus() {
-    if (useMouse || gameOver) {
-      boxes[currentFocusIndex].classList.remove('focus');
-    } else {
-      boxes[currentFocusIndex].classList.add('focus');
-    }
-  }
-
-  function changeNextMove() {
-    nextMove = nextMove === "X" ? "O" : "X";
-    useMouse = !useMouse; // Alternate input method
-    nextMoveElement.innerHTML = nextMoveMessage();
-    updateFocus();
-  }
-};
+}
 
 function checkWinner() {
   for (const condition of winningConditions) {
