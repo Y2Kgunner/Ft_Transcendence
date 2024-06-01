@@ -14,16 +14,17 @@
 
 
 <body style="background-color: black;">
-  <section class="d-flex flex-column justify-content-center align-items-center">
-    <div class="container" style="min-width: 75vw;">
-      <div class="row mb-2 d-flex justify-content-center rounded m-4 py-4 profile" style="background-color: #1a1a1a;">
+  <section>
+    <div class="container-fluid d-flex flex-column justify-content-center align-items-center">
+      <div class="row mb-2 d-flex justify-content-center rounded m-4 py-4 profile section mainSection">
         <div class="col d-flex flex-column align-items-center">
-          <img
-          id="profilePicture"
-          class="rounded-circle thmb img-fluid customWidth mb-4 profile-picture">
+          <div class="profilePicHousing">
+            <img id="profilePicture" class="rounded-circle thmb img-fluid customWidth mb-4 profile-picture">
             <h1 id="username">Loading...</h1>
-            <button id="uploadPicButton" class="btn btn-primary mt-3">Upload Profile Picture</button>
-            <input type="file" id="profilePictureInput" name="profile_picture" style="display:none;"/>
+
+          </div>
+          <button id="uploadPicButton" class="btn btn-primary mt-3">Upload Profile Picture</button>
+          <input type="file" id="profilePictureInput" name="profile_picture" style="display:none;" />
         </div>
         <div class="col pt-3">
           <p>EMAIL: <span id="email">Loading...</span></p>
@@ -50,7 +51,73 @@
           </div>
         </div>
       </div>
-      <div class="row match-history rounded p-4 m-4 d-flex" style="background-color: #1a1a1a;">
+
+      <div class="row friendSection rounded p-4 m-4">
+        <div id="friendsTableSection" class="col-5 section splitSection rounded p-4 me-md-3">
+          <div class="d-flex justify-content-center pb-3">
+            <h1>Friends</h1>
+          </div>
+          <div class="table-responsive-lg">
+            <table class="table customTable" id="friendsTable">
+              <thead>
+                <tr>
+                  <th scope="col">name</th>
+                  <th scope="col">status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="col">no friends lmao!</th>
+                  <th scope="col">online</th>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div id="friendsReqInvSection" class="col-5 section splitSection rounded p-4 ms-md-3">
+          <div class="d-flex justify-content-center pb-3">
+            <div class="btn-group buttonGroup" role="group" aria-label="Basic radio toggle button group">
+              <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+              <label class="btn btn-outline-primary" for="btnradio1">Add friends</label>
+
+              <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
+              <label class="btn btn-outline-primary" for="btnradio3">Invites</label>
+            </div>
+          </div>
+          <form id="addFriendForm" class="needs-validation pt-1" novalidate onsubmit="return false;">
+            <div class="d-flex flex-row align-items-center justify-content-center">
+              <p class="h5 no-wrap pe-1 pe-md-3">Add friend:</p>
+              <input type="text" id="friendUserName" class="form-control rounded" placeholder=" enter player username"
+                required>
+            </div>
+            <div class="no-wrap rounded d-flex justify-content-center pt-3">
+              <button id="addFriendBtn" class="btn">send friend request</button>
+            </div>
+          </form>
+          <div id="invitationz" class="overflow-y-auto" style="display: none;">
+            <div class="inviteBox rounded mb-2">
+              <div class="d-flex flex-row justify-content-between">
+                <div class="invitee px-2 d-flex align-items-center">kargador</div>
+                <div>
+                  <button class="btn acceptInvitationBtn mx-md-2">accept friend request</button>
+                  <button class="btn rejectInvitationBtn ms-md-1">reject friend request</button>
+                </div>
+              </div>
+            </div>
+            <div class="inviteBox rounded">
+              <div class="d-flex flex-row justify-content-between">
+                <div class="invitee px-2 d-flex align-items-center">user 2</div>
+                <div>
+                  <button class="btn acceptInvitationBtn mx-md-2">accept friend request</button>
+                  <button class="btn rejectInvitationBtn ms-md-1">reject friend request</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row match-history rounded p-4 m-4 d-flex section mainSection">
         <div class="col">
           <div class="d-flex justify-content-center pb-3">
             <h1>MATCH HISTORY</h1>
@@ -60,6 +127,7 @@
               <thead>
                 <tr>
                   <th scope="col">Match ID</th>
+                  <th scope="col">Game type</th>
                   <th scope="col">Time</th>
                   <th scope="col">Player 1</th>
                   <th scope="col">Player 2</th>
@@ -99,12 +167,23 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
-    <script>
-    //   document.addEventListener('DOMContentLoaded', function () {
-    //     var startModal = new bootstrap.Modal(document.getElementById('deleteOtpModal'));
-    //     startModal.show();
-    //   });
-    </script>
+  <script>
+    const addFriendForm = document.getElementById('addFriendForm');
+    const invitationzDiv = document.getElementById('invitationz');
+    const radioButtons = document.getElementsByName('btnradio');
+
+    radioButtons.forEach((radioButton) => {
+      radioButton.addEventListener('click', (e) => {
+        if (e.target.id === 'btnradio1') {
+          addFriendForm.style.display = 'block';
+          invitationzDiv.style.display = 'none';
+        } else if (e.target.id === 'btnradio3') {
+          addFriendForm.style.display = 'none';
+          invitationzDiv.style.display = 'block';
+        }
+      });
+    });
+  </script>
   <script type="module" src="../js/profile.js"></script>
 </body>
 

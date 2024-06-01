@@ -1,71 +1,72 @@
 @font-face {
-	font-family: 'PixelatedFont';
-	src: url('../assets/Pixelated/pix/pix.ttf') format('truetype');
+  font-family: 'PixelatedFont';
+  src: url('../assets/Pixelated/pix/pix.ttf') format('truetype');
 }
 
 body {
-	font-family: 'PixelatedFont', sans-serif; /* Use the custom font as the default font */
-  }
-
+  font-family: 'PixelatedFont', sans-serif;
+  color: #d8d8d8;
+  color-scheme: dark;
+}
 
 section {
-	top: 150px;
-	position: relative;
-	color:rgb(255, 255, 254);
+  top: 150px;
+  position: relative;
 }
 
 .table {
-	--bs-table-color: #e8ebe5;
-	--bs-table-bg: #1a1a1a;
+  --bs-table-color: #e8ebe5;
+  --bs-table-bg: none;
 }
 
 tbody tr:hover {
-	color: #ffffff !important;
-	border: none;
-	box-shadow: none;
-	box-shadow: inset 0 0 10px #c6faae !important;
+  color: #ffffff !important;
+  border: none;
+  box-shadow: none;
+  box-shadow: inset 0 0 10px #c6faae !important;
 }
 
 .testt:hover {
-	background-color: #6fe537;
+  background-color: #6fe537;
 }
 
 .table thead th {
-	border-bottom: 3px solid #395d2b;
-	border-top: 3px solid #395d2b;
+  border-bottom: 3px solid #395d2b;
+  border-top: 3px solid #395d2b;
 }
 
-.table td, .table th {
-	border: none;
-	border-top: 2px solid #1f3317;
+.table td,
+.table th {
+  border: none;
+  border-top: 2px solid #1f3317;
 }
 
 .customWidth {
-	width: 10vw;
-	min-width: 200px;
-	max-width: 250px;
-	box-shadow: 0 0 10px #6fe537;
+  width: 10vw;
+  min-width: 200px;
+  max-width: 250px;
+  box-shadow: 0 0 10px #6fe537;
 }
 
 .profilePic {
-  width: 20vmin;
-  height: 20vmin;
-	box-shadow: 0 0 10px #6fe537;
+  width: 15vmin;
+  height: 15vmin;
+  box-shadow: 0 0 10px #6fe537;
   /* position: absolute; */
 }
 
 .profile {
-	font-size: 28px;
-	line-height: 50px;
+  font-size: 28px;
+  line-height: 50px;
 }
 
 .profileButton {
-	width: 60%;
+  width: 60%;
 }
 
 .profilePicHousing {
-  width: 20vmin;
-  height: 20vmin;
+  width: 15vmin;
+  height: 15vmin;
   border-radius: 50%;
   background-color: #1a1a1a;
   position: relative;
@@ -91,16 +92,16 @@ tbody tr:hover {
   color: #ffffff;
 }
 
-.profilePicHousing:hover > .profilePic {
+.profilePicHousing:hover>.profilePic {
   opacity: .4;
 }
 
 .buttonContainer {
-	padding-left: 10%;
+  padding-left: 10%;
 }
 
 #deleteOtpInput:active {
-  border:none;
+  border: none;
 }
 
 #deleteOtpInput {
@@ -133,33 +134,43 @@ tbody tr:hover {
   0% {
     background-position: 0% 10%;
   }
+
   10% {
     background-position: 20% 10%;
   }
+
   20% {
     background-position: 30% 10%;
   }
+
   30% {
     background-position: 30% 10%;
   }
+
   40% {
     background-position: 40% 10%;
   }
+
   50% {
     background-position: 50% 10%;
   }
+
   60% {
     background-position: 60% 10%;
   }
+
   70% {
     background-position: 70% 10%;
   }
+
   80% {
     background-position: 80% 10%;
   }
+
   90% {
     background-position: 90% 10%;
   }
+
   100% {
     background-position: 100% 10%;
   }
@@ -208,15 +219,17 @@ tbody tr:hover {
   0% {
     box-shadow: 0 0 5px 2px #f5d7e8;
   }
+
   50% {
     box-shadow: 0 0 5px 2px #343a40;
   }
+
   100% {
     box-shadow: 0 0 5px 2px #f5d7e8;
   }
 }
 
-/* .customEditIcon {
+.customEditIcon {
   background: linear-gradient(to right, #b62684, #cbcb0f, #b62684, #cbcb0f, #b62684);
   background-clip: text;
   background-size: 200% 100%;
@@ -228,13 +241,15 @@ tbody tr:hover {
   0% {
     background-position: 0% 10%;
   }
+
   50% {
     background-position: 50% 10%;
   }
+
   100% {
     background-position: 100% 10%;
   }
-} */
+}
 
 .customEditIcon {
   color: #1b6b11;
@@ -245,13 +260,106 @@ tbody tr:hover {
   25% {
     color: #16530f;
   }
+
   50% {
     color: #1b6b11;
   }
+
   75% {
     color: #16530f;
   }
+
   100% {
     color: #1b6b11;
   }
+}
+
+.section {
+  background-color: #111114e9;
+  box-shadow: 0 0 5px #c1ddc1;
+}
+
+.mainSection {
+  width: 75vw;
+}
+
+.splitSection {
+  width: 36.9vw;
+}
+
+.buttonGroup {
+  width: 100%;
+}
+
+.btn-outline-primary {
+  --bs-btn-color: #0dfd15c1;
+  --bs-btn-border-color: #0dfd1594;
+  --bs-btn-hover-color: #d8d8d8;
+  --bs-btn-hover-bg: #266428;
+  --bs-btn-hover-border-color: #0dfd1594;
+  --bs-btn-focus-shadow-rgb: 13,110,253;
+  --bs-btn-active-color: #d8d8d8;
+  --bs-btn-active-bg: #0dfd1594;
+  --bs-btn-active-border-color: #007a04;
+  --bs-btn-active-shadow: inset 0 3px 5px #111114e9;
+  --bs-btn-disabled-color: #0dfd1594;
+  --bs-btn-disabled-bg: transparent;
+  --bs-btn-disabled-border-color: #0dfd1594;
+  --bs-gradient: none;
+}
+
+#addFriendBtn {
+  --bs-btn-bg: none;
+  --bs-btn-border-color: #0dfd15c1;
+  --bs-btn-color: #d8d8d8;
+  --bs-btn-hover-bg: #0dfd1594;
+  --bs-btn-hover-border-color: #0dfd15c1;
+  --bs-btn-hover-color: #d8d8d8;
+  --bs-btn-active-color: #101010;
+  --bs-btn-active-bg: #0dfd1594;
+  --bs-btn-active-border-color: #0dfd15c1;
+  position: relative;
+  width: 50%;
+}
+
+.acceptInvitationBtn {
+  --bs-btn-bg: #006f53;
+  --bs-btn-border-color: none;
+  --bs-btn-color: #d8d8d8;
+  --bs-btn-hover-bg: #339701;
+  --bs-btn-hover-border-color: none;
+  --bs-btn-hover-color: #d8d8d8;
+  --bs-btn-active-color: #a4a4a4;
+  --bs-btn-active-bg: #117f15;
+  --bs-btn-active-border-color: none;
+}
+
+.rejectInvitationBtn {
+  --bs-btn-bg: #5f0b00;
+  --bs-btn-border-color: none;
+  --bs-btn-color: #d8d8d8;
+  --bs-btn-hover-bg: #a10000;
+  --bs-btn-hover-color: #d8d8d8;
+  --bs-btn-hover-border-color: none;
+  --bs-btn-active-color: #a4a4a4;
+  --bs-btn-active-bg: #530a0a;
+  --bs-btn-active-border-color: none;
+}
+
+#friendUserName {
+  width: 70%;
+  max-width: 400px;
+  background: #e6e6e6;
+  /* width: calc(auto + 10%); */
+}
+
+#invitationz {
+  max-height: 160px;
+}
+
+.inviteBox {
+  padding: .5vmin;
+  width: 95%;
+  height: 30%;
+  background: #2c2c2c;
 }

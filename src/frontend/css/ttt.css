@@ -21,7 +21,6 @@ body {
   box-shadow: 0 0 5px #92ff92;
 }
 
-
 .modal-content {
   background-color: transparent;
 }
@@ -143,7 +142,7 @@ input[type="text"]::placeholder {
 .Lbox {
   width: 14vmin;
   height: 14vmin;
-  color: #017701;
+  /* color: #017701; */
   background: #000;
   font-size: 11rem;
   font-weight: 600;
@@ -209,11 +208,9 @@ p {
   display: none;
 }
 
-
 .customBg {
   background-color: #1d1f1d;
 }
-
 
 .grid-fade {
   /* opacity: 0; */
