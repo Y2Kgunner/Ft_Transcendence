@@ -11,7 +11,8 @@ let winner;
 let winnerMsg;
 let participants;
 let creator;
-
+let matchDetail;
+let round;
 let restartGameButton;
 let pauseModalInstance;
 let startModal;
@@ -19,7 +20,7 @@ var restartModal;
 var finishTournamentModal;
 var matchModal;
 let roundDetails;
-
+let roundMsg, matchMsg;
 let paddle1Y = 0;
 let paddle2Y = 0;
 let ballX = 5;
@@ -34,7 +35,8 @@ let player1Alias = "Player 1";
 let player2Alias = "";
 let initialPaddlePos;
 let tournamentName = "";
-
+let matchNumber;
+let p1,p2;
 let paddle1;
 let paddle2;
 let ball;
@@ -43,7 +45,7 @@ let score1Element;
 let score2Element;
 let player1AliasElement;
 let player2AliasElement;
-
+let roundComplete = true;
 let tournamentNameElement;
 let begin = false;
 let paddle1MovingUp = false;
@@ -56,127 +58,109 @@ let paddle2MovingDown = false;
 
 
 function setupTournamentPage() {
-    // Get elements
-    board = document.getElementById("board");
-    paddle1 = document.getElementById("paddle_1");
-    paddle2 = document.getElementById("paddle_2");
-    initialPaddlePos = paddle1.style.top;
-    ball = document.getElementById("ball");
-    score1Element = document.getElementById("player_1_score");
-    score2Element = document.getElementById("player_2_score");
-    player1AliasElement = document.getElementById("player_1_alias");
-    player2AliasElement = document.getElementById("player_2_alias");
-    // pauseModalInstance = new bootstrap.Modal(document.getElementById('pauseGameModal'));
-    // restartModal = new bootstrap.Modal(document.getElementById('restartGame'));
-    // Set initial paddle positions
-    // paddle1.style.top = "50%";
-    // paddle2.style.top = "50%";
+  // Get elements
+  board = document.getElementById("board");
+  paddle1 = document.getElementById("paddle_1");
+  paddle2 = document.getElementById("paddle_2");
+  initialPaddlePos = paddle1.style.top;
+  ball = document.getElementById("ball");
+  score1Element = document.getElementById("player_1_score");
+  score2Element = document.getElementById("player_2_score");
+  player1AliasElement = document.getElementById("player_1_alias");
+  player2AliasElement = document.getElementById("player_2_alias");
 
-    // Set initial ball position
-    ballX = board.offsetWidth / 2 - ball.offsetWidth / 2;
-    ballY = board.offsetHeight / 2 - ball.offsetHeight / 2;
-    // ball.style.left = `${ballX}px`;
-    // ball.style.top = `${ballY}px`;
 
-    // Update scores and aliases
-    score1Element.textContent = score1;
-    score2Element.textContent = score2;
-    // player1AliasElement.textContent = player1Alias;
-    // player2AliasElement.textContent = player2Alias;
-    var detailsModal = new bootstrap.Modal(document.getElementById('enterTournamentDetails'));
-    detailsModal.show();
-    // document.getElementById('page-content').classList.add('modal-open');
-    
-    const minusButton = document.querySelector('.quantity__minus');
-    const plusButton = document.querySelector('.quantity__plus');
-    const input = document.getElementById('numParticipants');
+  ballX = board.offsetWidth / 2 - ball.offsetWidth / 2;
+  ballY = board.offsetHeight / 2 - ball.offsetHeight / 2;
 
-    function handleMinusButtonClick() {
-        let value = parseInt(input.value, 10);
-        value = Math.max(3, value - 1);
-        input.value = value;
-    }
+  score1Element.textContent = score1;
+  score2Element.textContent = score2;
 
-    function handlePlusButtonClick() {
-        let value = parseInt(input.value, 10);
-        value = Math.min(value + 1, 8);
-        input.value = value;
-    }
-    minusButton.addEventListener('click', handleMinusButtonClick);
-    plusButton.addEventListener('click', handlePlusButtonClick);
-    tournamentName = document.getElementById("tournamentName");
-    tournamentName.addEventListener('input', checkInput);
-    startModal = new bootstrap.Modal(document.getElementById('startGameModal'));
-    matchModal = new bootstrap.Modal(document.getElementById('gameDetailsModal'));
-    continueBtn.addEventListener('click', handleNewTournamentFormSubmit)
+  var detailsModal = new bootstrap.Modal(document.getElementById('enterTournamentDetails'));
+  detailsModal.show();
 
-    function handleNewTournamentFormSubmit(event) {
-        event.preventDefault();
+  const minusButton = document.querySelector('.quantity__minus');
+  const plusButton = document.querySelector('.quantity__plus');
+  const input = document.getElementById('numParticipants');
 
-        const numParticipants = parseInt(input.value, 10);
-        generateParticipantFields(numParticipants);
-        detailsModal.hide();
-        //add game preview modal here
-        // matchModal.show()
-        startModal.show();
-    }
+  function handleMinusButtonClick() {
+    let value = parseInt(input.value, 10);
+    value = Math.max(3, value - 1);
+    input.value = value;
+  }
 
-    // startModal.show();
-    continueBtn.addEventListener('submit', handleNewTournamentFormSubmit);
-    setupcreateTournamentForm();
-    // startModal.hide();
-    // startGameLoop();
+  function handlePlusButtonClick() {
+    let value = parseInt(input.value, 10);
+    value = Math.min(value + 1, 8);
+    input.value = value;
+  }
+  minusButton.addEventListener('click', handleMinusButtonClick);
+  plusButton.addEventListener('click', handlePlusButtonClick);
+  tournamentName = document.getElementById("tournamentName");
+  tournamentName.addEventListener('input', checkInput);
+  startModal = new bootstrap.Modal(document.getElementById('startGameModal'));
+  matchModal = new bootstrap.Modal(document.getElementById('gameDetailsModal'));
+  continueBtn.addEventListener('click', handleNewTournamentFormSubmit)
+
+  function handleNewTournamentFormSubmit(event) {
+    event.preventDefault();
+
+    const numParticipants = parseInt(input.value, 10);
+    generateParticipantFields(numParticipants);
+    detailsModal.hide();
+    startModal.show();
+  }
+  continueBtn.addEventListener('submit', handleNewTournamentFormSubmit);
+  setupcreateTournamentForm();
 };
 
 function generateParticipantFields(num) {
-    const form = document.getElementById('participantDetailsFormInner');
-    form.innerHTML = '';
-    fetchUserProfile().then(username => {
-        const formGroupUser = document.createElement('div');
-        formGroupUser.classList.add('form-group');
+  const form = document.getElementById('participantDetailsFormInner');
+  form.innerHTML = '';
+  fetchUserProfile().then(username => {
+    const formGroupUser = document.createElement('div');
+    formGroupUser.classList.add('form-group');
 
-        const labelUser = document.createElement('label');
-        labelUser.textContent = `Participant 1 Name:`;
-        formGroupUser.appendChild(labelUser);
+    const labelUser = document.createElement('label');
+    labelUser.textContent = `Participant 1 Name:`;
+    formGroupUser.appendChild(labelUser);
 
-        const inputUser = document.createElement('input');
-        inputUser.type = 'text';
-        inputUser.classList.add('form-control');
-        inputUser.value = username;
-        inputUser.readOnly = true;
-        formGroupUser.appendChild(inputUser);
+    const inputUser = document.createElement('input');
+    inputUser.type = 'text';
+    inputUser.classList.add('form-control');
+    inputUser.value = username;
+    inputUser.readOnly = true;
+    formGroupUser.appendChild(inputUser);
 
-        form.appendChild(formGroupUser);
+    form.appendChild(formGroupUser);
 
-        //participants
-        for (let i = 1; i < num; i++) {
-            const formGroup = document.createElement('div');
-            formGroup.classList.add('form-group');
+    //participants
+    for (let i = 1; i < num; i++) {
+      const formGroup = document.createElement('div');
+      formGroup.classList.add('form-group');
 
-            const label = document.createElement('label');
-            label.textContent = `Participant ${i + 1} Name:`;
-            formGroup.appendChild(label);
+      const label = document.createElement('label');
+      label.textContent = `Participant ${i + 1} Name:`;
+      formGroup.appendChild(label);
 
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.classList.add('form-control');
-            input.placeholder = `Enter name for participant ${i + 1}`;
-            input.required = true;
-            input.name = `participantName${i}`;
-            formGroup.appendChild(input);
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.classList.add('form-control');
+      input.placeholder = `Enter name for participant ${i + 1}`;
+      input.required = true;
+      input.name = `participantName${i}`;
+      formGroup.appendChild(input);
 
-            form.appendChild(formGroup);
-        }
+      form.appendChild(formGroup);
+    }
 
-        const submitButton = document.createElement('button');
-        submitButton.type = 'submit';
-        submitButton.classList.add('btn', 'btn-primary', 'mt-3');
-        submitButton.textContent = 'Submit Tournament';
-        form.appendChild(submitButton);
-    });
+    const submitButton = document.createElement('button');
+    submitButton.type = 'submit';
+    submitButton.classList.add('btn', 'btn-primary', 'mt-3');
+    submitButton.textContent = 'Submit Tournament';
+    form.appendChild(submitButton);
+  });
 
-    // document.getElementById('newTournamentContainer').style.display = 'none';
-    // document.getElementById('participantDetailsForm').style.display = 'block';
 };
 
 function handleKeyDown(event) {
@@ -194,15 +178,15 @@ function handleKeyDown(event) {
 };
 
 function handleKeyUp(event) {
-    if (event.key === "w" || event.key === "W") {
-        paddle1MovingUp = false;
-    } else if (event.key === "s" || event.key === "S") {
-        paddle1MovingDown = false;
-    } else if (event.key === "ArrowUp") {
-        paddle2MovingUp = false;
-    } else if (event.key === "ArrowDown") {
-        paddle2MovingDown = false;
-    }
+  if (event.key === "w" || event.key === "W") {
+    paddle1MovingUp = false;
+  } else if (event.key === "s" || event.key === "S") {
+    paddle1MovingDown = false;
+  } else if (event.key === "ArrowUp") {
+    paddle2MovingUp = false;
+  } else if (event.key === "ArrowDown") {
+    paddle2MovingDown = false;
+  }
 };
 
 function togglePause() {
@@ -320,8 +304,7 @@ function resetBall() {
 }
 
 function startGame() {
-  // player1AliasElement.textContent = player1Alias;
-    // player2AliasElement.textContent = player2Alias;
+
   pauseModalInstance = new bootstrap.Modal(document.getElementById('pauseGameModal'));
   restartModal = new bootstrap.Modal(document.getElementById('restartGame'));
   begin = true;
@@ -338,31 +321,31 @@ function startGame() {
 }
 
 function isPrintableASCII(str) {
-    var printableASCIIRegex = /^[!-~]+$/;
-    return printableASCIIRegex.test(str);
+  var printableASCIIRegex = /^[!-~]+$/;
+  return printableASCIIRegex.test(str);
 }
 
 function hideOverflow() {
-    const content = document.getElementsById('board');
-    content.style.opacity = 1;
+  const content = document.getElementsById('board');
+  content.style.opacity = 1;
 }
 
 function checkInput() {
   var button = document.getElementById("continueBtn");
   tournamentName = document.getElementById("tournamentName").value;
   if (tournamentName.trim() === '') {
-      button.disabled = true;
+    button.disabled = true;
   } else if (tournamentName.length > 10 || tournamentName.length < 3) {
-      tournamentNameElement = document.getElementById("tournamentName");
-      button.disabled = false;
-      // createAlert(notiAlert, 'Alias is between 3 and 10 characters!', 'alert-danger');
+    tournamentNameElement = document.getElementById("tournamentName");
+    button.disabled = false;
+    // createAlert(notiAlert, 'Alias is between 3 and 10 characters!', 'alert-danger');
   } else if (!isPrintableASCII(tournamentName)) {
-      tournamentNameElement = document.getElementById("tournamentName");
-      button.disabled = false;
-      // createAlert(notiAlert, 'Alias cannot contain spaces!', 'alert-danger');
+    tournamentNameElement = document.getElementById("tournamentName");
+    button.disabled = false;
+    // createAlert(notiAlert, 'Alias cannot contain spaces!', 'alert-danger');
   } else {
-      tournamentNameElement = document.getElementById("tournamentName");
-      button.disabled = false;
+    tournamentNameElement = document.getElementById("tournamentName");
+    button.disabled = false;
   }
   // return ;
   // else if (player1Alias === tournamentName) {
@@ -414,41 +397,27 @@ function fetchUserProfile() {
     });
 }
 
-// function getCookie(name) {
-//   let cookieValue = null;
-//   if (document.cookie && document.cookie !== '') {
-//     const cookies = document.cookie.split(';');
-//     for (let i = 0; i < cookies.length; i++) {
-//       const cookie = cookies[i].trim();
-//       if (cookie.substring(0, name.length + 1) === (name + '=')) {
-//         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-//         break;
-//       }
-//     }
-//    //console.log('Cookie value:', cookieValue);
-//     return cookieValue;
-// }
 
 function createTournament() {
-    const tournamentName = document.getElementById('tournamentName').value;
-    const participantInputs = document.querySelectorAll('#participantDetailsFormInner .form-control:not([readonly])');
-    const participants = Array.from(participantInputs).map(input => ({ temp_username: input.value }));
-    const loggedInUser = document.querySelector('#participantDetailsFormInner .form-control[readonly]').value;
-    participants.unshift({ username: loggedInUser });
+  const tournamentName = document.getElementById('tournamentName').value;
+  const participantInputs = document.querySelectorAll('#participantDetailsFormInner .form-control:not([readonly])');
+  const participants = Array.from(participantInputs).map(input => ({ temp_username: input.value }));
+  const loggedInUser = document.querySelector('#participantDetailsFormInner .form-control[readonly]').value;
+  participants.unshift({ username: loggedInUser });
 
-    const tournamentData = {
-        name: tournamentName,
-        participants: participants
-    };
+  const tournamentData = {
+    name: tournamentName,
+    participants: participants
+  };
 
-    fetch('https://127.0.0.1:443/tournament_api/create', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + getCookie('jwt')
-        },
-        body: JSON.stringify(tournamentData)
-    })
+  fetch('https://127.0.0.1:443/tournament_api/create', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + getCookie('jwt')
+    },
+    body: JSON.stringify(tournamentData)
+  })
     .then(response => {
       if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -456,13 +425,7 @@ function createTournament() {
       return response.json();
     })
     .then(data => {
-        console.log('Tournament    :', data);
-        // alert('Tournament created successfully!');
-        // setTournamentId(data.id);
-        // console.log(data.id);
-
-        getMatchData();
-        // getNextMatch(data.id);
+      getMatchData();
     })
     .catch(error => {
       console.error('Failed to create tournament:', error);
@@ -470,102 +433,84 @@ function createTournament() {
     });
 }
 
-// function sleep(ms) {
-//   return new Promise(resolve => setTimeout(resolve,ms));
-// }
 function startTournament(id) {
   fetch(`https://127.0.0.1:443/tournament_api/start`, {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + getCookie('jwt')
-      }
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + getCookie('jwt')
+    }
   })
-  .then(response => {
+    .then(response => {
       if (!response.ok) {
-          throw new Error('Network response was not ok');
+        throw new Error('Network response was not ok');
       }
       return response.json();
-  })
-  .then(data => {
-     console.log('Tournament    :', data);
-     startGameLoop();
-    //  alert('started Tournament!');
-  })
-  .catch(error => {
+    })
+    .then(data => {
+      startGameLoop();
+    })
+    .catch(error => {
       console.error('Failed to start tournanment:', error);
       alert('failed to start Tournament!');
-  });
+    });
 }
 function completeTournament() {
   fetch(`https://127.0.0.1:443/tournament_api/complete/${getTournamentId()}`, {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + getCookie('jwt')
-      }
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + getCookie('jwt')
+    }
   })
-  .then(response => {
+    .then(response => {
       if (!response.ok) {
-          throw new Error('Network response was not ok');
+        throw new Error('Network response was not ok');
       }
       return response.json();
-  })
-  .then(data => {
-     console.log('Tournament    :', data);
-     startGameLoop();
-    //  alert('started Tournament!');
-  })
-  .catch(error => {
-      console.error('Failed to start tournanment:', error);
-      alert('failed to start Tournament!');
-  });
-}
-function getMatchData() {
-    fetch(`https://127.0.0.1:443/tournament_api/detail`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + getCookie('jwt')
-        }
-        // },
-        // body: JSON.stringify(id)
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
     })
     .then(data => {
-       console.log('Tournament    :', data);
-      //  alert('Tournament details pulled successfully!');
+      startGameLoop();
+    })
+    .catch(error => {
+      console.error('Failed to start tournanment:', error);
+      alert('failed to start Tournament!');
+    });
+}
+function getMatchData() {
+  fetch(`https://127.0.0.1:443/tournament_api/detail`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + getCookie('jwt')
+    }
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
       participants = data.participants;
       creator = data.creator;
       participants[0].username = creator.username;
-      console.log(creator);
-      console.log(participants);
       setTournamentId(data);
-      // matchModal.show();
-
-      // startNextGameBtn.addEventListener('submit',  startTournament(data.id));
-        // completeTournament();
-        startTournament(data.id);
-        // arrangeNextRound(data.id);
+      
+      startTournament(data.id);
     })
     .catch(error => {
-        console.error('Failed to find tournament:', error);
+      console.error('Failed to find tournament:', error);
     });
 }
 
 function waitGameFinish(interval = 100) {
   return new Promise(resolve => {
     const check = () => {
-      if(gameOver) {
-        console.log("game over")
+      if (gameOver) {
         resolve();
       } else {
-        setTimeout(check,interval);
+        setTimeout(check, interval);
       }
     };
     check();
@@ -576,14 +521,14 @@ function waitGameFinish(interval = 100) {
 async function arrangeNextRound() {
   const tournamentData = {
     tournament_id: getTournamentId()
-};
+  };
   const response = await fetch(`https://127.0.0.1:443/tournament_api/arrange-matches/${getTournamentId()}`, {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + getCookie('jwt')
-      },
-      body: JSON.stringify(tournamentData)
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + getCookie('jwt')
+    },
+    body: JSON.stringify(tournamentData)
   })
   if (!response.ok) {
     throw new Error('Network response was not ok');
@@ -594,182 +539,147 @@ async function arrangeNextRound() {
 
 async function getRoundDetails() {
   const response = await fetch(`https://127.0.0.1:443/tournament_api/get_second_round_matches/${getTournamentId()}`, {
-      method: 'GET',
-      headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + getCookie('jwt')
-      }
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + getCookie('jwt')
+    }
   })
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
   const data = await response.json();
-  console.log(data);
   return data;
 }
 
+async function handleTournamentPreview(i)
+{
+  if (i == 0) {
+    roundDetails = await arrangeNextRound();
+    matchDetail = roundDetails.match_details;
+
+
+  }
+  else if (round == 2 && roundComplete) {
+    roundDetails = await getRoundDetails();
+    matchDetail = roundDetails.second_round_matches;
+    roundComplete = false;
+    matchNumber = 0;
+  }
+  console.log(roundDetails);
+  roundMsg = "Round : " + round + "\n";
+  for (let j = 0; j < matchDetail.length; j++) {
+    p1 = participants.find(element => Object.values(element).includes(matchDetail[j].participant_one_id));
+    // let arrow = "";
+    console.log("match num : " + matchNumber);
+    console.log("j : " +j);
+    console.log("i : " +i);
+    if (matchDetail[j].is_bye) {
+      matchMsg =  p1.username + " ADVANCES";
+    }
+    else {
+      p2 = participants.find(element => Object.values(element).includes(matchDetail[j].participant_two_id));
+      matchMsg =  p1.username + " vs " + p2.username ;
+    }
+    if (i==0 && j==0)
+      matchMsg = `>> ${matchMsg} << \n`;
+    else if(matchNumber == j)
+    {
+      matchMsg = `>> ${matchMsg} << \n`;
+    }
+    else
+    {
+      matchMsg= matchMsg + "\n";
+    }
+    roundMsg += matchMsg;
+    
+  }
+  // console.log(matchNumber);
+  document.getElementById("gameDetail").innerHTML = roundMsg.replace(/\n/g, "<br>");
+}
+
 async function startGameLoop() {
-  var p1,p2,win,remaining = 0,match_id,round=1,roundMsg,matchMsg,matchNumber=0,matchDetail,totalRounds,roundComplete=true,is_bye=false;
+  var p1, p2, win, remaining = 0, match_id, totalRounds, is_bye = false;
+  round =1;
+  matchNumber = 0;
   startModal.hide();
-  console.log("particpants nem : " + participants.length);
-  if(participants.length > 4)
-  {
+  if (participants.length > 4) {
     totalRounds = 3;
   }
   else
     totalRounds = 2;
-  if(participants.length % 2)
-    is_bye=true
-  for(let i = 0; i!= 1;i=remaining)
-  {
+  if (participants.length % 2)
+    is_bye = true
+  for (let i = 0; i != 1; i = remaining) {
     try {
-      // if(round == 1 )
-      // {
-        if(i==0)
-        {
-        roundDetails = await arrangeNextRound();
-        matchDetail = roundDetails.match_details;
-        console.log("round details : ");
-        console.log(matchDetail);
-  
-        }
-        else if(round == 2 && roundComplete )
-        {
-          roundDetails = await getRoundDetails();
-          console.log(roundDetails)
-          matchDetail = roundDetails.second_round_matches;
-          roundComplete = false;
-          matchNumber = 0;
-        }
-        // round = matchDetail[0].round_number;
-        // console.log(roundDetails);
-        roundMsg = "Round : " + round + "\n";
-        for ( let i = 0; i < matchDetail.length; i++)
-        {
-          // console.log(roundDetails.match_details[i]);
-          p1 = participants.find(element => Object.values(element).includes(matchDetail[i].participant_one_id));
-          // p2 = participants.find(element => Object.values(element).includes(roundDetails.participant_two_id));
-          // console.log(p1);
-          if (matchDetail[i].is_bye)
-          {
-            matchMsg = p1.username + " ADVANCES\n";
-          }
-          else 
-          {
-            p2 = participants.find(element => Object.values(element).includes(matchDetail[i].participant_two_id));
-            matchMsg = p1.username + " vs " + p2.username +"\n";
-          }
-          
-
-          roundMsg+=matchMsg;
-        }
-        document.getElementById("gameDetail").innerHTML= roundMsg.replace(/\n/g,"<br>");
-
-        if (i==0)
-        {
-          startModal.hide();
+      handleTournamentPreview(i);
+      if (i == 0) {
+        startModal.hide();
 
         matchModal.show();
         await waitSubmission(startNextGameBtn);
-        }
-                if (round ==2)
-        {
-          matchModal.show();
-          await waitSubmission(startNextGameBtn);
+      }
+      if (round == 2) {
+        matchModal.show();
+        await waitSubmission(startNextGameBtn);
 
-        }
-        // console.log(roundMsg);
-      
-      // else if(round == 2)
-      // {
-      //   roundDetails = await getRoundDetails(round);
-      // }
-      // if (i == 0)
-      // {
-      //   // roundDetails = await getRoundDetails(round);
-      //   // roundDetails = await arrangeNextRound();
-      //   // console.log(roundDetails);
-      //   // startModal.hide();
-
-      //   // matchModal.show();
-      //   // await waitSubmission(startNextGameBtn);
-      // }
+      }
 
       const data = await getNextMatch();
-      // round = data.next_match.round_number;
-      // console.log(round);
       p1 = participants.find(element => Object.values(element).includes(data.next_match.participant_one));
       p2 = participants.find(element => Object.values(element).includes(data.next_match.participant_two));
-      // round = data.next_match.round_number;
-      if(round == 3 )
-        {
-          roundMsg = "Round : " + round + "\n";
-          matchMsg = p1.username + " vs " + p2.username +"\n";
-          roundMsg+=matchMsg;
-                    document.getElementById("gameDetail").innerHTML= roundMsg.replace(/\n/g,"<br>");
+      if (round == 3) {
+        roundMsg = "Round : " + round + "\n";
+        matchMsg = p1.username + " vs " + p2.username + "\n";
+        roundMsg += matchMsg;
+        document.getElementById("gameDetail").innerHTML = roundMsg.replace(/\n/g, "<br>");
 
-          matchModal.show();
-          await waitSubmission(startNextGameBtn);
+        matchModal.show();
+        await waitSubmission(startNextGameBtn);
 
-        }
-      
+      }
       player1Alias = p1.username;
       player2Alias = p2.username;
       remaining = data.next_match.remaining_matches;
-      // i = remaining;
-      match_id =  data.next_match.match_id;
-      // console.log(remaining);
-      // console.log(p1);
-      // console.log(p2);
-      // console.log(participants.length);
-      console.log("round :" + round);
+      match_id = data.next_match.match_id;
+
       startGame();
 
       await waitGameFinish();
-      // console.log("winner:" + winner);
       win = participants.find(element => Object.values(element).includes(winner));
-      await updateMatchResult(match_id,win.id);
+      await updateMatchResult(match_id, win.id);
       restartGameButton = document.getElementById("restartGameBtn");
       await waitSubmission(restartGameButton);
-      if (round != totalRounds)
-      {
-      matchModal.show();
-      await waitSubmission(startNextGameBtn);
+      if (round != totalRounds) {
+        matchModal.show();
+        await waitSubmission(startNextGameBtn);
       }
-      matchNumber +=1;
-      console.log(matchNumber + " -- " );
-      console.log(matchDetail);
-      console.log(" -- " + matchDetail.length);
-      if (is_bye && matchNumber == matchDetail.length -1 )
-      {
-        round+=1;
-        roundComplete=true;
-      }
-       else if (!is_bye && matchNumber == matchDetail.length)
-       {
-        round+=1;
-        roundComplete=true;
-       }
-      // matchModal.show();
-      // restartGameButton = document.getElementById("restartGameBtn");
+      matchNumber += 1;
 
-      // await waitSubmission(restartGameButton);
-      // });
-      } catch (error){
-      console.error('Failed to get next match:', error);
+      if (is_bye && matchNumber == matchDetail.length - 1) {
+        round += 1;
+        roundComplete = true;
       }
+      else if (!is_bye && matchNumber == matchDetail.length) {
+        round += 1;
+        roundComplete = true;
+      }
+
+    } catch (error) {
+      console.error('Failed to get next match:', error);
+    }
   }
-  // restartModal.hide();
+
   var elem = document.getElementById('finishTournament');
   finishTournamentModal = new bootstrap.Modal(document.getElementById('finishTournament'));
   winnerMsg = document.getElementById('tournamentWinner');
   winnerMsg.textContent = win.username + " wins Tournament!";
   finishTournamentModal.toggle();
   var restartTournament = document.getElementById("restartTournament");
-  restartTournament.addEventListener('click', function(){
+  restartTournament.addEventListener('click', function () {
     finishTournamentModal.hide();
     restartModal.hide();
-    appRouter.navigate('/tournament', {force : true });
+    appRouter.navigate('/tournament', { force: true });
   });
 }
 function waitSubmission(element) {
@@ -780,17 +690,17 @@ function waitSubmission(element) {
     });
   });
 }
-async function updateMatchResult(match_id,winner) {
+async function updateMatchResult(match_id, winner) {
   const matchData = {
-    winner_id : winner
+    winner_id: winner
   };
   const response = await fetch(`https://127.0.0.1:443/tournament_api/update-match-result/${match_id}/`, {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + getCookie('jwt')
-      },
-      body: JSON.stringify(matchData)
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + getCookie('jwt')
+    },
+    body: JSON.stringify(matchData)
   })
   if (!response.ok) {
     throw new Error('Network response was not ok');
@@ -800,31 +710,30 @@ async function updateMatchResult(match_id,winner) {
 }
 
 async function getNextMatch() {
-    const response = await fetch(`https://127.0.0.1:443/tournament_api/get-next-match/${getTournamentId()}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + getCookie('jwt')
-        }
-    })
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
+  const response = await fetch(`https://127.0.0.1:443/tournament_api/get-next-match/${getTournamentId()}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + getCookie('jwt')
     }
-    const data = await response.json();
-    // console.log(data);
-    return data;
+  })
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  const data = await response.json();
+  return data;
 }
 
 function setupcreateTournamentForm() {
-    const form = document.getElementById('participantDetailsFormInner');
-    form.addEventListener('submit', function(event) {
-        event.preventDefault();
-        createTournament();
-    });
+  const form = document.getElementById('participantDetailsFormInner');
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    createTournament();
+  });
 }
 
 function setTournamentId(data) {
-    localStorage.setItem('currentTournamentId', data.id);
+  localStorage.setItem('currentTournamentId', data.id);
 }
 
 function getTournamentId() {
