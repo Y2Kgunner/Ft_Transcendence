@@ -592,8 +592,8 @@ async function arrangeNextRound() {
   return data;
 }
 
-async function getRoundDetails(round) {
-  const response = await fetch(`https://127.0.0.1:443/tournament_api/get_second_round_matches/${getTournamentId()}/${round}`, {
+async function getRoundDetails() {
+  const response = await fetch(`https://127.0.0.1:443/tournament_api/get_second_round_matches/${getTournamentId()}`, {
       method: 'GET',
       headers: {
           'Content-Type': 'application/json',
@@ -609,7 +609,7 @@ async function getRoundDetails(round) {
 }
 
 async function startGameLoop() {
-  var p1,p2,win,remaining = 0,match_id,round=1,roundMsg,matchMsg,matchNumber=0,matchDetail,totalRounds;
+  var p1,p2,win,remaining = 0,match_id,round=1,roundMsg,matchMsg,matchNumber=0,matchDetail,totalRounds,roundComplete=true,is_bye=false;
   startModal.hide();
   console.log("particpants nem : " + participants.length);
   if(participants.length > 4)
@@ -618,6 +618,8 @@ async function startGameLoop() {
   }
   else
     totalRounds = 2;
+  if(participants.length % 2)
+    is_bye=true
   for(let i = 0; i!= 1;i=remaining)
   {
     try {
@@ -627,14 +629,19 @@ async function startGameLoop() {
         {
         roundDetails = await arrangeNextRound();
         matchDetail = roundDetails.match_details;
-        console.log("round details : " +matchDetail);
+        console.log("round details : ");
+        console.log(matchDetail);
+  
         }
-        else if(round == 2 )
+        else if(round == 2 && roundComplete )
         {
-          roundDetails = await getRoundDetails(round);
+          roundDetails = await getRoundDetails();
           console.log(roundDetails)
           matchDetail = roundDetails.second_round_matches;
+          roundComplete = false;
+          matchNumber = 0;
         }
+        // round = matchDetail[0].round_number;
         // console.log(roundDetails);
         roundMsg = "Round : " + round + "\n";
         for ( let i = 0; i < matchDetail.length; i++)
@@ -645,17 +652,27 @@ async function startGameLoop() {
           // console.log(p1);
           if (matchDetail[i].is_bye)
           {
-            matchMsg = p1.username + " vs PASS\n";
+            matchMsg = p1.username + " ADVANCES\n";
           }
           else 
           {
             p2 = participants.find(element => Object.values(element).includes(matchDetail[i].participant_two_id));
             matchMsg = p1.username + " vs " + p2.username +"\n";
           }
+          
+
           roundMsg+=matchMsg;
         }
         document.getElementById("gameDetail").innerHTML= roundMsg.replace(/\n/g,"<br>");
-        if (round ==2)
+
+        if (i==0)
+        {
+          startModal.hide();
+
+        matchModal.show();
+        await waitSubmission(startNextGameBtn);
+        }
+                if (round ==2)
         {
           matchModal.show();
           await waitSubmission(startNextGameBtn);
@@ -667,23 +684,35 @@ async function startGameLoop() {
       // {
       //   roundDetails = await getRoundDetails(round);
       // }
-      if (i == 0)
-      {
-        // roundDetails = await getRoundDetails(round);
-        // roundDetails = await arrangeNextRound();
-        // console.log(roundDetails);
-        startModal.hide();
+      // if (i == 0)
+      // {
+      //   // roundDetails = await getRoundDetails(round);
+      //   // roundDetails = await arrangeNextRound();
+      //   // console.log(roundDetails);
+      //   // startModal.hide();
 
-        matchModal.show();
-        await waitSubmission(startNextGameBtn);
-      }
+      //   // matchModal.show();
+      //   // await waitSubmission(startNextGameBtn);
+      // }
 
       const data = await getNextMatch();
-      round = data.next_match.round_number;
+      // round = data.next_match.round_number;
       // console.log(round);
       p1 = participants.find(element => Object.values(element).includes(data.next_match.participant_one));
       p2 = participants.find(element => Object.values(element).includes(data.next_match.participant_two));
       // round = data.next_match.round_number;
+      if(round == 3 )
+        {
+          roundMsg = "Round : " + round + "\n";
+          matchMsg = p1.username + " vs " + p2.username +"\n";
+          roundMsg+=matchMsg;
+                    document.getElementById("gameDetail").innerHTML= roundMsg.replace(/\n/g,"<br>");
+
+          matchModal.show();
+          await waitSubmission(startNextGameBtn);
+
+        }
+      
       player1Alias = p1.username;
       player2Alias = p2.username;
       remaining = data.next_match.remaining_matches;
@@ -708,9 +737,19 @@ async function startGameLoop() {
       await waitSubmission(startNextGameBtn);
       }
       matchNumber +=1;
-      console.log(matchNumber + " -- " + matchDetail.length -1 );
-      if (matchNumber == matchDetail.length -1 )
+      console.log(matchNumber + " -- " );
+      console.log(matchDetail);
+      console.log(" -- " + matchDetail.length);
+      if (is_bye && matchNumber == matchDetail.length -1 )
+      {
         round+=1;
+        roundComplete=true;
+      }
+       else if (!is_bye && matchNumber == matchDetail.length)
+       {
+        round+=1;
+        roundComplete=true;
+       }
       // matchModal.show();
       // restartGameButton = document.getElementById("restartGameBtn");
 
