@@ -68,6 +68,16 @@ function showOtpModal() {
     otpModal.show();
 }
 
+function debounce(func, delay) {
+    let timer;
+    return function() {
+        const context = this;
+        const args = arguments;
+        clearTimeout(timer);
+        timer = setTimeout(() => func.apply(context, args), delay);
+    }
+}
+
 
 function initializeModals() {
     const allModals = document.querySelectorAll('.modal');
@@ -159,8 +169,18 @@ function setupEventListeners() {
         showLoginForm();
     });
 
-    document.getElementById('loginButton')?.addEventListener('click', login);
-    document.getElementById('otpButton')?.addEventListener('click', verifyOtp);
+    const debouncedLogin = debounce(login, 3000);
+    document.getElementById('loginButton')?.addEventListener('click', function(event) {
+        event.preventDefault();
+        debouncedLogin(event);
+    });
+
+    const debouncedVerifyOtp = debounce(verifyOtp, 3000);
+    document.getElementById('otpButton')?.addEventListener('click', function(event) {
+        event.preventDefault();
+        debouncedVerifyOtp(event);
+    });
+
     document.getElementById('registerButton')?.addEventListener('click', register);
     document.getElementById('registerForm')?.addEventListener('submit', register);
     document.getElementById('forgotPasswordLink')?.addEventListener('click', forgetPassword);
