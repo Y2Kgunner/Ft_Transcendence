@@ -1,3 +1,4 @@
+from random import shuffle
 from django.db import transaction
 import random
 from django.db import models
@@ -33,7 +34,8 @@ class Participant(models.Model):
     tournament = models.ForeignKey('Tournament', on_delete=models.CASCADE, related_name='participants')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True, related_name='participations')
     temp_username = models.CharField(max_length=255, null=True, blank=True)
-    is_bye = models.BooleanField(default=False, help_text='Indicates if the participant is a placeholder for a bye.')
+    is_bye = models.BooleanField(default=False)
+    received_bye = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('tournament', 'user', 'temp_username')
@@ -67,58 +69,55 @@ class Match(models.Model):
 
 
 def arrange_tournament_matches(tournament_id):
-    # print("arranging matches for tournament")
     with transaction.atomic():
         participants = Participant.objects.filter(tournament_id=tournament_id).order_by('?')
         participants_list = list(participants)
-
+        shuffle(participants_list)
         match_order = 1
         round_number = 1
-        match_details = [] 
-
-        while len(participants_list) > 1: 
+        match_details = []
+        # track participants who have received a bye
+        participants_with_bye = set(Participant.objects.filter(tournament_id=tournament_id, received_bye=True).values_list('id', flat=True))
+        while len(participants_list) > 1:
             p1 = participants_list.pop(0)
+            if len(participants_list) == 0:
+                if p1.id not in participants_with_bye or all(p.id in participants_with_bye for p in participants_list):
+                    p1.received_bye = True
+                    p1.save()
+                    match_details.append(create_match(tournament_id, p1, None, match_order, round_number, True))
+                continue
             p2 = participants_list.pop(0)
-
-            match = Match.objects.create(
-                tournament_id=tournament_id, 
-                participant_one=p1, 
-                participant_two=p2, 
-                match_order=match_order,
-                round_number=round_number,
-                is_bye=False
-            )
+            match_details.append(create_match(tournament_id, p1, p2, match_order, round_number, False))
             match_order += 1
-            match_details.append(format_match_info(match))
         if participants_list:
-            bye_participant = participants_list.pop()
-            bye_match = Match.objects.create(
-                tournament_id=tournament_id,
-                participant_one=bye_participant,
-                participant_two=bye_participant, 
-                match_order=match_order,
-                round_number=round_number,
-                is_completed=True,
-                winner=bye_participant, 
-                is_bye=True
-            )
-            match_details.append(format_match_info(bye_match))
-            # print_match_details(tournament_id, round_number, match_order, bye_participant, bye=True)
+            last_participant = participants_list.pop()
+            if last_participant.id not in participants_with_bye:
+                last_participant.received_bye = True
+                last_participant.save()
+            match_details.append(create_match(tournament_id, last_participant, None, match_order, round_number, True))
     return match_details
+
+def create_match(tournament_id, p1, p2, match_order, round_number, is_bye):
+    match = Match.objects.create(
+        tournament_id=tournament_id,
+        participant_one=p1,
+        participant_two=p2 if not is_bye else None,
+        match_order=match_order,
+        round_number=round_number,
+        is_bye=is_bye,
+        is_completed=is_bye,
+        winner=p1 if is_bye else None
+    )
+    return format_match_info(match)
 
 def format_match_info(match):
     return {
         "match_id": match.id,
-        "round_number": match.round_number,
-        "match_order": match.match_order,
         "participant_one_id": match.participant_one.id,
         "participant_two_id": match.participant_two.id if match.participant_two else None,
-        "is_bye": match.is_bye
+        "match_order": match.match_order,
+        "round_number": match.round_number,
+        "is_bye": match.is_bye,
+        "is_completed": match.is_completed,
+        "winner_id": match.winner.id if match.winner else None
     }
-
-# def print_match_details(tournament_id, round_number, match_order, participant_one, participant_two=None, bye=False):
-#     if bye:
-#         print(f"Round {round_number}: Participant {participant_one} receives a bye.")
-#     else:
-#         print(f"Round {round_number} - Match {match_order}: {participant_one} vs {participant_two}")
-

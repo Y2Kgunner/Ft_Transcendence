@@ -34,16 +34,18 @@ def get_next_match(request, tournament_id=None):
     
 @csrf_exempt
 @require_http_methods(["GET"])
-def get_second_round_matches(request, tournament_id,round):
+def get_second_round_matches(request, tournament_id):
     try:
         tournament = Tournament.objects.get(id=tournament_id, is_active=True, is_completed=False)
-        second_round_matches = tournament.matches.filter(round_number=round, is_completed=False).order_by('match_order')
-        if second_round_matches:
-            response_data = [{
-                "match_id": match.id,
-                "participant_one": match.participant_one.id if match.participant_one else None,
-                "participant_two": match.participant_two.id if match.participant_two else None,"round_number": match.round_number,} for match in second_round_matches]
-            return JsonResponse({"second_round_matches": response_data}, status=200)
+        second_round_matches = tournament.matches.filter(round_number=2).order_by('match_order')
+        response_data = [{
+            "match_id": match.id,
+            "participant_one": match.participant_one.id if match.participant_one else None,
+            "participant_two": match.participant_two.id if match.participant_two else None,
+            "round_number": match.round_number,
+            "is_bye": match.is_bye
+        } for match in second_round_matches]
+        return JsonResponse({"second_round_matches": response_data}, status=200)
     except Tournament.DoesNotExist:
         return JsonResponse({"error": "Tournament not found."}, status=404)
     except Exception as e:

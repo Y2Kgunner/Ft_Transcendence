@@ -3,8 +3,6 @@ from django.views.decorators.http import require_http_methods
 from tournament.models import Tournament, arrange_tournament_matches
 from django.views.decorators.csrf import csrf_exempt
 
-
-
 @csrf_exempt
 @require_http_methods(["POST"])
 def start_tournament(request):
@@ -29,18 +27,14 @@ def start_tournament(request):
 def arrange_matches(request, tournament_id):
     try:
         tournament = Tournament.objects.get(id=tournament_id, creator=request.user)
-        # make sure the tournament is started but not completed and matches are not already arranged
         if tournament.is_completed or tournament.matches.exists():
             return JsonResponse({"error": "Matches cannot be arranged at this stage."}, status=400)
         match_details = arrange_tournament_matches(tournament_id)
-        print("from the view ")
-        print("match_details returned to view:", match_details)
-        return JsonResponse({"message": "Matches arranged successfully.","match_details": match_details}, status=200)
+        return JsonResponse({"message": "Matches arranged successfully.", "match_details": match_details}, status=200)
     except Tournament.DoesNotExist:
         return JsonResponse({"error": "Tournament not found."}, status=404)
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=400)
-
 
 @csrf_exempt
 @require_http_methods(["POST"])
