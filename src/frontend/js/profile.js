@@ -7,7 +7,30 @@ async function updateFriendList()
 {
     let friendList = await getFriendslist();
     console.log(friendList);
-    //update html table;
+    const friendsList = document.getElementById('friendsList');
+    friendsList.innerHTML = "";
+    if(friendList.friends.length)
+    {
+      
+      for( let i =0;i< friendList.friends.length; i++)
+      {
+      let freindListDiv =`<tr>
+      <th scope="col">${friendList.friends[i].username}</th>
+      <th scope="col">${friendList.friends[i].online_status}</th>
+    </tr>`
+    friendsList.innerHTML+=freindListDiv;
+      }
+    }
+    else 
+      {
+        let freindListDiv =`<tr>
+      <th scope="col">No Friends!</th>
+      <th scope="col">None</th>
+    </tr>`
+    friendsList.innerHTML+=freindListDiv;
+      }
+    
+
 }
 
 async function addUser(userId) {
@@ -19,6 +42,8 @@ async function addUser(userId) {
     }
   })
   if (!response.ok) {
+    if(response.status == 400)
+      alert("cannot add yourself as friend");
     return null;
   }
   alert("request has been sent to user! ")
@@ -37,6 +62,36 @@ async function checkUsername(username) {
   if (!response.ok) {
     return null;
   }
+  const data = await response.json();
+  return data;
+}
+async function rejectRequest(userId) {
+  const response = await fetch(`https://127.0.0.1:443/api/reject_friend/${userId}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + getCookie('jwt')
+    }
+  })
+  if (!response.ok) {
+    return null;
+  }
+  alert("freind request rejected")
+  const data = await response.json();
+  return data;
+}
+async function acceptRequest(userId) {
+  const response = await fetch(`https://127.0.0.1:443/api/accept_friend_request/${userId}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + getCookie('jwt')
+    }
+  })
+  if (!response.ok) {
+    return null;
+  }
+  alert("freind request accepted")
   const data = await response.json();
   return data;
 }
@@ -79,14 +134,48 @@ async function showInvites()
 {
   const pendingFriends = await getPendingFriends();
   console.log(pendingFriends);
-  let freindRequestDiv = ''
+  const invitationz = document.getElementById('invitationz');
+  invitationz.innerHTML = "";
   if(pendingFriends.notifications.length)
   {
     console.log("has requests");
     for(let i = 0; i < pendingFriends.notifications.length; i++)
     {
-
+      let buttonsDiv = Array.from({length : pendingFriends.notifications.length },
+        () => ({
+          acceptBtnId : "acceptBtn" +i,
+          declineBtnId : "declineBtn" + i
+        }));
+      let freindRequestDiv =`<div class="inviteBox rounded mb-2">
+      <div class="d-flex flex-row justify-content-between">
+        <div class="invitee px-2 d-flex align-items-center">${pendingFriends.notifications[i].message}</div>
+        <div>
+          <button id=${buttonsDiv[i].acceptBtnId} class="btn acceptInvitationBtn mx-md-2">accept friend request</button>
+          <button id=${buttonsDiv[i].declineBtnId} class="btn rejectInvitationBtn ms-md-1">reject friend request</button>
+        </div>
+      </div>
+    </div>`
+    invitationz.innerHTML+=freindRequestDiv;
     }
+    const rejectButtons = document.querySelectorAll(".rejectInvitationBtn");
+    console.log(rejectButtons);
+    rejectButtons.forEach((button,index) => {
+      button.addEventListener("click", 
+      async function () {
+        await rejectRequest(pendingFriends.notifications[index].sender_id);
+      });
+    });
+    const acceptButtons = document.querySelectorAll(".acceptInvitationBtn");
+    acceptButtons.forEach((button,index) => {
+      button.addEventListener("click", 
+      async function () {
+        console.log("accept "+index);
+        await acceptRequest(pendingFriends.notifications[index].sender_id);
+        updateFriendList();
+        showInvites();
+      });
+    });
+
   }
   else
   {
