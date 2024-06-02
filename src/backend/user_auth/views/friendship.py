@@ -8,11 +8,19 @@ from django.views.decorators.http import require_http_methods
 from ..models import WebUser, Friendship
 from django.db import models
 from django.views.decorators.csrf import csrf_exempt
+from django.utils import timezone
+
 
 @csrf_exempt
 @require_http_methods(["POST"])
 def add_friend(request, user_id):
     user = request.user
+    if Friendship.objects.filter((models.Q(creator=user, friend_id=user_id) | models.Q(creator_id=user_id, friend=user)), status='accepted').exists():
+        return JsonResponse({"message": "You are already friends."}, status=400)
+    if Friendship.objects.filter((models.Q(creator=user, friend_id=user_id) | models.Q(creator_id=user_id, friend=user)), status='pending').exists():
+        return JsonResponse({"message": "Friend request already sent."}, status=400)
+    if Friendship.objects.filter(creator=user, created_at__date=timezone.now().date()).count() >= 5:
+        return JsonResponse({"message": "You have reached the maximum number of friend requests for today."}, status=400)
     try:
         friend = WebUser.objects.get(pk=user_id)
         if user != friend:
@@ -104,8 +112,8 @@ def pending_frinship_requets(request):
     notifications = []
     for req in pending_requests:
         notification = {
-            "message": f"Friend request from {req.creator.username}",
-            "sender_id": req.creator.id
+            "username": f"{req.creator.username}",
+            "id": req.creator.id
         }
         notifications.append(notification)
 
