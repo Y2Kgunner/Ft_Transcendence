@@ -148,7 +148,7 @@ async function showInvites()
         }));
       let freindRequestDiv =`<div class="inviteBox rounded mb-2">
       <div class="d-flex flex-row justify-content-between">
-        <div class="invitee px-2 d-flex align-items-center">${pendingFriends.notifications[i].message}</div>
+        <div class="invitee px-2 d-flex align-items-center">${pendingFriends.notifications[i].username}</div>
         <div>
           <button id=${buttonsDiv[i].acceptBtnId} class="btn acceptInvitationBtn mx-md-2">accept friend request</button>
           <button id=${buttonsDiv[i].declineBtnId} class="btn rejectInvitationBtn ms-md-1">reject friend request</button>
@@ -162,7 +162,7 @@ async function showInvites()
     rejectButtons.forEach((button,index) => {
       button.addEventListener("click", 
       async function () {
-        await rejectRequest(pendingFriends.notifications[index].sender_id);
+        await rejectRequest(pendingFriends.notifications[index].id);
       });
     });
     const acceptButtons = document.querySelectorAll(".acceptInvitationBtn");
@@ -170,7 +170,7 @@ async function showInvites()
       button.addEventListener("click", 
       async function () {
         console.log("accept "+index);
-        await acceptRequest(pendingFriends.notifications[index].sender_id);
+        await acceptRequest(pendingFriends.notifications[index].id);
         updateFriendList();
         showInvites();
       });
