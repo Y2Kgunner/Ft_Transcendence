@@ -13,9 +13,12 @@ async function patchUserDetails(userData) {
     body: JSON.stringify(userData)
   })
   if (!response.ok) {
-    if(response.status == 400)
-      // data = await response.json();
-      alert("Error from backend");
+    if(response.status == 410)
+      alert('first name must be a non-empty string and cannot be numeric');
+    if(response.status == 420)
+      alert('Last name must be a non-empty string and cannot be numeric');
+    if(response.status == 430)
+      alert('Phone must be a non-empty string of digits');
     return null;
   }
   alert("profile info updated!! ")
@@ -30,7 +33,9 @@ async function setupEdit()
   editBtn.addEventListener('click', async function() {
     const editModal = new bootstrap.Modal(document.getElementById('editProfileModal'));
     editModal.show();
-    const saveChangesProfileBtn = document.getElementById('saveChangesProfileBtn');
+    console.log("ckick");
+  });
+  const saveChangesProfileBtn = document.getElementById('saveChangesProfileBtn');
     saveChangesProfileBtn.addEventListener('click', async function() {
       const firstNameInput = document.getElementById("firstNameInput");
       const lastNameInput = document.getElementById("lastNameInput");
@@ -55,9 +60,6 @@ async function setupEdit()
       phoneInput.value = "";
       addressInput.value = "";
     });
-
-    console.log("ckick");
-  });
 }
 
 async function updateFriendList()
@@ -527,6 +529,7 @@ function loadMatchHistory(playerData) {
       }
       console.log("Match Data Received:", data);
       const table = document.getElementById('matchHistoryTable').getElementsByTagName('tbody')[0];
+      table.innerHTML = "";
       data.matches.forEach(match => {
         let row = table.insertRow();
         row.insertCell(0).textContent = match.id;
