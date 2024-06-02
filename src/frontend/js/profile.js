@@ -248,7 +248,8 @@ function fetchUserProfile() {
     .then(data => {
       userName = data.username;
       updateProfilePage(data);
-      loadMatchHistory(data.id);
+      console.log(data);
+      loadMatchHistory(data);
       fetchProfilePicture();
 
     })
@@ -419,8 +420,8 @@ function setUpVerifyDeleteOtpButton() {
   document.getElementById('verifyDeleteOtpButton').addEventListener('click', verifyAndDeleteAccount);
 };
 
-function loadMatchHistory(playerId) {
-  if (!playerId) {
+function loadMatchHistory(playerData) {
+  if (!playerData.id) {
     console.error("Player ID is undefined, cannot load match history.");
     return;
   }
@@ -431,7 +432,7 @@ function loadMatchHistory(playerId) {
       'Authorization': `Bearer ${getCookie('jwt')}`,
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ player_id: playerId })
+    body: JSON.stringify({ player_id: playerData.id })
   })
     .then(response => response.json())
     .then(data => {
@@ -439,16 +440,17 @@ function loadMatchHistory(playerId) {
         console.error("No matches data received:", data);
         return;
       }
-      //console.log("Match Data Received:", data);
+      console.log("Match Data Received:", data);
       const table = document.getElementById('matchHistoryTable').getElementsByTagName('tbody')[0];
       data.matches.forEach(match => {
         let row = table.insertRow();
         row.insertCell(0).textContent = match.id;
-        row.insertCell(1).textContent = new Date(match.match_date).toLocaleString();
-        row.insertCell(2).textContent = match.score_player;
-        row.insertCell(3).textContent = match.guest_player1;
-        row.insertCell(4).textContent = match.guest_player2 || 'N/A';
-        row.insertCell(5).textContent = match.winner;
+        row.insertCell(1).textContent = match.game_type;
+        row.insertCell(2).textContent = new Date(match.match_date).toLocaleString();
+        row.insertCell(3).textContent = playerData.username;
+        row.insertCell(4).textContent = match.guest_player1;
+        row.insertCell(5).textContent = match.guest_player2 || 'N/A';
+        row.insertCell(6).textContent = match.winner;
       });
     })
     .catch(error => console.error('Error loading match history:', error));
