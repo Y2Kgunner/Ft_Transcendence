@@ -3,6 +3,63 @@ import { appRouter } from './router.js';
 
 let userName = '';
 
+async function patchUserDetails(userData) {
+  const response = await fetch(`https://127.0.0.1:443/api/profile`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + getCookie('jwt')
+    },
+    body: JSON.stringify(userData)
+  })
+  if (!response.ok) {
+    if(response.status == 400)
+      // data = await response.json();
+      alert("Error from backend");
+    return null;
+  }
+  alert("profile info updated!! ")
+  const data = await response.json();
+  return data;
+}
+
+async function setupEdit()
+{
+  console.log("ckick");
+  const editBtn = document.getElementById('editBtn');
+  editBtn.addEventListener('click', async function() {
+    const editModal = new bootstrap.Modal(document.getElementById('editProfileModal'));
+    editModal.show();
+    const saveChangesProfileBtn = document.getElementById('saveChangesProfileBtn');
+    saveChangesProfileBtn.addEventListener('click', async function() {
+      const firstNameInput = document.getElementById("firstNameInput");
+      const lastNameInput = document.getElementById("lastNameInput");
+      const phoneInput = document.getElementById("phoneInput");
+      const addressInput = document.getElementById("addressInput");
+      const userData = {};
+      if (firstNameInput.value)
+        userData.first_name = firstNameInput.value;
+      if(lastNameInput.value)
+        userData.last_name = lastNameInput.value;
+      if(phoneInput.value)
+        userData.phone = phoneInput.value;
+      if(addressInput.value)
+        userData.address = addressInput.value;
+      firstNameInput.value = "";
+
+      console.log(userData);
+      await patchUserDetails(userData);
+      fetchUserProfile();
+      firstNameInput.value = "";
+      lastNameInput.value = "";
+      phoneInput.value = "";
+      addressInput.value = "";
+    });
+
+    console.log("ckick");
+  });
+}
+
 async function updateFriendList()
 {
     let friendList = await getFriendslist();
@@ -287,6 +344,34 @@ function updateProfilePage(userData) {
     usernameElement.textContent = 'N/A';
     //console.log('username not found');
   }
+  const fistNameElement = document.getElementById('firstName');
+  if (userData.first_name) {
+    fistNameElement.textContent = userData.first_name;
+  } else {
+    fistNameElement.textContent = 'N/A';
+    //console.log('username not found');
+  }
+  const lastNameElement = document.getElementById('lastName');
+  if (userData.last_name) {
+    lastNameElement.textContent = userData.last_name;
+  } else {
+    lastNameElement.textContent = 'N/A';
+    //console.log('username not found');
+  }
+  const phoneElement = document.getElementById('phone');
+  if (userData.phone) {
+    phoneElement.textContent = userData.phone;
+  } else {
+    phoneElement.textContent = 'N/A';
+    //console.log('username not found');
+  }
+  const addressElement = document.getElementById('address');
+  if (userData.address != "") {
+    addressElement.textContent = userData.address;
+  } else {
+    addressElement.textContent = 'N/A';
+    //console.log('username not found');
+  }
   const emailElement = document.getElementById('email');
   if (userData.email) {
     emailElement.textContent = userData.email;
@@ -562,4 +647,4 @@ function deleteProfilePicture() {
 
   
 
-export { fetchUserProfile, getCookie, setupAnonymizeButton, setupDeleteProfileButton, setupCloseButton, setUpVerifyDeleteOtpButton, setupUploadProfilePictureButton,setupFriends };
+export { fetchUserProfile, getCookie, setupAnonymizeButton, setupDeleteProfileButton, setupCloseButton, setUpVerifyDeleteOtpButton, setupUploadProfilePictureButton,setupFriends, setupEdit};
