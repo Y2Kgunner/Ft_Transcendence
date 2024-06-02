@@ -573,25 +573,37 @@ function fetchProfilePicture() {
     });
 }
 
-function setupUploadProfilePictureButton() {
-  const uploadButton = document.getElementById('uploadPicButton');
-  const fileInput = document.getElementById('profilePictureInput');
-  // console.log(uploadButton);
-  // console.log(fileInput);
-  if (uploadButton && fileInput) {
-    uploadButton.addEventListener('click', () => {
-      fileInput.click();
-    });
+// function setupUploadProfilePictureButton() {
+//   const uploadButton = document.getElementById('uploadPicButton');
+//   uploadPicButton.addEventListener('click', () => {
+//     const fileInput = document.createElement('input');
+//     fileInput.type = 'file';
+//     fileInput.accept = 'image/*';
+  
+//     fileInput.addEventListener('change', () => {
+//       const file = fileInput.files[0];
+//       uploadProfilePicture(file);
+//     });
+//     fileInput.click();
+//   });
+  
+//   // const fileInput = document.getElementById('profilePictureInput');
+//   // console.log(uploadButton);
+//   // console.log(fileInput);
+//   // if (uploadButton) {
+//   //   uploadButton.addEventListener('click', () => {
+//   //     fileInput.click();
+//   //   });
 
-    fileInput.addEventListener('change', uploadProfilePicture);
-  } else {
-    console.error('Elements not found: uploadButton or fileInput is null');
-  }
-}
+//   //   fileInput.addEventListener('change', uploadProfilePicture);
+//   // } else {
+//     // console.error('Elements not found: uploadButton or fileInput is null');
+//   // }
+// }
 
-function uploadProfilePicture() {
-  const fileInput = document.getElementById('profilePictureInput');
-  const file = fileInput.files[0];
+function uploadProfilePicture(file) {
+  // const fileInput = document.getElementById('profilePictureInput');
+  // const file = fileInput.files[0];
 
   if (file) {
     const formData = new FormData();
@@ -626,6 +638,27 @@ function uploadProfilePicture() {
   }
 };
 
+function setupUploadProfilePictureButton() {
+  const uploadButton = document.getElementById('uploadPicButton');
+  uploadButton.addEventListener('click', () => {
+    const existingFileInput = document.getElementById('profilePictureInput');
+    if (existingFileInput) {
+      existingFileInput.remove();
+    }
+
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.id = 'profilePictureInput';
+    fileInput.accept = 'image/*';
+
+    fileInput.addEventListener('change', () => {
+      const file = fileInput.files[0];
+      uploadProfilePicture(file);
+    });
+    
+    fileInput.click();
+  });
+}
 
 function deleteProfilePicture() {
   fetch('https://127.0.0.1:443/api/delete_profile_picture/', {

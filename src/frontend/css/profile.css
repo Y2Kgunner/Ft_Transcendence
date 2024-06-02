@@ -48,56 +48,70 @@ tbody tr:hover {
   box-shadow: 0 0 10px #6fe537;
 }
 
-.profilePic {
-  width: 15vmin;
-  height: 15vmin;
-  box-shadow: 0 0 10px #6fe537;
-  /* position: absolute; */
-}
-
 .profile {
   font-size: 1vw;
   line-height: 1.2vw;
 }
 
-.profileButton {
-  width: 60%;
+.profile-picture {
+  width: inherit;
+  height: inherit;
+  position: absolute;
 }
 
 .profilePicHousing {
-  width: 15vmin;
-  height: 15vmin;
+  width: 17vmin;
+  height: 17vmin;
   border-radius: 50%;
-  background-color: #1a1a1a;
+  box-shadow: 0 0 10px #6fe537;
   position: relative;
   overflow: hidden;
   margin-bottom: 1vh;
+  background: #1a1a1ad0;
 }
 
 .overlay {
   font-size: 60%;
-  position: absolute;
+  position: relative;
   top: 100%;
   width: 100%;
   height: 25%;
   color: #ffffff00;
   display: flex;
-  /* background-color: #1a1a1ad0; */
+  display: block;
+  background-color: #1a1a1ad0;
   justify-content: center;
   transition: transform 0.3s ease-in-out;
 }
 
 .profilePicHousing:hover .overlay {
-  transform: translateY(-150%);
+  transform: translateY(-225%);
   color: #ffffff;
 }
 
-.profilePicHousing:hover>.profilePic {
+.profilePicHousing:hover>.profile-picture {
   opacity: .4;
 }
 
-.buttonContainer {
-  padding-left: 10%;
+.editPFPButton {
+  --bs-btn-bg: #9e0b35;
+  --bs-btn-border-color: none;
+  --bs-btn-color: #e5e5e5;
+  --bs-btn-hover-bg: #aa1841;
+  --bs-btn-hover-border-color: #aa1841;
+  --bs-btn-active-color: #e5e5e5;
+  --bs-btn-active-bg: #aa1841;
+  --bs-btn-active-border-color: #aa1841;
+  --bs-btn-hover-color: #e5e5e5;
+  animation: shadow-transition 2s ease-in-out infinite;
+  transition: box-shadow 0.2s;
+  width: auto;
+  height: auto;
+  left: 26%;
+}
+
+.editPFPButton:hover {
+  box-shadow: 0 0 2px
 }
 
 #deleteOtpInput:active {
@@ -195,24 +209,6 @@ tbody tr:hover {
   box-shadow: 0 0 5px 0 #b9b9b9;
 }
 
-
-.editPFPButton {
-  --bs-btn-bg: #9e0b35;
-  --bs-btn-border-color: none;
-  --bs-btn-color: #e5e5e5;
-  --bs-btn-hover-bg: #cd0b42;
-  --bs-btn-hover-border-color: #cd0b42;
-  --bs-btn-active-color: #e5e5e5;
-  --bs-btn-active-bg: #cd0b42;
-  --bs-btn-active-border-color: #cd0b42;
-  --bs-btn-hover-color: #e5e5e5;
-  animation: shadow-transition 2s ease-in-out infinite;
-  transition: box-shadow 0.2s;
-}
-
-.editPFPButton:hover {
-  box-shadow: 0 0 2px
-}
 
 
 @keyframes shadow-transition {

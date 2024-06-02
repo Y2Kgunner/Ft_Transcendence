@@ -17,8 +17,8 @@
   <section>
     <div class="container-fluid d-flex flex-column justify-content-center align-items-center">
       <div class="row section mainSection">
-        <div  class="d-flex justify-content-end pt-3">
-          <svg id = "editBtn" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+        <div class="d-flex justify-content-end pt-3">
+          <svg id="editBtn" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
             class="bi bi-pencil-square customEditIcon" viewBox="0 0 16 16">
             <path
               d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
@@ -28,14 +28,20 @@
         </div>
         <div class="col">
           <div class="row mb-2 d-flex justify-content-center rounded m-4 pb-4 profile">
-            <div class="col d-flex flex-column align-items-center">
+            <!-- <div class="col d-flex flex-column align-items-center">
               <div class="profilePicHousing">
                 <img id="profilePicture" class="rounded-circle thmb img-fluid customWidth mb-4 profile-picture">
                 <h1 id="username">Loading...</h1>
-
               </div>
               <button id="uploadPicButton" class="btn btn-primary mt-3">Upload Profile Picture</button>
               <input type="file" id="profilePictureInput" name="profile_picture" style="display:none;" />
+            </div> -->
+            <div class="col d-flex flex-column align-items-center">
+              <div class="profilePicHousing">
+                <img id="profilePicture" class="rounded-circle mb-4 profile-picture">
+                <button id="uploadPicButton" class="btn editPFPButton mt-3 overlay">edit pfp</button>
+              </div>
+              <h1 id="username">Loading...</h1>
             </div>
             <div class="col pt-3">
               <p>first name: <span id="firstName">Loading...</span></p>
@@ -183,14 +189,11 @@
           <h2 class="gradient-text">edit profile</h2>
         </div>
         <div class="modal-body">
-          <p>first name: <input type="text" id="firstNameInput" class="rounded ms-2"
-              placeholder=" Enter first name"></p>
-          <p>last name: <input type="text" id="lastNameInput" class="rounded ms-2"
-              placeholder=" Enter last name"></p>
-          <p>phone number: <input type="tel" id="phoneInput" class="rounded ms-2"
-              placeholder=" enter phone number"></p>
-          <p>address: <input type="text" id="addressInput" class="rounded ms-2"
-              placeholder=" Enter address"></p>
+          <p>first name: <input type="text" id="firstNameInput" class="rounded ms-2" placeholder=" Enter first name">
+          </p>
+          <p>last name: <input type="text" id="lastNameInput" class="rounded ms-2" placeholder=" Enter last name"></p>
+          <p>phone number: <input type="tel" id="phoneInput" class="rounded ms-2" placeholder=" enter phone number"></p>
+          <p>address: <input type="text" id="addressInput" class="rounded ms-2" placeholder=" Enter address"></p>
         </div>
         <div class="modal-footer justify-content-center">
           <button type="button" class="btn btn-success custoModalbtn" id="saveChangesProfileBtn"
