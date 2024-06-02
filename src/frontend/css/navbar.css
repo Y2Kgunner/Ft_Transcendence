@@ -1,16 +1,28 @@
 @font-face {
   font-family: 'PixelatedFont';
-  src: url('../assets/Pixelated/pix/pix.ttf') format('truetype'); /* Update the path to your font file */
+  src: url('../assets/Pixelated/pix/pix.ttf') format('truetype');
+  /* Update the path to your font file */
 }
 
 body {
-  font-family: 'PixelatedFont', sans-serif; /* Use the custom font as the default font */
+  font-family: 'PixelatedFont', sans-serif;
+  /* Use the custom font as the default font */
   /* overflow: hidden; */
 }
 
 #navbar {
   z-index: 1069 !important;
 }
+
+#pongDropz.dropdown-menu.show {
+  --bs-dropdown-bg: #212529;
+  --bs-dropdown-link-hover-bg: #606060;
+}
+
+#pongDropz.dropdown-menu.show .dropdown-item {
+  color: #ccddcc;
+}
+
 
 .navbar-toggler:focus,
 .btn-close:focus {
@@ -46,13 +58,20 @@ body {
 /* to stop the icons from appearing in the navbar! */
 .navbar-nav .nav-link .offcanvas-icon {
   display: none;
-} .logoutCustom .offcanvas-icon {
+}
+
+.logoutCustom .offcanvas-icon {
   display: none;
-} .offcanvas.show .navbar-nav .nav-link .offcanvas-icon {
-  display: inline-block;
-} .offcanvas.show .logoutCustom .offcanvas-icon {
+}
+
+.offcanvas.show .navbar-nav .nav-link .offcanvas-icon {
   display: inline-block;
 }
+
+.offcanvas.show .logoutCustom .offcanvas-icon {
+  display: inline-block;
+}
+
 /* ------------------------------------------------- */
 
 /* ----------border bottom when hovering!----------- */
@@ -69,33 +88,42 @@ body {
     visibility: hidden;
     transition: 0.3s ease-in-out;
   }
+
   .offcanvas.show .nav-link::before {
     left: 25%;
   }
-  
+
   .nav-link:hover::before,
   .nav-line.active::before {
     width: 100%;
     visibility: visible;
   }
+
   .offcanvas.show .nav-link:hover::before,
   .offcanvas.show .nav-line.active::before {
     width: 50%;
     visibility: visible;
   }
 }
+
 /* ------------------------------------------------- */
 
 
 /* justify navBar elements center when in navbar and start when in offcanvas */
 .navbar-nav {
   justify-content: center;
-} .offcanvas.show .navbar-nav {
+}
+
+.offcanvas.show .navbar-nav {
   justify-content: start;
   text-shadow: none;
-} .offcanvas.show .navbar-nav .nav-link, .offcanvas.show .logoutCustom .nav-link {
+}
+
+.offcanvas.show .navbar-nav .nav-link,
+.offcanvas.show .logoutCustom .nav-link {
   text-shadow: none;
 }
+
 /* ------------------------------------------------- */
 
 

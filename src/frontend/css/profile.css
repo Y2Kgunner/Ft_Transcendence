@@ -56,8 +56,8 @@ tbody tr:hover {
 }
 
 .profile {
-  font-size: 28px;
-  line-height: 50px;
+  font-size: 1vw;
+  line-height: 1.2vw;
 }
 
 .profileButton {
@@ -229,7 +229,7 @@ tbody tr:hover {
   }
 }
 
-.customEditIcon {
+/* .customEditIcon {
   background: linear-gradient(to right, #b62684, #cbcb0f, #b62684, #cbcb0f, #b62684);
   background-clip: text;
   background-size: 200% 100%;
@@ -249,7 +249,7 @@ tbody tr:hover {
   100% {
     background-position: 100% 10%;
   }
-}
+} */
 
 .customEditIcon {
   color: #1b6b11;
@@ -335,6 +335,42 @@ tbody tr:hover {
 }
 
 .rejectInvitationBtn {
+  --bs-btn-bg: #5f0b00;
+  --bs-btn-border-color: none;
+  --bs-btn-color: #d8d8d8;
+  --bs-btn-hover-bg: #a10000;
+  --bs-btn-hover-color: #d8d8d8;
+  --bs-btn-hover-border-color: none;
+  --bs-btn-active-color: #a4a4a4;
+  --bs-btn-active-bg: #530a0a;
+  --bs-btn-active-border-color: none;
+}
+
+#TwoFAbtn {
+  --bs-btn-bg: #5f5200;
+  --bs-btn-border-color: none;
+  --bs-btn-color: #d8d8d8;
+  --bs-btn-hover-bg: #a1a100;
+  --bs-btn-hover-color: #d8d8d8;
+  --bs-btn-hover-border-color: none;
+  --bs-btn-active-color: #a4a4a4;
+  --bs-btn-active-bg: #52530a;
+  --bs-btn-active-border-color: none;
+}
+
+#anonymizeButton {
+  --bs-btn-bg: #465f00;
+  --bs-btn-border-color: none;
+  --bs-btn-color: #d8d8d8;
+  --bs-btn-hover-bg: #3ea100;
+  --bs-btn-hover-color: #d8d8d8;
+  --bs-btn-hover-border-color: none;
+  --bs-btn-active-color: #a4a4a4;
+  --bs-btn-active-bg: #30530a;
+  --bs-btn-active-border-color: none;
+}
+
+#deleteProfileButton {
   --bs-btn-bg: #5f0b00;
   --bs-btn-border-color: none;
   --bs-btn-color: #d8d8d8;

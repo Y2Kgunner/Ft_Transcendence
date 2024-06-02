@@ -16,41 +16,65 @@
 <body style="background-color: black;">
   <section>
     <div class="container-fluid d-flex flex-column justify-content-center align-items-center">
-      <div class="row mb-2 d-flex justify-content-center rounded m-4 py-4 profile section mainSection">
-        <div class="col d-flex flex-column align-items-center">
-          <div class="profilePicHousing">
-            <img id="profilePicture" class="rounded-circle thmb img-fluid customWidth mb-4 profile-picture">
-            <h1 id="username">Loading...</h1>
-
-          </div>
-          <button id="uploadPicButton" class="btn btn-primary mt-3">Upload Profile Picture</button>
-          <input type="file" id="profilePictureInput" name="profile_picture" style="display:none;" />
-        </div>
-        <div class="col pt-3">
-          <p>EMAIL: <span id="email">Loading...</span></p>
-          <p>GAMES PLAYED: 69</p>
-          <p>WINS: 0</p>
-          <p>LOSSES: 69</p>
-          <p>WIN RATE: 0.00%</p>
+      <div class="row section mainSection">
+        <div class="d-flex justify-content-end pt-3">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+            class="bi bi-pencil-square customEditIcon" viewBox="0 0 16 16">
+            <path
+              d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+            <path fill-rule="evenodd"
+              d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
+          </svg>
         </div>
         <div class="col">
-          <div class="row">
+          <div class="row mb-2 d-flex justify-content-center rounded m-4 pb-4 profile">
+            <div class="col d-flex flex-column align-items-center">
+              <div class="profilePicHousing">
+                <img id="profilePicture" class="rounded-circle thmb img-fluid customWidth mb-4 profile-picture">
+                <h1 id="username">Loading...</h1>
+
+              </div>
+              <button id="uploadPicButton" class="btn btn-primary mt-3">Upload Profile Picture</button>
+              <input type="file" id="profilePictureInput" name="profile_picture" style="display:none;" />
+            </div>
             <div class="col pt-3">
-              <p>JOIN DATE: <span id="joinDate">Loading...</span></p>
-              <p>LAST ACTIVITY: <span id="lastActivity">Loading...</span></p>
-              <p>TWO FACTOR AUTH: <span id="twoFactorAuth">Loading...</span></p>
+              <p>first name: -</p>
+              <p>last name: -</p>
+              <p>phone no.: -</p>
+              <p>EMAIL: <span id="email">Loading...</span></p>
+              <p>address: -</p>
+              <p>GAMES PLAYED: 69</p>
+            </div>
+            <div class="col">
+              <div class="row">
+                <div class="col pt-3">
+                  <p>WINS: 0</p>
+                  <p>LOSSES: 69</p>
+                  <p>WIN RATE: 0.00%</p>
+                  <p>JOIN DATE: <span id="joinDate">Loading...</span></p>
+                  <p>LAST ACTIVITY: <span id="lastActivity">Loading...</span></p>
+                  <p>TWO FACTOR AUTH: <span id="twoFactorAuth">Loading...</span></p>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="row">
-            <div class="col buttonContainer">
-              <button type="button" class="btn btn-danger btn-md btn-block my-3 profileButton"
-                id="deleteProfileButton">Delete profile</button>
-              <button type="button" class="btn btn-warning btn-md btn-block my-3 profileButton"
-                id="anonymizeButton">Anonymise profile (GDPR)</button>
+          <div class="row mb-3">
+            <div class="col d-flex justify-content-center">
+              <div class="rounded pt-3 mx-md-5">
+                <button id="TwoFAbtn" class="btn">Enable 2FA</button>
+              </div>
+              <div class="rounded pt-3 mx-md-5">
+                <button id="anonymizeButton" class="btn">Anonymise profile (GDPR)</button>
+              </div>
+              <div class="rounded pt-3 mx-md-5">
+                <button id="deleteProfileButton" class="btn">Delete profile</button>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+
 
       <div class="row friendSection rounded p-4 m-4">
         <div id="friendsTableSection" class="col-5 section splitSection rounded p-4 me-md-3">
@@ -91,13 +115,11 @@
               <input type="text" id="friendUserName" class="form-control rounded" placeholder=" enter player username"
                 required>
             </div>
-            <div class="no-wrap rounded d-flex justify-content-center pt-3">
+            <div class="rounded d-flex justify-content-center pt-3">
               <button id="addFriendBtn" class="btn">send friend request</button>
             </div>
           </form>
           <div id="invitationz" class="overflow-y-auto" style="display: none;">
-            
-            
           </div>
         </div>
       </div>
@@ -149,27 +171,42 @@
       </div>
     </div>
   </div>
+  <div class="modal" id="editProfileModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+    aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content custoModal">
+        <div class="modal-header">
+          <div data-bs-theme="dark" class="me-4">
+            <button id="closeeditProfileModal" type="button" class="btn-close" data-bs-dismiss="modal"
+              aria-label="Close"></button>
+          </div>
+          <h2 class="gradient-text">edit profile</h2>
+        </div>
+        <div class="modal-body">
+          <p>first name: <input type="text" id="deleteOtpInput" class="rounded ms-2"
+              placeholder=" Enter first name"></p>
+          <p>last name: <input type="text" id="deleteOtpInput" class="rounded ms-2"
+              placeholder=" Enter last name"></p>
+          <p>phone number: <input type="tel" id="deleteOtpInput" class="rounded ms-2"
+              placeholder=" enter phone number"></p>
+          <p>address: <input type="text" id="deleteOtpInput" class="rounded ms-2"
+              placeholder=" Enter address"></p>
+        </div>
+        <div class="modal-footer justify-content-center">
+          <button type="button" class="btn btn-success custoModalbtn" id="saveChangesProfileBtn"
+            data-bs-dismiss="modal">save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
-  <!-- <script>
-    const addFriendForm = document.getElementById('addFriendForm');
-    const invitationzDiv = document.getElementById('invitationz');
-    const radioButtons = document.getElementsByName('btnradio');
-
-    radioButtons.forEach((radioButton) => {
-      radioButton.addEventListener('click', (e) => {
-        if (e.target.id === 'btnradio1') {
-          addFriendForm.style.display = 'block';
-          invitationzDiv.style.display = 'none';
-        } else if (e.target.id === 'btnradio3') {
-          addFriendForm.style.display = 'none';
-          invitationzDiv.style.display = 'block';
-        }
-      });
-    });
-  </script> -->
-  <script type="module" src="../js/profile.js"></script>
+  <script>
+    var ppppM = new bootstrap.Modal(document.getElementById('editProfileModal'));
+    ppppM.show();
+  </script>
+  <!-- <script type="module" src="../js/profile.js"></script> -->
 </body>
 
 </html>
