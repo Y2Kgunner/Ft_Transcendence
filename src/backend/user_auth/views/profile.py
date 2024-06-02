@@ -56,13 +56,13 @@ class UserProfileView(View):
                 data = json.loads(request.body)
                 if 'first_name' in data:
                     if not isinstance(data['first_name'], str) or data['first_name'].isdigit() or not data['first_name'].strip():
-                        return JsonResponse({'error': 'First name must be a non-empty string and cannot be numeric'}, status=400)
+                        return JsonResponse({'error': 'First name must be a non-empty string and cannot be numeric'}, status=410)
                 if 'last_name' in data:
                     if not isinstance(data['last_name'], str) or data['last_name'].isdigit() or not data['last_name'].strip():
-                        return JsonResponse({'error': 'Last name must be a non-empty string and cannot be numeric'}, status=400)
+                        return JsonResponse({'error': 'Last name must be a non-empty string and cannot be numeric'}, status=420)
                 if 'phone' in data:
                     if not isinstance(data['phone'], str) or not data['phone'].isdigit() or not data['phone'].strip():
-                        return JsonResponse({'error': 'Phone must be a non-empty string of digits'}, status=400)
+                        return JsonResponse({'error': 'Phone must be a non-empty string of digits'}, status=430)
                 user.first_name = data.get('first_name', user.first_name)
                 user.last_name = data.get('last_name', user.last_name)
                 user.phone_number = data.get('phone', user.phone_number)
@@ -70,9 +70,9 @@ class UserProfileView(View):
                 user.save()
                 return JsonResponse({'message': 'Profile updated successfully'})
             except ValidationError as e:
-                return JsonResponse({'error': str(e)}, status=400)
+                return JsonResponse({'error': str(e)}, status=440)
             except json.JSONDecodeError:
-                return JsonResponse({'error': 'Invalid JSON'}, status=400)
+                return JsonResponse({'error': 'Invalid JSON'}, status=450)
 
 
 def save_profile_picture(user, file):
@@ -90,12 +90,17 @@ def upload_profile_picture(request):
     if request.method == 'POST' and request.FILES.get('profile_picture'):
         try:
             user = request.user
+            old_pic = user.profile_picture.url if user.profile_picture else 'None'
             user.profile_picture = request.FILES['profile_picture']
             user.save()
-            return JsonResponse({'message': 'Profile picture updated successfully.', 'profile_picture_url': user.profile_picture.url}, status=200)
+            new_pic = user.profile_picture.url
+            print(f"Profile picture changed from {old_pic} to {new_pic} for user: {user.username}")
+            return JsonResponse({'message': 'Profile picture updated successfully.', 'profile_picture_url': new_pic}, status=200)
         except Exception as e:
+            print(f"Failed to update profile picture for user: {user.username}, error: {str(e)}")
             return JsonResponse({'error': str(e)}, status=500)
     return JsonResponse({'error': 'No file uploaded.'}, status=400)
+
 
 
 @csrf_exempt
