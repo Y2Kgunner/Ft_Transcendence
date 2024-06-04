@@ -28,12 +28,12 @@ async function patchUserDetails(userData) {
 
 async function setupEdit()
 {
-  console.log("ckick");
+  // console.log("ckick");
   const editBtn = document.getElementById('editBtn');
   editBtn.addEventListener('click', async function() {
     const editModal = new bootstrap.Modal(document.getElementById('editProfileModal'));
     editModal.show();
-    console.log("ckick");
+    // console.log("ckick");
   });
   const saveChangesProfileBtn = document.getElementById('saveChangesProfileBtn');
     saveChangesProfileBtn.addEventListener('click', async function() {
@@ -65,7 +65,7 @@ async function setupEdit()
 async function updateFriendList()
 {
     let friendList = await getFriendslist();
-    console.log(friendList);
+    // console.log(friendList);
     const friendsList = document.getElementById('friendsList');
     friendsList.innerHTML = "";
     if(friendList.friends.length)
@@ -527,7 +527,7 @@ function loadMatchHistory(playerData) {
         console.error("No matches data received:", data);
         return;
       }
-      console.log("Match Data Received:", data);
+      // console.log("Match Data Received:", data);
       const table = document.getElementById('matchHistoryTable').getElementsByTagName('tbody')[0];
       table.innerHTML = "";
       data.matches.forEach(match => {
@@ -551,7 +551,7 @@ function fetchProfilePicture() {
     return;
   }
 
-  console.log('Fetching profile picture with JWT:', jwtToken);
+  // console.log('Fetching profile picture with JWT:', jwtToken);
 
   fetch('https://127.0.0.1:443/api/get_profile_picture/', {
     method: 'GET',
@@ -576,33 +576,6 @@ function fetchProfilePicture() {
     });
 }
 
-// function setupUploadProfilePictureButton() {
-//   const uploadButton = document.getElementById('uploadPicButton');
-//   uploadPicButton.addEventListener('click', () => {
-//     const fileInput = document.createElement('input');
-//     fileInput.type = 'file';
-//     fileInput.accept = 'image/*';
-  
-//     fileInput.addEventListener('change', () => {
-//       const file = fileInput.files[0];
-//       uploadProfilePicture(file);
-//     });
-//     fileInput.click();
-//   });
-  
-//   // const fileInput = document.getElementById('profilePictureInput');
-//   // console.log(uploadButton);
-//   // console.log(fileInput);
-//   // if (uploadButton) {
-//   //   uploadButton.addEventListener('click', () => {
-//   //     fileInput.click();
-//   //   });
-
-//   //   fileInput.addEventListener('change', uploadProfilePicture);
-//   // } else {
-//     // console.error('Elements not found: uploadButton or fileInput is null');
-//   // }
-// }
 
 function uploadProfilePicture(file) {
   // const fileInput = document.getElementById('profilePictureInput');
