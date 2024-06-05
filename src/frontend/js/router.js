@@ -34,7 +34,7 @@ class Router {
             return;
         }
         
-        console.log(gameInProgress);
+        // console.log(gameInProgress);
         if ((gameInProgress || gameInProgressTour || gameInProgress3) && (this.lastPath == '/pong2' || this.lastPath == '/tournament' || this.lastPath == '/pong3') 
             && !confirm('You have an ongoing game. Are you sure you want to leave and lose your progress?')) {
             return;
