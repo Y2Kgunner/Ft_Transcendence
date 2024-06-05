@@ -47,7 +47,7 @@ function fetchUserProfile() {
     })
     .then(data => {
       updateProfilePage(data);
-      fetchProfilePicture();
+      // fetchProfilePicture();
       loadMatchHistory(data);
     })
     .catch(error => {
@@ -163,6 +163,13 @@ function updateProfilePage(userData) {
     updateElementandFormat(elementId, userData[formatElementMap[elementId]]);
   });
   document.getElementById('twoFactorAuth').textContent = userData.twofa_enabled ? 'Enabled' : 'Disabled';
+
+  const profilePicture = document.getElementById('profilePicture');
+  if (userData.profile_picture) {
+    profilePicture.src = `data:image/jpeg;base64,${userData.profile_picture_base64}`;
+  } else {
+    profilePicture.src = `url('../assets/profile_pictures/default.png')`;
+  };
   const tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'));
   const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
     return new bootstrap.Tooltip(tooltipTriggerEl);
@@ -188,8 +195,8 @@ function fetchProfilePicture() {
       if (data.error) {
         throw new Error('No image URL provided in the response.');
       } else {
-        const image = document.createElement('img');
-        image.src = `data:image/jpeg;base64,${data.profile_picture_base64}`;
+        // const image = document.createElement('img');
+        // image.src = `data:image/jpeg;base64,${data.profile_picture_base64}`;
         const profilePicture = document.getElementById('profilePicture');
         profilePicture.src = `data:image/jpeg;base64,${data.profile_picture_base64}`;
       }

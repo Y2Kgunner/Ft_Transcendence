@@ -71,9 +71,15 @@ body {
 }
 
 #forgotPasswordLink {
-  color: #007bff;
+  color: #166c82;
   cursor: pointer;
 }
+
+#forgotPasswordLink:hover {
+  color: #20a2c3;
+  cursor: pointer;
+}
+
 #forgotPasswordLink:hover {
   text-decoration: underline;
 }
