@@ -1,5 +1,6 @@
 import { setupAuthPage, logoutUser, isAuthenticated } from './auth.js';
-import { fetchUserProfile, setupAnonymizeButton, setupDeleteProfileButton, setupCloseButton, setUpVerifyDeleteOtpButton, setupUploadProfilePictureButton , setupFriends,setupEdit} from './profile.js';
+// import { fetchUserProfile, setupAnonymizeButton, setupDeleteProfileButton, setupCloseButton, setUpVerifyDeleteOtpButton, setupUploadProfilePictureButton , setupFriends,setupEdit} from './profile.js';
+import { setUpProfile } from './profile.js';
 import { setupTournamentPage , gameInProgressTour} from './tournament.js';
 import { setupGamePage , gameInProgress } from './game.js';
 import { init3PlyrPong , gameInProgress3 } from './pong3.js';
@@ -126,20 +127,11 @@ const routes = {
 };
 
 async function setupProfilePage() {
-    const authStatus = await isAuthenticated();
-    if (authStatus) {
-        fetchUserProfile();
-        setupAnonymizeButton();
-        setupDeleteProfileButton();
-        setupCloseButton();
-        setUpVerifyDeleteOtpButton();
-        setupUploadProfilePictureButton();
-        setupEdit();
-        setupFriends();
-    } else {
-        //console.log('User is not authenticated, redirecting to login');
-        appRouter.navigate('/login', { replace: true });
-    }
+  const authStatus = await isAuthenticated();
+  if (authStatus)
+    setUpProfile();
+  else
+    appRouter.navigate('/login', { replace: true });
 }
 
 async function setupPasswordResetPage() {

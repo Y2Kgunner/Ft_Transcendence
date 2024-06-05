@@ -468,7 +468,7 @@ function setupGamePage() {
   form.addEventListener('keyup', function (event) {
     if (event.key === 'Enter') {
       event.preventDefault();
-      checkInput();
+      // checkInput();
       startGameBtn.click();
     }
   });

@@ -6,3 +6,9 @@ src/frontend/testD
 src/frontend/pages/newHome.html
 src/frontend/pages/oldPrf.htmlga
 tmpTest/
+
+src/frontend/js/old-profile.js
+src/frontend/js/old-router.js
+src/frontend/js/tmProfile.js
+
+src/frontend/assets/images/default-profile-picture.png

@@ -16,7 +16,9 @@
 <body style="background-color: black;">
   <section>
     <div class="container-fluid d-flex flex-column justify-content-center align-items-center">
-      <div class="row section mainSection">
+      <div id="editProfileAlert" data-bs-theme="dark" style="width: auto; position: absolute; bottom: 5%;">
+      </div>
+      <div class="row section mainSection rounded">
         <div class="d-flex justify-content-end pt-3">
           <svg id="editBtn" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
             class="bi bi-pencil-square customEditIcon" viewBox="0 0 16 16">
@@ -28,17 +30,9 @@
         </div>
         <div class="col">
           <div class="row mb-2 d-flex justify-content-center rounded m-4 pb-4 profile">
-            <!-- <div class="col d-flex flex-column align-items-center">
-              <div class="profilePicHousing">
-                <img id="profilePicture" class="rounded-circle thmb img-fluid customWidth mb-4 profile-picture">
-                <h1 id="username">Loading...</h1>
-              </div>
-              <button id="uploadPicButton" class="btn btn-primary mt-3">Upload Profile Picture</button>
-              <input type="file" id="profilePictureInput" name="profile_picture" style="display:none;" />
-            </div> -->
             <div class="col d-flex flex-column align-items-center">
               <div class="profilePicHousing">
-                <img id="profilePicture" class="rounded-circle mb-4 profile-picture">
+                <img id="profilePicture" src="" class="rounded-circle mb-4 profile-picture">
                 <button id="uploadPicButton" class="btn editPFPButton mt-3 overlay">edit pfp</button>
               </div>
               <h1 id="username">Loading...</h1>
@@ -126,6 +120,7 @@
             </div>
           </form>
           <div id="invitationz" class="overflow-y-auto" style="display: none;">
+            <!-- <div id="NoInvitesMsg" class="bg-danger" style="display: none;"> -->
           </div>
         </div>
       </div>
@@ -177,7 +172,66 @@
       </div>
     </div>
   </div>
-  <div class="modal" id="editProfileModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+  <div class="modal" id="editProfileModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content custoModalProfilEdit">
+        <div class="modal-header">
+          <div data-bs-theme="dark" class="me-4">
+            <button id="closeEditProfileModal" type="button" class="btn-close" aria-label="Close"></button>
+          </div>
+          <h2 class="gradient-text" data-text="Edit Profile">Edit Profile</h2>
+        </div>
+        <div class="modal-body">
+          <form class="needs-validation" novalidate onsubmit="return false;">
+            <p class="gradientProfile h5 mt-1">First Name:</p>
+            <div class="input-group has-validation justify-content-center">
+              <input type="text" id="firstNameInput" class="form-control rounded" placeholder=" Enter Your First Name"
+                required>
+              <div class="invalid-feedback">Looks stinky! 🚽</div>
+              <div class="valid-feedback">Looks good! 🗿</div>
+            </div>
+            <p class="gradientProfile h5 mt-3">Last Name:</p>
+            <div class="input-group has-validation justify-content-center">
+              <input type="text" id="lastNameInput" class="form-control rounded" placeholder=" Enter Your Last Name"
+                required>
+              <div class="invalid-feedback">Looks stinky! 🚽</div>
+              <div class="valid-feedback">Looks good! 🗿</div>
+            </div>
+            <p class="gradientProfile h5 mt-3">Phone Number:</p>
+            <div class="input-group has-validation justify-content-center">
+              <input type="tel" id="phoneInput" class="form-control rounded" placeholder=" Enter Your Phone Number"
+                required>
+              <div class="invalid-feedback">Looks stinky! 🚽</div>
+              <div class="valid-feedback">Looks good! 🗿</div>
+            </div>
+            <p class="gradientProfile h5 mt-3">Address:</p>
+            <div class="input-group has-validation justify-content-center">
+              <input type="text" id="addressInput" class="form-control rounded" placeholder=" Enter Your Address 🌚"
+                required>
+              <div class="invalid-feedback">Looks stinky! 🚽</div>
+              <div class="valid-feedback">Looks good! 🗿</div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer justify-content-center">
+          <button type="button" class="btn btn-success custoModalbtn" id="saveChangesProfileBtn">save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+  <script type="module" src="../js/profile.js"></script>
+  <!-- <script type="module" src="../js/tmProfile.js"></script> -->
+</body>
+
+</html>
+
+
+
+<!-- <div class="modal" id="editProfileModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
     aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content custoModal">
@@ -201,15 +255,4 @@
         </div>
       </div>
     </div>
-  </div>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-    crossorigin="anonymous"></script>
-  <script>
-    var ppppM = new bootstrap.Modal(document.getElementById('editProfileModal'));
-    ppppM.show();
-  </script>
-  <!-- <script type="module" src="../js/profile.js"></script> -->
-</body>
-
-</html>
+  </div> -->

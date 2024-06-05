@@ -11,8 +11,14 @@ from django.views.decorators.http import require_http_methods
 from user_auth.forms import ProfilePictureForm
 from django.contrib.auth.decorators import login_required
 
-logger = logging.getLogger(__name__)
+# addition by aikram
+from django.http import HttpResponse, JsonResponse
+from base64 import b64encode
+import os
+from django.core.files.storage import default_storage
+# # # # #
 
+logger = logging.getLogger(__name__)
 
 class UserProfileView(View):
 
@@ -22,7 +28,7 @@ class UserProfileView(View):
 
     def get(self, request, *args, **kwargs):
         # print("Type of request.user:", type(request.user)) 
-        # print("Is authenticated:", request.user.is_authenticated)  
+        # print("Is authenticated:", request.user.is_authen`ticated)  
         if not request.user.is_authenticated:
             return JsonResponse({'error': 'User is not authenticated'}, status=401)
         user = request.user  
@@ -112,16 +118,64 @@ def delete_profile_picture(request):
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 
+
+# addition by aikram
+def image_to_base64(image_path):
+    with default_storage.open(image_path, 'rb') as f:
+        image_data = f.read()
+    return b64encode(image_data).decode('utf-8')
+
 @require_http_methods(["GET"])
 def get_profile_picture(request):
     user = request.user
     if not user.profile_picture:
         return JsonResponse({'error': 'No profile picture set.', 'profile_picture_url': None}, status=200)
 
-    if not user.profile_picture.storage.exists(user.profile_picture.name):
+    image_path = user.profile_picture.name
+    if not default_storage.exists(image_path):
         default_picture_url = request.build_absolute_uri('/media/default-profile-picture.jpg')
         return JsonResponse({'error': 'Profile picture not found.', 'profile_picture_url': default_picture_url}, status=302)
 
-    picture_url = request.build_absolute_uri(user.profile_picture.url)
-    print("Profile picture URL:", picture_url)
-    return JsonResponse({'profile_picture_url': picture_url}, status=200)
+    image_base64 = image_to_base64(image_path)
+    return JsonResponse({'profile_picture_base64': image_base64}, status=200)
+# # # # # # # #
+
+
+
+# @require_http_methods(["GET"])
+# def get_profile_picture(request):
+#     user = request.user
+#     if not user.profile_picture:
+#         return JsonResponse({'error': 'No profile picture set.', 'profile_picture_url': None}, status=200)
+
+#     if not user.profile_picture.storage.exists(user.profile_picture.name):
+#         default_picture_url = request.build_absolute_uri('/media/default-profile-picture.jpg')
+#         return JsonResponse({'error': 'Profile picture not found.', 'profile_picture_url': default_picture_url}, status=302)
+
+#     picture_url = request.build_absolute_uri(user.profile_picture.url)
+#     print("Profile picture URL:", picture_url)
+#     return JsonResponse({'profile_picture_url': picture_url}, status=200)
+
+        # lmao failed attempt in getting 42's pfp 😭
+        # if user.profile_picture:
+        #     image_path = user.profile_picture.name
+        #     image_base64 = image_to_base64(image_path)
+        #     profile_picture = image_base64
+        # else:
+        #     profile_picture = ''
+
+        # user_data = {
+        #     'id': user.id,
+        #     'username': user.username,
+        #     'first_name': user.first_name,
+        #     'last_name': user.last_name,
+        #     'phone': user.phone_number, 
+        #     'email': user.email,
+        #     'address': user.address,
+        #     'profile_picture': profile_picture,
+        #     'join_date': user.created_at,
+        #     'last_activitiy': user.updated_at,
+        #     'twofa_enabled': user.twofa_enabled,
+        #     'GDPR_agreement': user.GDPR_agreement,
+        # }
+        # return JsonResponse(user_data)

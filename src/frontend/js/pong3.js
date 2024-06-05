@@ -461,4 +461,4 @@ function closeModal() {
   modalInstance.hide();
 }
 
-export { init3PlyrPong , gameInProgress3};
+export { init3PlyrPong , gameInProgress3, isPrintableASCII };

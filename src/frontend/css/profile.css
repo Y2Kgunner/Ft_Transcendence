@@ -54,8 +54,10 @@ tbody tr:hover {
 }
 
 .profile-picture {
-  width: inherit;
-  height: inherit;
+  width: 18vmin;
+  height: 18vmin;
+  top: -1%;
+  left: -1%;
   position: absolute;
 }
 
@@ -82,6 +84,15 @@ tbody tr:hover {
   background-color: #1a1a1ad0;
   justify-content: center;
   transition: transform 0.3s ease-in-out;
+}
+
+.truncate {
+  display: inline-block;
+  max-width: 13vw;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: bottom;
 }
 
 .profilePicHousing:hover .overlay {
@@ -133,9 +144,35 @@ tbody tr:hover {
   --bs-modal-footer-border-color: #114e0e;
 }
 
+.custoModalProfilEdit {
+  color: #c6c6c6;
+  background-color: #1a1a1a;
+  border: #6a535c;
+  box-shadow: 0 0 15px 2px #586a53, 0 0 15px #282f26;
+  --bs-modal-header-border-color: #5a6a53de;
+  --bs-modal-footer-border-color: #5a6a53de;
+  /* z-index: 100; */
+}
+
+.gradientProfile {
+  color: #007a04;
+  text-shadow: .1vmin .1vmin .1vw #000000;
+}
+
+#firstNameInput, #lastNameInput, #phoneInput, #addressInput {
+  background: #1e2c1d;
+  border: none;
+  box-shadow: 0 0 .2vmin #586a53;
+  color: #7d6e10;
+}
+
+input[type="text"]::placeholder, input[type="tel"]::placeholder {
+  color: #504e45;
+}
+
 .gradient-text {
   /* background: linear-gradient(to right, #1e681a, #7d104e, #1e681a, #7d104e, #1e681a); */
-  background: linear-gradient(to right, #1e681a, #7d6e10, #1e681a, #7d6e10, #1e681a);
+  background: linear-gradient(to right, #1e681a, #7d6e10, #1e681a, #7d6e10, #1e681a, #7d6e10, #1e681a, #7d6e10, #1e681a);
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
@@ -143,50 +180,61 @@ tbody tr:hover {
   animation: gradient 1s ease infinite;
 }
 
+/* @keyframes gradient {
+  0% {
+    background-position: 100% 60%;
+  }
+  50% {
+    background-position: 0% 100%;
+  }
+  100% {
+    background-position: 120% 80%;
+  }
+} */
 
 @keyframes gradient {
   0% {
-    background-position: 0% 10%;
+    background-position: 100% 90%;
   }
 
   10% {
-    background-position: 20% 10%;
+    background-position: 90% 80%;
   }
 
   20% {
-    background-position: 30% 10%;
+    background-position: 80% 70%;
   }
 
   30% {
-    background-position: 30% 10%;
+    background-position: 70% 60%;
   }
 
   40% {
-    background-position: 40% 10%;
+    background-position: 60% 50%;
   }
 
   50% {
-    background-position: 50% 10%;
+    background-position: 50% 40%;
   }
 
   60% {
-    background-position: 60% 10%;
+    background-position: 40% 30%;
   }
 
   70% {
-    background-position: 70% 10%;
+    background-position: 30% 20%;
   }
 
   80% {
-    background-position: 80% 10%;
+    background-position: 20% 10%;
   }
 
   90% {
-    background-position: 90% 10%;
+    background-position: 10% 0%;
   }
 
   100% {
-    background-position: 100% 10%;
+    background-position: 0% 100%;
   }
 }
 
@@ -194,11 +242,11 @@ tbody tr:hover {
   --bs-btn-bg: #114e0e;
   --bs-btn-border-color: none;
   --bs-btn-color: #b9b9b9;
-  --bs-btn-hover-bg: #3f1927;
-  --bs-btn-hover-border-color: #3f1927;
+  --bs-btn-hover-bg: #564c07;
+  --bs-btn-hover-border-color: #564c07;
   --bs-btn-active-color: #c4c4c4;
-  --bs-btn-active-bg: #3f1927;
-  --bs-btn-active-border-color: #3f1927;
+  --bs-btn-active-bg: #564c07;
+  --bs-btn-active-border-color: #564c07;
   --bs-btn-hover-color: #c4c4c4;
 }
 
@@ -394,4 +442,11 @@ tbody tr:hover {
   width: 95%;
   height: 30%;
   background: #2c2c2c;
+}
+
+
+.alert-dark-success {
+  background-color: #1c1c1c; /* Dark background */
+  color: #28a745; /* Success green text */
+  border-color: #28a745; /* Success green border */
 }
