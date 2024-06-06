@@ -1,4 +1,4 @@
-all: build up make-and-apply-migrations bash
+all: build up make-and-apply-migrations bash create-users
 
 SRC_DIR=src
 
@@ -42,5 +42,9 @@ clean_db:
 
 bash:
 	bash dock.sh
+
+create-users:
+	cd $(SRC_DIR) && docker-compose exec backend /bin/bash -c "./create_user.sh"
+
 
 .PHONY: all build up down flush fclean clean re makemigrations migrate inspect clean_db make-migrations-apply makemigrations migrate make-and-apply-migrations

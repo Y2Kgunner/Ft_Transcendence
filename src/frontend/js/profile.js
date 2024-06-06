@@ -47,7 +47,7 @@ function fetchUserProfile() {
     })
     .then(data => {
       updateProfilePage(data);
-      // fetchProfilePicture();
+      fetchProfilePicture();
       loadMatchHistory(data);
     })
     .catch(error => {

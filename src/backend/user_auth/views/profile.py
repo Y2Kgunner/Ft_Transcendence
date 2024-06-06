@@ -11,11 +11,13 @@ from django.views.decorators.http import require_http_methods
 from user_auth.forms import ProfilePictureForm
 from django.contrib.auth.decorators import login_required
 
+
 # addition by aikram
 from django.http import HttpResponse, JsonResponse
 from base64 import b64encode
 import os
 from django.core.files.storage import default_storage
+import base64
 # # # # #
 
 logger = logging.getLogger(__name__)
@@ -44,7 +46,7 @@ class UserProfileView(View):
             'phone': user.phone_number, 
             'email': user.email,
             'address': user.address,
-            'profile_picture': user.profile_picture.url if user.profile_picture else '',
+            'profile_picture': user.profile_picture,
             'join_date': user.created_at,
             'last_activitiy': user.updated_at,
             'twofa_enabled': user.twofa_enabled,
@@ -82,30 +84,37 @@ class UserProfileView(View):
 
 
 def save_profile_picture(user, file):
-    form = ProfilePictureForm({'username': user.username}, {'profile_picture': file}, instance=user)
-    if form.is_valid():
-        user = form.save()
-        print("Saved profile picture for user:", user.username)
-        print("New profile picture path:", user.profile_picture.url)
-        return user
-    else:
-        raise ValueError(form.errors)
+    data = file.read()
+    base64_encoded = base64.b64encode(data).decode('utf-8')
+    user.profile_picture = base64_encoded
+    user.save()
+    print("Saved profile picture for user:", user.username)
+    return user
+
+
 
 @csrf_exempt
 def upload_profile_picture(request):
     if request.method == 'POST' and request.FILES.get('profile_picture'):
         try:
             user = request.user
-            old_pic = user.profile_picture.url if user.profile_picture else 'None'
-            user.profile_picture = request.FILES['profile_picture']
+            old_pic = user.profile_picture if user.profile_picture else 'None'
+            file = request.FILES['profile_picture']
+            data = file.read()
+            encoded_data = base64.b64encode(data).decode('utf-8')
+            user.profile_picture = encoded_data
             user.save()
-            new_pic = user.profile_picture.url
+            new_pic = user.profile_picture
             print(f"Profile picture changed from {old_pic} to {new_pic} for user: {user.username}")
-            return JsonResponse({'message': 'Profile picture updated successfully.', 'profile_picture_url': new_pic}, status=200)
+            return JsonResponse({
+                'message': 'Profile picture updated successfully.',
+                'profile_picture': new_pic
+            }, status=200)
         except Exception as e:
             print(f"Failed to update profile picture for user: {user.username}, error: {str(e)}")
             return JsonResponse({'error': str(e)}, status=500)
     return JsonResponse({'error': 'No file uploaded.'}, status=400)
+
 
 
 
@@ -125,19 +134,16 @@ def image_to_base64(image_path):
         image_data = f.read()
     return b64encode(image_data).decode('utf-8')
 
+
 @require_http_methods(["GET"])
 def get_profile_picture(request):
     user = request.user
     if not user.profile_picture:
-        return JsonResponse({'error': 'No profile picture set.', 'profile_picture_url': None}, status=200)
+        return JsonResponse({'error': 'No profile picture set.', 'profile_picture': None}, status=200)
 
-    image_path = user.profile_picture.name
-    if not default_storage.exists(image_path):
-        default_picture_url = request.build_absolute_uri('/media/default-profile-picture.jpg')
-        return JsonResponse({'error': 'Profile picture not found.', 'profile_picture_url': default_picture_url}, status=302)
+    # Return the base64 string directly
+    return JsonResponse({'profile_picture_base64': user.profile_picture}, status=200)
 
-    image_base64 = image_to_base64(image_path)
-    return JsonResponse({'profile_picture_base64': image_base64}, status=200)
 # # # # # # # #
 
 

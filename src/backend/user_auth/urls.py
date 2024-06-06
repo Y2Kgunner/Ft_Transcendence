@@ -36,5 +36,6 @@ urlpatterns = [
     path('accept_friend_request/<int:user_id>', accept_friend_request),
     path('reject_friend/<int:user_id>', reject_friend_request, name='reject_friend'),
     path('check_username/<str:username>', check_username, name='check_username'),
-    path('pending_frinship_requets', pending_frinship_requets, name='pending_frinship_requets')
+    path('pending_frinship_requets', pending_frinship_requets, name='pending_frinship_requets'),
+    path('get_users_number', get_users_number, name='get_users_number'),
     ]

@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 import jwt
+from user_auth.models import WebUser
 from django.conf import settings
 import logging
 from user_auth.jwt_utils import JWTHandler
@@ -43,3 +44,10 @@ def check_auth_status(request):
         return JsonResponse({'authenticated': True, 'username': user.username})
     else:
         return JsonResponse({'authenticated': False, 'error': 'User not found'})
+
+
+@require_http_methods(["GET"])
+@csrf_exempt
+def get_users_number(request):
+    users = WebUser.objects.all()
+    return(JsonResponse({'users_number': len(users)}) )

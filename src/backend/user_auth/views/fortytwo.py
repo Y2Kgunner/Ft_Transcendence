@@ -15,6 +15,10 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 import requests
 from django.views.decorators.http import require_GET
+from django.core.files.storage import default_storage
+import base64
+from base64 import b64encode
+
 
 def fortytwo(request):
     """
@@ -22,6 +26,16 @@ def fortytwo(request):
     """
     oauth_url = f'https://api.intra.42.fr/oauth/authorize?client_id={settings.CLIENT_ID_42}&redirect_uri={settings.CALLBACK_URL_42}&response_type=code'
     return redirect(oauth_url)
+
+
+def image_to_base64(image_url):
+    try:
+        response = requests.get(image_url)
+        response.raise_for_status()  
+        return b64encode(response.content).decode('utf-8')
+    except requests.RequestException as e:
+        print(f"Failed to fetch or convert image: {str(e)}")
+        return None 
 
 
 
@@ -53,20 +67,15 @@ def oauth_callback(request):
         user_info = user_info_response.json()     
         image_versions = user_info.get('image', {}).get('versions', {})
         small_image_url = image_versions.get('small', 'default-profile-picture-url.jpg')
-        print("********************************************************")
-        # print("User Info:", user_info)
-        print("Profile Picture URL:", small_image_url)
-        
         UserModel = get_user_model()
         user, created = UserModel.objects.get_or_create(username=user_info['login'], defaults={
             'email': user_info['email'],
             'first_name': user_info['first_name'],
             'last_name': user_info['last_name'],
             'twofa_enabled': False,
-            'profile_picture': small_image_url,
+            'profile_picture': image_to_base64(small_image_url),
             'is_staff': True
         })
-        
         if created:
             user.set_unusable_password()
             user.save()
