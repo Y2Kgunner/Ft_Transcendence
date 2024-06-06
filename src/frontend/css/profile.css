@@ -450,3 +450,10 @@ input[type="text"]::placeholder, input[type="tel"]::placeholder {
   color: #28a745; /* Success green text */
   border-color: #28a745; /* Success green border */
 }
+
+.alert-anonymize {
+  --bs-alert-color: #5f8100;
+  --bs-alert-bg: #263400;
+  --bs-alert-border-color: #5e7913;
+  --bs-alert-link-color: #5f8100;
+}

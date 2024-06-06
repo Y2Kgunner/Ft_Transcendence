@@ -118,8 +118,47 @@ async function checkProfileInput() {
 //   `;
 //   alertContainer.appendChild(alertDiv);
 // }
+
+// function displayBootstrapAlert(id, message, type) {
+//   const alertContainer = document.getElementById(id);
+//   const alertDiv = document.createElement('div');
+//   alertDiv.className = `alert alert-success alert-${type} alert-dismissible fade show`;
+//   alertDiv.role = 'alert';
+//   alertDiv.innerHTML = `
+//     ${message}
+//     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+//   `;
+//   alertContainer.appendChild(alertDiv);
+
+//   setTimeout(() => {
+//     alertDiv.classList.remove('show');
+//     alertDiv.classList.add('hide');
+//     setTimeout(() => {
+//       alertContainer.removeChild(alertDiv);
+//     }, 300);
+//   }, 3000);
+// }
+
+
+let alertCount = 0;
+let alerts = [];
+
+function limitAlerts(alertContainer) {
+  if (alertCount >= 3) {
+    const oldestAlert = alerts.shift();
+    oldestAlert.classList.remove('show');
+    oldestAlert.classList.add('hide');
+    setTimeout(() => {
+      alertContainer.removeChild(oldestAlert);
+      alertCount--;
+    }, 300);
+  }
+}
+
 function displayBootstrapAlert(id, message, type) {
-  const alertContainer = document.getElementById(id);
+  let alertContainer = document.getElementById(id); // assume this is the container for alerts
+  limitAlerts(alertContainer);
+
   const alertDiv = document.createElement('div');
   alertDiv.className = `alert alert-success alert-${type} alert-dismissible fade show`;
   alertDiv.role = 'alert';
@@ -128,21 +167,26 @@ function displayBootstrapAlert(id, message, type) {
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
   `;
   alertContainer.appendChild(alertDiv);
+  alerts.push(alertDiv);
+  alertCount++;
 
-  // Remove the alert after 3 seconds
   setTimeout(() => {
     alertDiv.classList.remove('show');
     alertDiv.classList.add('hide');
     setTimeout(() => {
       alertContainer.removeChild(alertDiv);
-    }, 300); // wait for the animation to finish
-  }, 3000); // wait 3 seconds
+      alertCount--;
+      const index = alerts.indexOf(alertDiv);
+      if (index !== -1) {
+        alerts.splice(index, 1);
+      }
+    }, 300);
+  }, 3000);
 }
-
 
 function clearErrorMessage(invalidFeedback, inputField) {
   invalidFeedback.textContent = "Looks stinky! 🚽";
   inputField.classList.remove("is-invalid");
 }
 
-export { checkProfileInput };
+export { checkProfileInput, displayBootstrapAlert };

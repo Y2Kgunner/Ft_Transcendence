@@ -1,4 +1,4 @@
-import { checkProfileInput } from './inputValidation.js';
+import { checkProfileInput, displayBootstrapAlert } from './inputValidation.js';
 
 var editModal;
 var deleteModal;
@@ -317,8 +317,8 @@ function anonymizeUser() {
       return response.json();
     })
     .then(data => {
-      //console.log('anonymization response:', data);
-      alert('Your data has been anonymized.');
+      // alert('Your data has been anonymized.');
+      displayBootstrapAlert('editProfileAlert', 'Your data has been anonymized 🙀', 'anonymize');
       fetchAndUpdateProfile();
     })
     .catch(error => {
@@ -399,10 +399,12 @@ async function addUser(userId) {
   })
   if (!response.ok) {
     if (response.status == 400)
-      alert("cannot add yourself as friend");
+      displayBootstrapAlert('editProfileAlert', 'cannot add yourself as a friend 😹', 'warning');
+      // alert("cannot add yourself as friend");
     return null;
   }
-  alert("request has been sent to user! ")
+  displayBootstrapAlert('editProfileAlert', 'request has been sent to user! 😸', 'success');
+  // alert("request has been sent to user! ")
   const data = await response.json();
   return data;
 }
@@ -433,7 +435,8 @@ async function rejectRequest(userId) {
   if (!response.ok) {
     return null;
   }
-  alert("freind request rejected")
+  // alert("freind request rejected")
+  displayBootstrapAlert('editProfileAlert', 'freind request rejected 🙀', 'info');
   const data = await response.json();
   return data;
 }
@@ -449,7 +452,8 @@ async function acceptRequest(userId) {
   if (!response.ok) {
     return null;
   }
-  alert("freind request accepted")
+  displayBootstrapAlert('editProfileAlert', 'freind request accepted 😽', 'primary');
+  // alert("freind request accepted")
   const data = await response.json();
   return data;
 }
@@ -477,7 +481,8 @@ async function addFriend() {
   console.log(username);
   const friendData = await checkUsername(username);
   if (friendData == null)
-    alert(" friend not found!");
+    displayBootstrapAlert('editProfileAlert', 'friend not found! 😿', 'warning');
+    // alert(" friend not found!");
   else {
     console.log(friendData);
     userInfo = friendData.user_info;
@@ -557,9 +562,10 @@ async function setupFriends() {
       }
     });
   });
-  addFriendBtn.addEventListener('click', async function () {
-    await addFriend();
-  });
+  eventManager.addListener(addFriendBtn, "click", addFriend);
+  // addFriendBtn.addEventListener('click', async function () {
+  //   await addFriend();
+  // });
 }
 
 async function getFriendslist() {

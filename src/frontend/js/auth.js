@@ -1,5 +1,6 @@
 import { navigateBasedOnAuth , updateMainContentVisibility} from './init.js';
 import { appRouter } from './router.js';
+import { displayBootstrapAlert } from './inputValidation.js'
 
 async function isAuthenticated() {
     try {
@@ -54,7 +55,9 @@ async function login(event) {
         }
     } catch (error) {
         console.error('Login failed:', error);
-        alert(error.message || 'Login failed');
+        // alert(error.message || 'Login failed');
+        displayBootstrapAlert('loginAlert', error.message || 'Login failed', 'danger');
+
     }
 }
 
@@ -126,7 +129,9 @@ async function register(event) {
     } else {
         const error = await response.json();
         console.error('Registration failed:', error);
-        alert(error.error || 'Registration failed');
+        // alert(error.error || 'Registration failed');
+        displayBootstrapAlert('registerAlert', error.error || 'Registration failed', 'danger');
+
     }
 }
 
@@ -276,7 +281,8 @@ function forgetPassword() {
     event.preventDefault();
     const username = document.getElementById('LoginUserName').value;
     if (!username) {
-        alert('Please enter your username to reset your password.');
+        displayBootstrapAlert('loginAlert', 'Please enter your username to reset your password.', 'danger');
+        // alert('Please enter your username to reset your password.');
         return;
     }
 
