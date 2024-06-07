@@ -144,20 +144,27 @@ let alertCount = 0;
 let alerts = [];
 
 function limitAlerts(alertContainer) {
-  if (alertCount >= 3) {
-    const oldestAlert = alerts.shift();
-    oldestAlert.classList.remove('show');
-    oldestAlert.classList.add('hide');
-    setTimeout(() => {
-      alertContainer.removeChild(oldestAlert);
-      alertCount--;
-    }, 300);
+  if (alertCount >= 1) {
+    // const oldestAlert = alerts.shift();
+    // if (!oldestAlert)
+    //   return ;
+    // oldestAlert.classList.remove('show');
+    // oldestAlert.classList.add('hide');
+    // setTimeout(() => {
+    //   alertContainer.removeChild(oldestAlert);
+    //   // if (oldestAlert.parentNode === alertContainer)
+    //     alertContainer.removeChild(alertDiv);
+    //   alertCount--;
+    // }, 300);
+    return true;
   }
+  return false;
 }
 
 function displayBootstrapAlert(id, message, type) {
   let alertContainer = document.getElementById(id); // assume this is the container for alerts
-  limitAlerts(alertContainer);
+  if (limitAlerts(alertContainer))
+    return ;
 
   const alertDiv = document.createElement('div');
   alertDiv.className = `alert alert-success alert-${type} alert-dismissible fade show`;
@@ -174,7 +181,8 @@ function displayBootstrapAlert(id, message, type) {
     alertDiv.classList.remove('show');
     alertDiv.classList.add('hide');
     setTimeout(() => {
-      alertContainer.removeChild(alertDiv);
+      // if (alertDiv.parentNode === alertContainer)
+        alertContainer.removeChild(alertDiv);
       alertCount--;
       const index = alerts.indexOf(alertDiv);
       if (index !== -1) {
