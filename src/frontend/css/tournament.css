@@ -2,6 +2,9 @@
   font-family: 'PixelatedFont';
   src: url('../assets/Pixelated/pix/pix.ttf') format('truetype');
 }
+#winnerColour {
+  color: red;
+}
 
 body {
   font-family: 'PixelatedFont', sans-serif;

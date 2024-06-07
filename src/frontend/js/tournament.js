@@ -12,6 +12,7 @@ let pauseModalVisible = false;
 let gameOver = false;
 let winner;
 let winnerMsg;
+let win;
 let participants;
 let creator;
 let matchDetail;
@@ -434,7 +435,18 @@ function showRoundPreview(round, match, roundMsg = "") {
     }
     else {
       let pl2 = participants.find(element => Object.values(element).includes(matchDetail[j].participant_two_id));
-      matchMsg = pl1.username + " vs " + pl2.username;
+      if (win)
+      {
+        console.log("winner!")
+        if (win.username == pl1.username)
+          matchMsg = pl1.username + " vs " + '<span id="winnerColour">' + pl2.username + "</span>";
+        else if ( win.username == pl2.username )
+          matchMsg = '<span id="winnerColour">' + pl1.username  + "</span>" + " vs " + pl2.username;
+
+      }
+      else 
+        matchMsg = pl1.username + " vs " + pl2.username;
+      console.log(" match msg " + matchMsg)
     }
     console.log("match:" + match + " j:" + j);
     if (matchDetail[j].is_bye && match == j) {
@@ -455,7 +467,7 @@ function showRoundPreview(round, match, roundMsg = "") {
 
 }
 async function startGameLoop() {
-  var p1, p2, win, remaining = 0, match_id, totalRounds, is_bye = false, matchesInRound;
+  var p1, p2, remaining = 0, match_id, totalRounds, is_bye = false, matchesInRound;
   startModal.hide();
   if (participants.length > 4) {
     totalRounds = 3;
