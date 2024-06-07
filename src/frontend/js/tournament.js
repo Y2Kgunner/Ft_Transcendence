@@ -1,5 +1,8 @@
 import { appRouter } from './router.js';
 import { getCookie } from './profile.js';
+import { fetchUserProfile } from './game.js';
+import { createTournament, startTournament, getTournamentDetails, getFirstRound, getSecondRound, updateMatchResult, getNextMatch } from './tournamentApi.js';
+
 
 
 const matchPoint = 1;
@@ -36,7 +39,7 @@ let player2Alias = "";
 let initialPaddlePos;
 let tournamentName = "";
 let matchNumber;
-let p1,p2;
+let p1, p2;
 let paddle1;
 let paddle2;
 let ball;
@@ -68,9 +71,9 @@ export function endGameSession() {
 }
 function handleBeforeUnload(event) {
   if (gameInProgressTour) {
-      const message = "You have an ongoing game. Are you sure you want to leave and lose your progress?";
-      event.returnValue = message; 
-      return message;
+    const message = "You have an ongoing game. Are you sure you want to leave and lose your progress?";
+    event.returnValue = message;
+    return message;
   }
 }
 
@@ -134,7 +137,7 @@ function setupTournamentPage() {
 function generateParticipantFields(num) {
   const form = document.getElementById('participantDetailsFormInner');
   form.innerHTML = '';
-  fetchUserProfile().then(username => {
+  fetchUserProfile().then(data => {
     const formGroupUser = document.createElement('div');
     formGroupUser.classList.add('form-group');
 
@@ -145,7 +148,7 @@ function generateParticipantFields(num) {
     const inputUser = document.createElement('input');
     inputUser.type = 'text';
     inputUser.classList.add('form-control');
-    inputUser.value = username;
+    inputUser.value = data.username;
     inputUser.readOnly = true;
     formGroupUser.appendChild(inputUser);
 
@@ -392,156 +395,6 @@ function continueGame() {
 }
 
 
-
-function fetchUserProfile() {
-  return fetch('https://127.0.0.1:443/api/profile', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + getCookie('jwt')
-    }
-  })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
-    .then(data => {
-      return data.username;
-    })
-    .catch(error => {
-      console.error('Failed to fetch user profile:', error);
-      return 'Unknown';
-    });
-}
-
-async function createTournament() {
-  const tournamentName = document.getElementById('tournamentName').value;
-  const participantInputs = document.querySelectorAll('#participantDetailsFormInner .form-control:not([readonly])');
-  const participants = Array.from(participantInputs).map(input => ({ temp_username: input.value }));
-  const loggedInUser = document.querySelector('#participantDetailsFormInner .form-control[readonly]').value;
-  participants.unshift({ username: loggedInUser });
-
-  const tournamentData = {
-    name: tournamentName,
-    participants: participants
-  };
-
-  try {
-  const response = await fetch(`https://127.0.0.1:443/tournament_api/create`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + getCookie('jwt')
-    },
-    body: JSON.stringify(tournamentData)
-  })
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  const data = await response.json();
-}
-catch(error)
-{
-  console.error("Fetch error:",error);
-}
-}
-
-async function startTournament() {
-  try {
-  const response = await fetch(`https://127.0.0.1:443/tournament_api/start`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + getCookie('jwt')
-    }
-  })
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  const data = await response.json();
-}
-catch(error)
-{
-  console.error("Fetch error:",error);
-}
-}
-
-function completeTournament() {
-  fetch(`https://127.0.0.1:443/tournament_api/complete/${getTournamentId()}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + getCookie('jwt')
-    }
-  })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
-    .then(data => {
-      // startGameLoop();
-    })
-    .catch(error => {
-      console.error('Failed to start tournanment:', error);
-      alert('failed to start Tournament!');
-    });
-}
-
-async function getTournamentDetails() {
-  try {
-  const response = await fetch(`https://127.0.0.1:443/tournament_api/detail`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + getCookie('jwt')
-    }
-  })
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  const data = await response.json();
-  participants = data.participants;
-  creator = data.creator;
-  participants[0].username = creator.username;
-  setTournamentId(data);
-}
-catch(error)
-{
-  console.error("Fetch error:",error);
-}
-}
-
-// function getTournamentDetails() {
-//   fetch(`https://127.0.0.1:443/tournament_api/detail`, {
-//     method: 'GET',
-//     headers: {
-//       'Content-Type': 'application/json',
-//       'Authorization': 'Bearer ' + getCookie('jwt')
-//     }
-//   })
-//     .then(response => {
-//       if (!response.ok) {
-//         throw new Error('Network response was not ok');
-//       }
-//       return response.json();
-//     })
-//     .then(data => {
-//       participants = data.participants;
-//       creator = data.creator;
-//       participants[0].username = creator.username;
-//       setTournamentId(data);
-      
-//       startTournament(data.id);
-//     })
-//     .catch(error => {
-//       console.error('Failed to find tournament:', error);
-//     });
-// }
-
 function waitGameFinish(interval = 100) {
   return new Promise(resolve => {
     const check = () => {
@@ -556,42 +409,7 @@ function waitGameFinish(interval = 100) {
   })
 }
 
-async function getFirstRound() {
-  const tournamentData = {
-    tournament_id: getTournamentId()
-  };
-  const response = await fetch(`https://127.0.0.1:443/tournament_api/arrange-matches/${getTournamentId()}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + getCookie('jwt')
-    },
-    body: JSON.stringify(tournamentData)
-  })
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  const data = await response.json();
-  return data;
-}
-
-async function getSecondRound() {
-  const response = await fetch(`https://127.0.0.1:443/tournament_api/get_second_round_matches/${getTournamentId()}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + getCookie('jwt')
-    }
-  })
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  const data = await response.json();
-  return data;
-}
-
-async function getRoundDetails(round)
-{
+async function getRoundDetails(round) {
   if (round == 1) {
     roundDetails = await getFirstRound();
     matchDetail = roundDetails.match_details;
@@ -605,96 +423,91 @@ async function getRoundDetails(round)
   console.log(roundDetails);
 }
 
-function showRoundPreview(round,match, roundMsg="")
-{
-  if (roundMsg=="")
-     roundMsg = "Round : " + round + "\n";
+function showRoundPreview(round, match, roundMsg = "") {
+  if (roundMsg == "")
+    roundMsg = "Round : " + round + "\n";
   for (let j = 0; j < matchDetail.length; j++) {
     let pl1 = participants.find(element => Object.values(element).includes(matchDetail[j].participant_one_id));
 
-    if (matchDetail[j].is_bye ) {
-      matchMsg =  pl1.username + " ADVANCES";
+    if (matchDetail[j].is_bye) {
+      matchMsg = pl1.username + " ADVANCES";
     }
     else {
       let pl2 = participants.find(element => Object.values(element).includes(matchDetail[j].participant_two_id));
-      matchMsg =  pl1.username + " vs " + pl2.username ;
+      matchMsg = pl1.username + " vs " + pl2.username;
     }
-    console.log("match:" + match + " j:" +j);
-    if(matchDetail[j].is_bye && match == j)
-    {
-      matchMsg= matchMsg + "\n";
+    console.log("match:" + match + " j:" + j);
+    if (matchDetail[j].is_bye && match == j) {
+      matchMsg = matchMsg + "\n";
       roundMsg += matchMsg;
       match++;
       continue;
     }
-    if(match == j && !matchDetail[j].is_bye)
+    if (match == j && !matchDetail[j].is_bye)
       matchMsg = `>> ${matchMsg} << \n`;
-    else
-    {
-      matchMsg= matchMsg + "\n";
+    else {
+      matchMsg = matchMsg + "\n";
     }
     roundMsg += matchMsg;
-    
+
   }
   document.getElementById("gameDetail").innerHTML = roundMsg.replace(/\n/g, "<br>");
 
 }
 async function startGameLoop() {
-  var p1, p2, win, remaining = 0, match_id, totalRounds, is_bye = false,matchesInRound;
+  var p1, p2, win, remaining = 0, match_id, totalRounds, is_bye = false, matchesInRound;
   startModal.hide();
   if (participants.length > 4) {
     totalRounds = 3;
   }
   else
     totalRounds = 2;
-  for (let i = 1; i <=totalRounds; i++) {
+  for (let i = 1; i <= totalRounds; i++) {
     try {
       await getRoundDetails(i);
       console.log("currentround:" + i + " totalrounds:" + totalRounds);
 
       matchesInRound = matchDetail.filter(match => match.is_bye == false).length;
-      for(let j = 0; j < matchesInRound; j++)
-      {
-      const data = await getNextMatch();
-      p1 = participants.find(element => Object.values(element).includes(data.next_match.participant_one));
-      p2 = participants.find(element => Object.values(element).includes(data.next_match.participant_two));
-      if (i!= totalRounds)
-      {
-      showRoundPreview(i,j);
-      matchModal.show();
-      await waitSubmission(startNextGameBtn);
+      for (let j = 0; j < matchesInRound; j++) {
+        const data = await getNextMatch();
+        p1 = participants.find(element => Object.values(element).includes(data.next_match.participant_one));
+        p2 = participants.find(element => Object.values(element).includes(data.next_match.participant_two));
+        if (i != totalRounds) {
+          showRoundPreview(i, j);
+          matchModal.show();
+          await waitSubmission(startNextGameBtn);
+        }
+        else if (i == totalRounds) {
+          roundMsg = "Round : " + i + "\n";
+          matchMsg = ">> " + p1.username + " vs " + p2.username + " <<\n";
+          roundMsg += matchMsg;
+          document.getElementById("gameDetail").innerHTML = roundMsg.replace(/\n/g, "<br>");
+          j = matchesInRound;
+          matchModal.show();
+          await waitSubmission(startNextGameBtn);
+        }
+        console.log("currentmatch:" + j + " totalmatches:" + matchesInRound);
+        player1Alias = p1.username;
+        player2Alias = p2.username;
+        remaining = data.next_match.remaining_matches;
+        match_id = data.next_match.match_id;
+
+        startGame();
+
+        await waitGameFinish();
+        win = participants.find(element => Object.values(element).includes(winner));
+        await updateMatchResult(match_id, win.id);
+        restartGameButton = document.getElementById("restartGameBtn");
+        await waitSubmission(restartGameButton);
+
       }
-      else if (i == totalRounds) {
-        roundMsg = "Round : " + i + "\n";
-        matchMsg = ">> " + p1.username + " vs " + p2.username + " <<\n";
-        roundMsg += matchMsg;
-        document.getElementById("gameDetail").innerHTML = roundMsg.replace(/\n/g, "<br>");
-        j = matchesInRound;
-        matchModal.show();
-        await waitSubmission(startNextGameBtn);
-      }
-      console.log("currentmatch:" + j + " totalmatches:" + matchesInRound);
-      player1Alias = p1.username;
-      player2Alias = p2.username;
-      remaining = data.next_match.remaining_matches;
-      match_id = data.next_match.match_id;
-
-      startGame();
-
-      await waitGameFinish();
-      win = participants.find(element => Object.values(element).includes(winner));
-      await updateMatchResult(match_id, win.id);
-      restartGameButton = document.getElementById("restartGameBtn");
-      await waitSubmission(restartGameButton);
-
-    }
     } catch (error) {
       console.error('Failed to get next match:', error);
     }
     if (i != totalRounds) {
       console.log("rooound end modal")
       matchModal.show();
-      showRoundPreview(i, matchDetail.length , "Round " + i + " Finished!\n\n");
+      showRoundPreview(i, matchDetail.length, "Round " + i + " Finished!\n\n");
       await waitSubmission(startNextGameBtn);
     }
   }
@@ -719,46 +532,16 @@ function waitSubmission(element) {
     });
   });
 }
-async function updateMatchResult(match_id, winner) {
-  const matchData = {
-    winner_id: winner
-  };
-  const response = await fetch(`https://127.0.0.1:443/tournament_api/update-match-result/${match_id}/`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + getCookie('jwt')
-    },
-    body: JSON.stringify(matchData)
-  })
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  const data = await response.json();
-  return data;
-}
-
-async function getNextMatch() {
-  const response = await fetch(`https://127.0.0.1:443/tournament_api/get-next-match/${getTournamentId()}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + getCookie('jwt')
-    }
-  })
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  const data = await response.json();
-  return data;
-}
 
 function setupcreateTournamentForm() {
   const form = document.getElementById('participantDetailsFormInner');
   form.addEventListener('submit', async function (event) {
     event.preventDefault();
     await createTournament();
-    await getTournamentDetails();
+    const details = await getTournamentDetails();
+    participants = details.participants;
+    creator = details.creator;
+    participants[0].username = creator.username;
     await startTournament();
     startGameLoop();
   });
@@ -772,4 +555,4 @@ function getTournamentId() {
   return localStorage.getItem('currentTournamentId');
 }
 
-export { setupTournamentPage, gameInProgressTour };
+export { setupTournamentPage, gameInProgressTour, setTournamentId, getTournamentId };
