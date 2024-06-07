@@ -416,8 +416,7 @@ function fetchUserProfile() {
     });
 }
 
-
-function createTournament() {
+async function createTournament() {
   const tournamentName = document.getElementById('tournamentName').value;
   const participantInputs = document.querySelectorAll('#participantDetailsFormInner .form-control:not([readonly])');
   const participants = Array.from(participantInputs).map(input => ({ temp_username: input.value }));
@@ -429,7 +428,8 @@ function createTournament() {
     participants: participants
   };
 
-  fetch('https://127.0.0.1:443/tournament_api/create', {
+  try {
+  const response = await fetch(`https://127.0.0.1:443/tournament_api/create`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -437,43 +437,37 @@ function createTournament() {
     },
     body: JSON.stringify(tournamentData)
   })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
-    .then(data => {
-      getMatchData();
-    })
-    .catch(error => {
-      console.error('Failed to create tournament:', error);
-      alert('Failed to create tournament. Please try again.');
-    });
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  const data = await response.json();
+}
+catch(error)
+{
+  console.error("Fetch error:",error);
+}
 }
 
-function startTournament(id) {
-  fetch(`https://127.0.0.1:443/tournament_api/start`, {
+async function startTournament() {
+  try {
+  const response = await fetch(`https://127.0.0.1:443/tournament_api/start`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + getCookie('jwt')
     }
   })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
-    .then(data => {
-      startGameLoop();
-    })
-    .catch(error => {
-      console.error('Failed to start tournanment:', error);
-      alert('failed to start Tournament!');
-    });
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  const data = await response.json();
 }
+catch(error)
+{
+  console.error("Fetch error:",error);
+}
+}
+
 function completeTournament() {
   fetch(`https://127.0.0.1:443/tournament_api/complete/${getTournamentId()}`, {
     method: 'POST',
@@ -489,39 +483,64 @@ function completeTournament() {
       return response.json();
     })
     .then(data => {
-      startGameLoop();
+      // startGameLoop();
     })
     .catch(error => {
       console.error('Failed to start tournanment:', error);
       alert('failed to start Tournament!');
     });
 }
-function getMatchData() {
-  fetch(`https://127.0.0.1:443/tournament_api/detail`, {
+
+async function getTournamentDetails() {
+  try {
+  const response = await fetch(`https://127.0.0.1:443/tournament_api/detail`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + getCookie('jwt')
     }
   })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
-    .then(data => {
-      participants = data.participants;
-      creator = data.creator;
-      participants[0].username = creator.username;
-      setTournamentId(data);
-      
-      startTournament(data.id);
-    })
-    .catch(error => {
-      console.error('Failed to find tournament:', error);
-    });
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  const data = await response.json();
+  participants = data.participants;
+  creator = data.creator;
+  participants[0].username = creator.username;
+  setTournamentId(data);
 }
+catch(error)
+{
+  console.error("Fetch error:",error);
+}
+}
+
+// function getTournamentDetails() {
+//   fetch(`https://127.0.0.1:443/tournament_api/detail`, {
+//     method: 'GET',
+//     headers: {
+//       'Content-Type': 'application/json',
+//       'Authorization': 'Bearer ' + getCookie('jwt')
+//     }
+//   })
+//     .then(response => {
+//       if (!response.ok) {
+//         throw new Error('Network response was not ok');
+//       }
+//       return response.json();
+//     })
+//     .then(data => {
+//       participants = data.participants;
+//       creator = data.creator;
+//       participants[0].username = creator.username;
+//       setTournamentId(data);
+      
+//       startTournament(data.id);
+//     })
+//     .catch(error => {
+//       console.error('Failed to find tournament:', error);
+//     });
+// }
 
 function waitGameFinish(interval = 100) {
   return new Promise(resolve => {
@@ -537,7 +556,7 @@ function waitGameFinish(interval = 100) {
   })
 }
 
-async function arrangeNextRound() {
+async function getFirstRound() {
   const tournamentData = {
     tournament_id: getTournamentId()
   };
@@ -556,7 +575,7 @@ async function arrangeNextRound() {
   return data;
 }
 
-async function getRoundDetails() {
+async function getSecondRound() {
   const response = await fetch(`https://127.0.0.1:443/tournament_api/get_second_round_matches/${getTournamentId()}`, {
     method: 'GET',
     headers: {
@@ -571,41 +590,45 @@ async function getRoundDetails() {
   return data;
 }
 
-async function handleTournamentPreview(i)
+async function getRoundDetails(round)
 {
-  if (i == 0) {
-    roundDetails = await arrangeNextRound();
+  if (round == 1) {
+    roundDetails = await getFirstRound();
     matchDetail = roundDetails.match_details;
 
 
   }
-  else if (round == 2 && roundComplete) {
-    roundDetails = await getRoundDetails();
+  else if (round == 2) {
+    roundDetails = await getSecondRound();
     matchDetail = roundDetails.second_round_matches;
-    roundComplete = false;
-    matchNumber = 0;
   }
   console.log(roundDetails);
-  roundMsg = "Round : " + round + "\n";
+}
+
+function showRoundPreview(round,match, roundMsg="")
+{
+  if (roundMsg=="")
+     roundMsg = "Round : " + round + "\n";
   for (let j = 0; j < matchDetail.length; j++) {
-    p1 = participants.find(element => Object.values(element).includes(matchDetail[j].participant_one_id));
-    // let arrow = "";
-    console.log("match num : " + matchNumber);
-    console.log("j : " +j);
-    console.log("i : " +i);
-    if (matchDetail[j].is_bye) {
-      matchMsg =  p1.username + " ADVANCES";
+    let pl1 = participants.find(element => Object.values(element).includes(matchDetail[j].participant_one_id));
+
+    if (matchDetail[j].is_bye ) {
+      matchMsg =  pl1.username + " ADVANCES";
     }
     else {
-      p2 = participants.find(element => Object.values(element).includes(matchDetail[j].participant_two_id));
-      matchMsg =  p1.username + " vs " + p2.username ;
+      let pl2 = participants.find(element => Object.values(element).includes(matchDetail[j].participant_two_id));
+      matchMsg =  pl1.username + " vs " + pl2.username ;
     }
-    if (i==0 && j==0)
-      matchMsg = `>> ${matchMsg} << \n`;
-    else if(matchNumber == j)
+    console.log("match:" + match + " j:" +j);
+    if(matchDetail[j].is_bye && match == j)
     {
-      matchMsg = `>> ${matchMsg} << \n`;
+      matchMsg= matchMsg + "\n";
+      roundMsg += matchMsg;
+      match++;
+      continue;
     }
+    if(match == j && !matchDetail[j].is_bye)
+      matchMsg = `>> ${matchMsg} << \n`;
     else
     {
       matchMsg= matchMsg + "\n";
@@ -613,50 +636,44 @@ async function handleTournamentPreview(i)
     roundMsg += matchMsg;
     
   }
-  // console.log(matchNumber);
   document.getElementById("gameDetail").innerHTML = roundMsg.replace(/\n/g, "<br>");
-}
 
+}
 async function startGameLoop() {
-  var p1, p2, win, remaining = 0, match_id, totalRounds, is_bye = false;
-  round =1;
-  matchNumber = 0;
+  var p1, p2, win, remaining = 0, match_id, totalRounds, is_bye = false,matchesInRound;
   startModal.hide();
   if (participants.length > 4) {
     totalRounds = 3;
   }
   else
     totalRounds = 2;
-  if (participants.length % 2)
-    is_bye = true
-  for (let i = 0; i != 1; i = remaining) {
+  for (let i = 1; i <=totalRounds; i++) {
     try {
-      handleTournamentPreview(i);
-      if (i == 0) {
-        startModal.hide();
+      await getRoundDetails(i);
+      console.log("currentround:" + i + " totalrounds:" + totalRounds);
 
-        matchModal.show();
-        await waitSubmission(startNextGameBtn);
-      }
-      if (round == 2) {
-        matchModal.show();
-        await waitSubmission(startNextGameBtn);
-
-      }
-
+      matchesInRound = matchDetail.filter(match => match.is_bye == false).length;
+      for(let j = 0; j < matchesInRound; j++)
+      {
       const data = await getNextMatch();
       p1 = participants.find(element => Object.values(element).includes(data.next_match.participant_one));
       p2 = participants.find(element => Object.values(element).includes(data.next_match.participant_two));
-      if (round == 3) {
-        roundMsg = "Round : " + round + "\n";
-        matchMsg = p1.username + " vs " + p2.username + "\n";
+      if (i!= totalRounds)
+      {
+      showRoundPreview(i,j);
+      matchModal.show();
+      await waitSubmission(startNextGameBtn);
+      }
+      else if (i == totalRounds) {
+        roundMsg = "Round : " + i + "\n";
+        matchMsg = ">> " + p1.username + " vs " + p2.username + " <<\n";
         roundMsg += matchMsg;
         document.getElementById("gameDetail").innerHTML = roundMsg.replace(/\n/g, "<br>");
-
+        j = matchesInRound;
         matchModal.show();
         await waitSubmission(startNextGameBtn);
-
       }
+      console.log("currentmatch:" + j + " totalmatches:" + matchesInRound);
       player1Alias = p1.username;
       player2Alias = p2.username;
       remaining = data.next_match.remaining_matches;
@@ -669,23 +686,16 @@ async function startGameLoop() {
       await updateMatchResult(match_id, win.id);
       restartGameButton = document.getElementById("restartGameBtn");
       await waitSubmission(restartGameButton);
-      if (round != totalRounds) {
-        matchModal.show();
-        await waitSubmission(startNextGameBtn);
-      }
-      matchNumber += 1;
 
-      if (is_bye && matchNumber == matchDetail.length - 1) {
-        round += 1;
-        roundComplete = true;
-      }
-      else if (!is_bye && matchNumber == matchDetail.length) {
-        round += 1;
-        roundComplete = true;
-      }
-
+    }
     } catch (error) {
       console.error('Failed to get next match:', error);
+    }
+    if (i != totalRounds) {
+      console.log("rooound end modal")
+      matchModal.show();
+      showRoundPreview(i, matchDetail.length , "Round " + i + " Finished!\n\n");
+      await waitSubmission(startNextGameBtn);
     }
   }
 
@@ -745,9 +755,12 @@ async function getNextMatch() {
 
 function setupcreateTournamentForm() {
   const form = document.getElementById('participantDetailsFormInner');
-  form.addEventListener('submit', function (event) {
+  form.addEventListener('submit', async function (event) {
     event.preventDefault();
-    createTournament();
+    await createTournament();
+    await getTournamentDetails();
+    await startTournament();
+    startGameLoop();
   });
 }
 
