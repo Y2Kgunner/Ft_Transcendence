@@ -51,11 +51,9 @@ function resetBall() {
   ball.style.left = `${ballX}px`;
   ball.style.top = `${ballY}px`;
 
-  // const randomDirection = Math.random() < 0.5 ? -1 : 1;
-  // ballSpeedX = initialBallSpeedX * randomDirection;
-  // ballSpeedY = initialBallSpeedY * (Math.random() * 2 - 1);
-  ballSpeedX = 7.7;
-  ballSpeedY = 4;
+  const randomDirection = Math.random() < 0.5 ? -1 : 1;
+  ballSpeedX = initialBallSpeedX * randomDirection;
+  ballSpeedY = initialBallSpeedY * (Math.random() * 2 - 1);
 }
 
 export function startGameSession() {
