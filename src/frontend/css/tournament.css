@@ -3,9 +3,11 @@
   src: url('../assets/Pixelated/pix/pix.ttf') format('truetype');
 }
 #winnerColour {
-  color: red;
+  color: rgb(162, 255, 0);
 }
-
+#loserColour {
+    color: rgba(255, 0, 0, 0.7);
+  }
 body {
   font-family: 'PixelatedFont', sans-serif;
   overflow: hidden;
