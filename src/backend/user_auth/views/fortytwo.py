@@ -68,7 +68,7 @@ def oauth_callback(request):
         image_versions = user_info.get('image', {}).get('versions', {})
         small_image_url = image_versions.get('small', 'default-profile-picture-url.jpg')
         UserModel = get_user_model()
-        user, created = UserModel.objects.get_or_create(username=user_info['login'], defaults={
+        user, created = UserModel.objects.get_or_create(email=user_info['email'], defaults={
             'email': user_info['email'],
             'first_name': user_info['first_name'],
             'last_name': user_info['last_name'],

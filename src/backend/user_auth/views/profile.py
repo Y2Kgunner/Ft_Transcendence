@@ -10,8 +10,7 @@ import logging
 from django.views.decorators.http import require_http_methods
 from user_auth.forms import ProfilePictureForm
 from django.contrib.auth.decorators import login_required
-
-
+from user_auth.models import WebUser
 # addition by aikram
 from django.http import HttpResponse, JsonResponse
 from base64 import b64encode
@@ -100,7 +99,8 @@ def save_profile_picture(user, file):
 def upload_profile_picture(request):
     if request.method == 'POST' and request.FILES.get('profile_picture'):
         try:
-            user = request.user
+            token = request.COOKIES.get('jwt')
+            user = JWTHandler.get_user_from_token(token)
             old_pic = user.profile_picture if user.profile_picture else 'None'
             file = request.FILES['profile_picture']
             data = file.read()
@@ -124,7 +124,8 @@ def upload_profile_picture(request):
 @csrf_exempt
 def delete_profile_picture(request):
     if request.method == 'POST':
-        user = request.user
+        token = request.COOKIES.get('jwt')
+        user = JWTHandler.get_user_from_token(token)
         user.profile_picture.delete()
         return JsonResponse({'message': 'Profile picture deleted successfully.'}, status=200)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
@@ -140,10 +141,11 @@ def image_to_base64(image_path):
 
 @require_http_methods(["GET"])
 def get_profile_picture(request):
-    user = request.user
+    token = request.COOKIES.get('jwt')
+    user = JWTHandler.get_user_from_token(token)
+    # user = request.
     if not user.profile_picture:
         return JsonResponse({'error': 'No profile picture set.', 'profile_picture': None}, status=200)
-
     # Return the base64 string directly
     return JsonResponse({'profile_picture_base64': user.profile_picture}, status=200)
 

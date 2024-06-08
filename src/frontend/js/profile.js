@@ -1,5 +1,5 @@
 import { checkProfileInput, displayBootstrapAlert } from './inputValidation.js';
-
+import { appRouter } from './router.js';
 var editModal;
 var deleteModal;
 
@@ -33,13 +33,8 @@ function setUpProfile() {
 //? ------------------->> grab profile to display!
 async function fetchUserProfile() {
     const profileData = await getUserProfile();
-    // console.log(profileData);
-    const matchHistoryData = await loadMatchHistory(profileData);
-    profileData.games_played = matchHistoryData.matches.length;
-    profileData.wins =  matchHistoryData.matches.filter(match => match.winner == profileData.username).length;
-    profileData.losses =  matchHistoryData.matches.filter(match => match.winner != profileData.username).length;
+    await loadMatchHistory(profileData);
     profileData.winrate = profileData.wins / profileData.games_played * 100;
-    console.log(profileData);
     await updateProfilePage(profileData);
     fetchProfilePicture();
 }
@@ -150,7 +145,7 @@ function truncateText(text, limit) {
 
 function updateElement(elementId, userDataProperty) {
   const element = document.getElementById(elementId);
-  if (userDataProperty || elementId === 'gamesLose') {
+  if (userDataProperty || elementId === 'gamesLose' || elementId === 'gamesPlayed' || elementId === 'gamesWin') {
     element.textContent = truncateText(userDataProperty, 15);
     element.setAttribute('title', userDataProperty);
   } else {
@@ -211,7 +206,7 @@ function fetchProfilePicture() {
       }
     })
     .catch(error => {
-      console.error('Error fetching the profile picture:', error);
+    //   console.error('Error fetching the profile picture:', error);
       document.getElementById('profilePicture').src = '../assets/profile_pictures/default.png';
     });
 }
@@ -328,7 +323,7 @@ function anonymizeUser() {
     .then(data => {
       // alert('Your data has been anonymized.');
       displayBootstrapAlert('editProfileAlert', 'Your data has been anonymized 🙀', 'anonymize');
-      fetchAndUpdateProfile();
+      setUpProfile();
     })
     .catch(error => {
       console.error('There has been a problem with your fetch operation:', error);

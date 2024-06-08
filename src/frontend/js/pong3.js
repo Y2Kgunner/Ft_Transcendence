@@ -244,6 +244,8 @@ function updateBall() {
     const ballCenterY = ballY + ball.offsetHeight / 2;
     const paddle1CenterY = paddle1.offsetTop + paddle1.offsetHeight / 2;
     const paddle2CenterY = paddle2.offsetTop + paddle2.offsetHeight / 2;
+	const paddle1Bottom = paddle1.offsetTop + paddle1.offsetHeight;
+	const paddle2Bottom = paddle2.offsetTop + paddle2.offsetHeight;
 
     let paddleCenterY;
     if (ballSpeedX < 0)
@@ -254,9 +256,9 @@ function updateBall() {
     const collisionOffset = ballCenterY - paddleCenterY;
     const maxOffset = paddle1.offsetHeight / 2;
     const angle = collisionOffset / maxOffset;
-
-    ballSpeedY = initialBallSpeedY * angle;
-    ballSpeedX = -ballSpeedX;
+    
+	ballSpeedY = initialBallSpeedY * angle;
+	ballSpeedX = -ballSpeedX;
   } if (paddleCollisionX) {
     const ballCenterX = ballX + ball.offsetWidth / 2;
     const paddle3CenterX = paddle3.offsetLeft + paddle3.offsetWidth / 2;
@@ -265,7 +267,11 @@ function updateBall() {
     const maxOffset = paddle1.offsetHeight / 2;
     const angle = collisionOffset / maxOffset;
 
-    ballSpeedX = initialBallSpeedX * angle;
+	if ((paddle3.offsetLeft + paddle3.offsetWidth > board.offsetWidth - 50) 
+		|| paddle3.offsetLeft < 50)
+    	ballSpeedX = -initialBallSpeedX * angle;
+	else
+		ballSpeedX = initialBallSpeedX * angle;
     ballSpeedY = -ballSpeedY;
   }
 }
