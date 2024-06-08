@@ -34,6 +34,7 @@ function setUpProfile() {
 async function fetchUserProfile() {
     const profileData = await getUserProfile();
     await loadMatchHistory(profileData);
+    profileData.winrate = profileData.wins / profileData.games_played * 100;
     await updateProfilePage(profileData);
     fetchProfilePicture();
 }
