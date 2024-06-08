@@ -1,3 +1,5 @@
+import { eventManager, inputElement, checkInput, isPrintableASCII } from './inputValidation.js';
+
 let begin = false;
 let initialVPaddlePos;
 let initialHPaddlePos;
@@ -18,8 +20,8 @@ let score2 = matchPoint;
 let score3 = matchPoint;
 
 let player1Alias = "Player 1";
-let player2Alias = "Player 2";
-let player3Alias = "Player 3";
+let player2aliasPong3 = "Player 2";
+let player3aliasPong3 = "Player 3";
 
 let paddle1;
 let paddle2;
@@ -32,8 +34,8 @@ let score1Element;
 let score2Element;
 let score3Element;
 let player1AliasElement;
-let player2AliasElement;
-let player3AliasElement;
+let player2aliasPong3Element;
+let player3aliasPong3Element;
 
 let paddle1MovingUp = false;
 let paddle1MovingDown = false;
@@ -41,14 +43,11 @@ let paddle2MovingUp = false;
 let paddle2MovingDown = false;
 let paddle3MovingLeft = false;
 let paddle3MovingRight = false;
+let inputIds = ["player2aliasPong3", "player3aliasPong3"];
 
-// Input validation
-// var inputField;
-var startGameBtn;
 var startModal;
 var form;
 var modalInit = false;
-const inputIds = ["player2alias", "player3alias"];
 
 let pauseModalInstance;
 
@@ -65,10 +64,21 @@ export function endGameSession() {
 }
 function handleBeforeUnload(event) {
   if (gameInProgress3) {
-      const message = "You have an ongoing game. Are you sure you want to leave and lose your progress?";
-      event.returnValue = message; 
-      return message;
+    const message = "You have an ongoing game. Are you sure you want to leave and lose your progress?";
+    event.returnValue = message;
+    return message;
   }
+}
+
+async function validateInput() {
+  const _elementBlock = [
+    new inputElement('player2aliasPong3', 'userName', true, 3, 10),
+    new inputElement('player3aliasPong3', 'userName', true, 3, 10),
+  ];
+  if (!checkInput(_elementBlock))
+    return;
+  closeModal();
+  startGame();
 }
 
 function init3PlyrPong() {
@@ -93,14 +103,7 @@ function init3PlyrPong() {
   initialVPaddlePos = paddle1.style.top;
   initialHPaddlePos = paddle3.style.left;
 
-  startGameBtn = document.getElementById("startGameBtn");
-  if (startGameBtn) {
-    startGameBtn.addEventListener("click", function () {
-      checkInput();
-    });
-  } else {
-    console.error("startGameBtn not found");
-  }
+  eventManager.addListener(document.getElementById("startGameBtn"), "click", validateInput);
 
   form = document.querySelector('.needs-validation');
   if (form) {
@@ -113,7 +116,7 @@ function init3PlyrPong() {
   } else {
     console.log("form not found");
   }
-  realTimeChecker();
+  // realTimeChecker();
 }
 
 function handleKeyDown(event) {
@@ -244,8 +247,8 @@ function updateBall() {
     const ballCenterY = ballY + ball.offsetHeight / 2;
     const paddle1CenterY = paddle1.offsetTop + paddle1.offsetHeight / 2;
     const paddle2CenterY = paddle2.offsetTop + paddle2.offsetHeight / 2;
-	const paddle1Bottom = paddle1.offsetTop + paddle1.offsetHeight;
-	const paddle2Bottom = paddle2.offsetTop + paddle2.offsetHeight;
+    const paddle1Bottom = paddle1.offsetTop + paddle1.offsetHeight;
+    const paddle2Bottom = paddle2.offsetTop + paddle2.offsetHeight;
 
     let paddleCenterY;
     if (ballSpeedX < 0)
@@ -256,9 +259,9 @@ function updateBall() {
     const collisionOffset = ballCenterY - paddleCenterY;
     const maxOffset = paddle1.offsetHeight / 2;
     const angle = collisionOffset / maxOffset;
-    
-	ballSpeedY = initialBallSpeedY * angle;
-	ballSpeedX = -ballSpeedX;
+
+    ballSpeedY = initialBallSpeedY * angle;
+    ballSpeedX = -ballSpeedX;
   } if (paddleCollisionX) {
     const ballCenterX = ballX + ball.offsetWidth / 2;
     const paddle3CenterX = paddle3.offsetLeft + paddle3.offsetWidth / 2;
@@ -267,11 +270,11 @@ function updateBall() {
     const maxOffset = paddle1.offsetHeight / 2;
     const angle = collisionOffset / maxOffset;
 
-	if ((paddle3.offsetLeft + paddle3.offsetWidth > board.offsetWidth - 50) 
-		|| paddle3.offsetLeft < 50)
-    	ballSpeedX = -initialBallSpeedX * angle;
-	else
-		ballSpeedX = initialBallSpeedX * angle;
+    if ((paddle3.offsetLeft + paddle3.offsetWidth > board.offsetWidth - 50)
+      || paddle3.offsetLeft < 50)
+      ballSpeedX = -initialBallSpeedX * angle;
+    else
+      ballSpeedX = initialBallSpeedX * angle;
     ballSpeedY = -ballSpeedY;
   }
 }
@@ -330,10 +333,10 @@ function haltGame() {
 }
 
 function startGame() {
-  player2AliasElement = document.getElementById("player_2_alias");
-  player3AliasElement = document.getElementById("player_3_alias");
-  player2AliasElement.textContent = player2Alias;
-  player3AliasElement.textContent = player3Alias;
+  player2aliasPong3Element = document.getElementById("player_2_alias");
+  player3aliasPong3Element = document.getElementById("player_3_alias");
+  player2aliasPong3Element.textContent = player2aliasPong3;
+  player3aliasPong3Element.textContent = player3aliasPong3;
   startGameSession();
   begin = true;
   gameOver = false;
@@ -369,97 +372,38 @@ function continueGame() {
   }, { once: true });
 }
 
-function realTimeChecker() {
-  inputIds.forEach((inputId) => {
-    var inputField = document.getElementById(inputId);
-    inputField.addEventListener('input', function () {
-    var invalidFeedback = inputField.nextElementSibling;
-    var validFeedback = invalidFeedback.nextElementSibling;
-    inputId = inputField.value.trim();
-    
-    invalidFeedback.style.display = "none";
-    validFeedback.style.display = "none";
-    inputField.classList.remove("is-invalid", "is-valid");
-    
-    if (!modalInit) modalInit = true;
-    else if (inputId.length > 10 || inputId.length < 3) {
-      inputField.classList.add("is-invalid");
-      invalidFeedback.style.display = "block";
-    } else if (!isPrintableASCII(inputId)) {
-      inputField.classList.add("is-invalid");
-      invalidFeedback.style.display = "block";
-    } else if (player1Alias === inputId) {
-      inputField.classList.add("is-invalid");
-      invalidFeedback.style.display = "block";
-    } else if (inputId === '') {
-      inputField.classList.add("is-invalid");
-      invalidFeedback.style.display = "block";
-    } else {
-      inputField.classList.add("is-valid");
-      validFeedback.style.display = "block";
-    }
-  });
-});
-}
+// function realTimeChecker() {
+//   inputIds.forEach((inputId) => {
+//     var inputField = document.getElementById(inputId);
+//     inputField.addEventListener('input', function () {
+//       var invalidFeedback = inputField.nextElementSibling;
+//       var validFeedback = invalidFeedback.nextElementSibling;
+//       inputId = inputField.value.trim();
 
-function isPrintableASCII(str) {
-  var printableASCIIRegex = /^[!-~]+$/;
-  return printableASCIIRegex.test(str);
-}
+//       invalidFeedback.style.display = "none";
+//       validFeedback.style.display = "none";
+//       inputField.classList.remove("is-invalid", "is-valid");
 
-function checkInput() {
-  let allInputsValid = true;
-
-  inputIds.forEach((inputId) => {
-    const inputField = document.getElementById(inputId);
-    var invalidFeedback = inputField.nextElementSibling;
-    var validFeedback = invalidFeedback.nextElementSibling;
-
-    if (inputField) {
-      const playerAlias = inputField.value.trim();
-
-      invalidFeedback.textContent = "Looks stinky! 🚽";
-      validFeedback.style.display = "none";
-      inputField.classList.remove("is-invalid", "is-valid");
-
-      if (!modalInit) {
-        modalInit = true;
-      } else if (playerAlias === '') {
-        invalidFeedback.textContent = "Player alias cannot be empty!";
-        inputField.classList.add("is-invalid");
-        clearTimeout(window.timeoutId);
-        window.timeoutId = setTimeout(clearErrorMessage, 5000, invalidFeedback, inputField);
-        allInputsValid = false;
-      } else if (!isPrintableASCII(playerAlias)) {
-        invalidFeedback.textContent = "Player alias can only contain printable ASCII characters!";
-        inputField.classList.add("is-invalid");
-        clearTimeout(window.timeoutId);
-        window.timeoutId = setTimeout(clearErrorMessage, 5000, invalidFeedback, inputField);
-        allInputsValid = false;
-      } else if (playerAlias.length > 10 || playerAlias.length < 3) {
-        invalidFeedback.textContent = "Player alias must be between 3 and 10 characters long!";
-        inputField.classList.add("is-invalid");
-        clearTimeout(window.timeoutId);
-        window.timeoutId = setTimeout(clearErrorMessage, 5000, invalidFeedback, inputField);
-        allInputsValid = false;
-      } else {
-        validFeedback.style.display = "block";
-        inputField.classList.add("is-valid");
-      }
-    } else {
-      console.error(`inputField with ID ${inputId} not found`);
-    }
-  });
-  if (allInputsValid) {
-    closeModal();
-    startGame();
-  }
-}
-
-function clearErrorMessage(invalidFeedback, inputField) {
-  invalidFeedback.textContent = "Looks stinky! 🚽";
-  inputField.classList.remove("is-invalid");
-}
+//       if (!modalInit) modalInit = true;
+//       else if (inputId.length > 10 || inputId.length < 3) {
+//         inputField.classList.add("is-invalid");
+//         invalidFeedback.style.display = "block";
+//       } else if (!isPrintableASCII(inputId)) {
+//         inputField.classList.add("is-invalid");
+//         invalidFeedback.style.display = "block";
+//       } else if (player1Alias === inputId) {
+//         inputField.classList.add("is-invalid");
+//         invalidFeedback.style.display = "block";
+//       } else if (inputId === '') {
+//         inputField.classList.add("is-invalid");
+//         invalidFeedback.style.display = "block";
+//       } else {
+//         inputField.classList.add("is-valid");
+//         validFeedback.style.display = "block";
+//       }
+//     });
+//   });
+// }
 
 function closeModal() {
   var modal = document.getElementById('startGameModal');
@@ -467,4 +411,4 @@ function closeModal() {
   modalInstance.hide();
 }
 
-export { init3PlyrPong , gameInProgress3, isPrintableASCII };
+export { init3PlyrPong, gameInProgress3, isPrintableASCII };

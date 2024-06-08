@@ -1,4 +1,4 @@
-import { checkProfileInput, displayBootstrapAlert } from './inputValidation.js';
+import { inputElement, checkInput, displayBootstrapAlert } from './inputValidation.js';
 import { appRouter } from './router.js';
 var editModal;
 var deleteModal;
@@ -26,36 +26,36 @@ function setUpProfile() {
 
   document.getElementById('closeDeleteOtpModal').addEventListener('click', deleteModal.hide());
   fetchUserProfile();
-  
+
   setupFriends();
 }
 
 //? ------------------->> grab profile to display!
 async function fetchUserProfile() {
-    const profileData = await getUserProfile();
-    await loadMatchHistory(profileData);
-    profileData.winrate = profileData.wins / profileData.games_played * 100;
-    await updateProfilePage(profileData);
-    fetchProfilePicture();
+  const profileData = await getUserProfile();
+  await loadMatchHistory(profileData);
+  profileData.winrate = profileData.wins / profileData.games_played * 100;
+  await updateProfilePage(profileData);
+  fetchProfilePicture();
 }
 
 async function getUserProfile(playerData) {
-    const jwt = getCookie('jwt');
-    const response = await fetch(`https://127.0.0.1:443/api/profile`, {
-      method: 'GET',
-      headers: {
-        'Authorization': 'Bearer ' + getCookie('jwt')
-      },
-      credentials: 'include'
-    })
-    if (!response.ok) {
-      if (response.status == 400)
-        displayBootstrapAlert('editProfileAlert', 'could not load player profile details', 'warning');
-      return null;
-    }
-    const data = await response.json();
-    return data;
+  const jwt = getCookie('jwt');
+  const response = await fetch(`https://127.0.0.1:443/api/profile`, {
+    method: 'GET',
+    headers: {
+      'Authorization': 'Bearer ' + getCookie('jwt')
+    },
+    credentials: 'include'
+  })
+  if (!response.ok) {
+    if (response.status == 400)
+      displayBootstrapAlert('editProfileAlert', 'could not load player profile details', 'warning');
+    return null;
   }
+  const data = await response.json();
+  return data;
+}
 
 
 function chkIfInput(event) {
@@ -65,9 +65,17 @@ function chkIfInput(event) {
   }
 }
 
-async function chkInp() {
-  if (await checkProfileInput())
+// fill the profile elements with the new values!!!
+function chkInp() {
+  const _elementBlock = [
+    new inputElement('firstNameInput', 'name', false, 5, 20),
+    new inputElement('lastNameInput', 'name', false, 5, 20),
+    new inputElement('phoneInput', 'phone', false, 10, 18),
+    new inputElement('addressInput', 'userName', false, 10, 25),
+  ];
+  if (checkInput(_elementBlock))
     editModal.hide();
+    return;
 }
 
 async function openEditModal() {
@@ -113,11 +121,11 @@ const elementMap = {
   phone: 'phone',
   address: 'address',
   email: 'email',
-  gamesPlayed : 'games_played',
-  gamesWin : 'wins',
-  gamesLose : "losses",
-  winRate : "winrate"
-  
+  gamesPlayed: 'games_played',
+  gamesWin: 'wins',
+  gamesLose: "losses",
+  winRate: "winrate"
+
 };
 
 const formatElementMap = {
@@ -206,7 +214,7 @@ function fetchProfilePicture() {
       }
     })
     .catch(error => {
-    //   console.error('Error fetching the profile picture:', error);
+      //   console.error('Error fetching the profile picture:', error);
       document.getElementById('profilePicture').src = '../assets/profile_pictures/default.png';
     });
 }
@@ -331,43 +339,43 @@ function anonymizeUser() {
 };
 
 async function loadMatchHistory(playerData) {
-    if (!playerData.id) {
-        console.error("Player ID is undefined, cannot load match history.");
-        return;
-      }
-    const response = await fetch(`https://127.0.0.1:443/pongApp/player_match_history`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + getCookie('jwt')
-      },
-      body: JSON.stringify({ player_id: playerData.id })
-    })
-    if (!response.ok) {
-      if (response.status == 400)
-        displayBootstrapAlert('editProfileAlert', 'could not load match history', 'warning');
-      return null;
-    }
-    const data = await response.json();
-    if (!data.matches) {
-        console.error("No matches data received:", data);
-        return;
-      }
-      console.log("Match Data Received:", data);
-      const table = document.getElementById('matchHistoryTable').getElementsByTagName('tbody')[0];
-      table.innerHTML = "";
-      data.matches.forEach(match => {
-        let row = table.insertRow();
-        row.insertCell(0).textContent = match.id;
-        row.insertCell(1).textContent = match.game_type;
-        row.insertCell(2).textContent = new Date(match.match_date).toLocaleString();
-        row.insertCell(3).textContent = playerData.username;
-        row.insertCell(4).textContent = match.guest_player1;
-        row.insertCell(5).textContent = match.guest_player2 || 'N/A';
-        row.insertCell(6).textContent = match.winner;
-      });
-    return data;
+  if (!playerData.id) {
+    console.error("Player ID is undefined, cannot load match history.");
+    return;
   }
+  const response = await fetch(`https://127.0.0.1:443/pongApp/player_match_history`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + getCookie('jwt')
+    },
+    body: JSON.stringify({ player_id: playerData.id })
+  })
+  if (!response.ok) {
+    if (response.status == 400)
+      displayBootstrapAlert('editProfileAlert', 'could not load match history', 'warning');
+    return null;
+  }
+  const data = await response.json();
+  if (!data.matches) {
+    console.error("No matches data received:", data);
+    return;
+  }
+  console.log("Match Data Received:", data);
+  const table = document.getElementById('matchHistoryTable').getElementsByTagName('tbody')[0];
+  table.innerHTML = "";
+  data.matches.forEach(match => {
+    let row = table.insertRow();
+    row.insertCell(0).textContent = match.id;
+    row.insertCell(1).textContent = match.game_type;
+    row.insertCell(2).textContent = new Date(match.match_date).toLocaleString();
+    row.insertCell(3).textContent = playerData.username;
+    row.insertCell(4).textContent = match.guest_player1;
+    row.insertCell(5).textContent = match.guest_player2 || 'N/A';
+    row.insertCell(6).textContent = match.winner;
+  });
+  return data;
+}
 
 // function loadMatchHistory(playerData) {
 //   if (!playerData.id) {
@@ -443,7 +451,7 @@ async function addUser(userId) {
   if (!response.ok) {
     if (response.status == 400)
       displayBootstrapAlert('editProfileAlert', 'cannot add yourself as a friend 😹', 'warning');
-      // alert("cannot add yourself as friend");
+    // alert("cannot add yourself as friend");
     return null;
   }
   displayBootstrapAlert('editProfileAlert', 'request has been sent to user! 😸', 'success');
@@ -525,7 +533,7 @@ async function addFriend() {
   const friendData = await checkUsername(username);
   if (friendData == null)
     displayBootstrapAlert('editProfileAlert', 'friend not found! 😿', 'warning');
-    // alert(" friend not found!");
+  // alert(" friend not found!");
   else {
     console.log(friendData);
     userInfo = friendData.user_info;

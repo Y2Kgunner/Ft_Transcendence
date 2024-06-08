@@ -1,16 +1,17 @@
 import { getCookie } from './profile.js';
+import { inputElement, checkInput, eventManager } from './inputValidation.js';
 
 const matchPoint = 11;
 let intervalId = null;
-let paused = false;
 let pauseModalVisible = false;
 let gameOver = false;
 let modalInit = false;
+let pause = false;
 
-let ballX = 20;
-let ballY = 20;
-let ballSpeedX = 7.7;
-let ballSpeedY = -4.55;
+let ballX = 10;
+let ballY = 10;
+let ballSpeedX = 5;
+let ballSpeedY = 5;
 let initialBallSpeedX = 10;
 let initialBallSpeedY = 10;
 let score1 = 0;
@@ -24,6 +25,7 @@ let matchId;
 
 let paddle1;
 let paddle2;
+let paddleSpeed = 12;
 let ball;
 let board;
 let score1Element;
@@ -44,10 +46,9 @@ var form;
 
 let gameInProgress = false;
 
-
 function resetBall() {
-  ballX = board.offsetWidth / 2;
-  ballY = board.offsetHeight / 2;
+  ballX = board.offsetWidth / 2 - ball.offsetWidth / 2;
+  ballY = board.offsetHeight / 2 - ball.offsetHeight / 2;
   ball.style.left = `${ballX}px`;
   ball.style.top = `${ballY}px`;
 
@@ -65,6 +66,7 @@ export function endGameSession() {
   gameInProgress = false;
   window.removeEventListener('beforeunload', handleBeforeUnload);
 }
+
 function handleBeforeUnload(event) {
   if (gameInProgress) {
     const message = "You have an ongoing game. Are you sure you want to leave and lose your progress?";
@@ -73,7 +75,22 @@ function handleBeforeUnload(event) {
   }
 }
 
-function setupGamePage() {
+function pauseEnterKey(event) {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    document.getElementById("pauseBtn").click();
+  }
+}
+
+function startEnterKey(event) {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    document.getElementById("startGameBtn");
+  }
+}
+
+function init2PlyrPong() {
+  console.log('what the sigma??');
   board = document.getElementById("board");
   paddle1 = document.getElementById("paddle_1");
   paddle2 = document.getElementById("paddle_2");
@@ -83,9 +100,6 @@ function setupGamePage() {
   score2Element = document.getElementById("player_2_score");
   player2AliasElement = document.getElementById("player_2_alias");
 
-  ballX = board.offsetWidth / 2 - ball.offsetWidth / 2;
-  ballY = board.offsetHeight / 2 - ball.offsetHeight / 2;
-
   score1Element.textContent = score1;
   score2Element.textContent = score2;
 
@@ -94,28 +108,17 @@ function setupGamePage() {
   startModal.show();
 
   fetchUserProfile().then(data => {
-    console.log(data);
     playerId = data.id;
-    console.log(data.username);
     player1AliasElement = document.getElementById("player_1_alias");
     player1Alias = data.username;
     player1AliasElement.textContent = player1Alias;
-    console.log(player1Alias);
   });
 
-  startGameBtn = document.getElementById("startGameBtn");
-  startGameBtn.addEventListener("click", function () {
-    checkInput();
-  });
 
-  form = document.querySelector('.needs-validation');
-  form.addEventListener('keyup', function (event) {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      // checkInput();
-      startGameBtn.click();
-    }
-  });
+  eventManager.addListener(document.getElementById("pauseBtn"), "click", togglePause);
+  eventManager.addListener(document.getElementById("startGameBtn"), "click", validateInput);
+  eventManager.addListener(document.getElementById("pauseGameModal"), "keypress", pauseEnterKey);
+  eventManager.addListener(document.getElementById("startGameModal"), "keypress", startEnterKey);
 
   inputField = document.getElementById("player2alias");
   inputField.addEventListener('input', function () {
@@ -128,13 +131,19 @@ function setupGamePage() {
     await waitGameFinish(gameOver);
     updateMatch();
   });
+}
 
-  startGameBtn.addEventListener('click', async function (event) {
-    await createMatch("Pong");
-    startGame();
-    await waitGameFinish(gameOver);
-    updateMatch();
-  });
+async function validateInput() {
+  const _elementBlock = [
+    new inputElement('player2alias', 'userName', true, 3, 10),
+  ];
+  if (!checkInputV69(_elementBlock))
+    return;
+  closeModal();
+  await createMatch("Pong");
+  startGame();
+  await waitGameFinish(gameOver);
+  updateMatch();
 }
 
 function waitGameFinish(gameStatus, interval = 100) {
@@ -217,9 +226,6 @@ async function createMatch(type) {
     },
     body: JSON.stringify(matchData)
   })
-  // if (!response.ok) {
-  //     throw new Error('Network response was not ok');
-  // }
   const data = await response.json();
   console.log(data.match_id);
   matchId = data.match_id;
@@ -263,16 +269,17 @@ function togglePause() {
 
 function updateGame() {
   if (begin && !pauseModalVisible) {
-    if (paddle1MovingUp && paddle1.offsetTop > 0) {
-      paddle1.style.top = `${paddle1.offsetTop - 10}px`;
-    } else if (paddle1MovingDown && paddle1.offsetTop + paddle1.offsetHeight < board.offsetHeight) {
-      paddle1.style.top = `${paddle1.offsetTop + 10}px`;
+    if (paddle1MovingUp && paddle1.offsetTop > 6) {
+      paddle1.style.top = `${paddle1.offsetTop - paddleSpeed}px`;
+    } else if (paddle1MovingDown && paddle1.offsetTop + paddle1.offsetHeight < (board.offsetHeight - 6)) {
+      paddle1.style.top = `${paddle1.offsetTop + paddleSpeed}px`;
     }
-    if (paddle2MovingUp && paddle2.offsetTop > 0) {
-      paddle2.style.top = `${paddle2.offsetTop - 10}px`;
-    } else if (paddle2MovingDown && paddle2.offsetTop + paddle2.offsetHeight < board.offsetHeight) {
-      paddle2.style.top = `${paddle2.offsetTop + 10}px`;
+    if (paddle2MovingUp && paddle2.offsetTop > 6) {
+      paddle2.style.top = `${paddle2.offsetTop - paddleSpeed}px`;
+    } else if (paddle2MovingDown && paddle2.offsetTop + paddle2.offsetHeight < (board.offsetHeight - 6)) {
+      paddle2.style.top = `${paddle2.offsetTop + paddleSpeed}px`;
     }
+
 
     ballX += ballSpeedX;
     ballY += ballSpeedY;
@@ -325,9 +332,8 @@ function updateGame() {
 
       const paddle1BottomThreshold = board.offsetHeight - paddle1.offsetHeight / 2;
       const paddle2BottomThreshold = board.offsetHeight - paddle2.offsetHeight / 2;
-      if ((paddle1.offsetTop > 2 && (paddle1.offsetTop + paddle1.offsetHeight) < (board.offsetHeight - 2))
-        && (paddle2.offsetTop > 2 && (paddle2.offsetTop + paddle2.offsetHeight) < (board.offsetHeight - 2))) {
-
+      if ((paddle1.offsetTop > 6 && (paddle1.offsetTop + paddle1.offsetHeight) < (board.offsetHeight - 6))
+        && (paddle2.offsetTop > 6 && (paddle2.offsetTop + paddle2.offsetHeight) < (board.offsetHeight - 6))) {
         if (
           (ballSpeedX < 0 && paddle1.offsetTop > paddle1BottomThreshold && angle > 0) ||
           (ballSpeedX > 0 && paddle2.offsetTop > paddle2BottomThreshold && angle > 0)
@@ -336,10 +342,9 @@ function updateGame() {
         } else {
           ballSpeedY = initialBallSpeedY * angle;
         }
-
         ballSpeedX = -ballSpeedX;
       } else {
-        if (paddle1.offsetTop > 2 || paddle2.offsetTop > 2)
+        if (paddle1.offsetTop > 6 || paddle2.offsetTop > 6)
           ballSpeedY = -(ballSpeedY + 2.1);
         if ((paddle1.offsetTop + paddle1.offsetHeight) < (board.offsetHeight - 2)
           || (paddle2.offsetTop + paddle2.offsetHeight) < (board.offsetHeight - 2))
@@ -380,6 +385,7 @@ function startGame() {
   player2AliasElement.textContent = player2Alias;
   if (intervalId)
     clearInterval(intervalId);
+  resetBall();
   intervalId = setInterval(updateGame, 16);
   document.addEventListener("keydown", handleKeyDown);
   document.addEventListener("keyup", handleKeyUp);
@@ -438,57 +444,13 @@ function updateValidationIcon() {
   }
 }
 
-function checkInput() {
-  var inputField = document.getElementById("player2alias");
-  var invalidFeedback = inputField.nextElementSibling;
-  var validFeedback = invalidFeedback.nextElementSibling;
-  player2Alias = inputField.value.trim();
-
-  invalidFeedback.textContent = "Looks stinky! 🚽";
-  validFeedback.style.display = "none";
-  inputField.classList.remove("is-invalid", "is-valid");
-
-  if (!modalInit) modalInit = true;
-  else if (player2Alias === '') {
-    invalidFeedback.textContent = "Player 2 alias cannot be empty!";
-    inputField.classList.add("is-invalid");
-    clearTimeout(window.timeoutId);
-    window.timeoutId = setTimeout(clearErrorMessage, 5000, invalidFeedback, inputField);
-  } else if (!isPrintableASCII(player2Alias)) {
-    invalidFeedback.textContent = "Player 2 alias can only contain printable ASCII characters!";
-    inputField.classList.add("is-invalid");
-    clearTimeout(window.timeoutId);
-    window.timeoutId = setTimeout(clearErrorMessage, 5000, invalidFeedback, inputField);
-  } else if (player1Alias === player2Alias) {
-    invalidFeedback.textContent = "Player 2 alias cannot be the same as Player 1 alias!";
-    inputField.classList.add("is-invalid");
-    clearTimeout(window.timeoutId);
-    window.timeoutId = setTimeout(clearErrorMessage, 5000, invalidFeedback, inputField);
-  } else if (player2Alias.length > 10 || player2Alias.length < 3) {
-    invalidFeedback.textContent = "Player 2 alias must be between 3 and 10 characters long!";
-    inputField.classList.add("is-invalid");
-    clearTimeout(window.timeoutId);
-    window.timeoutId = setTimeout(clearErrorMessage, 5000, invalidFeedback, inputField);
-  } else {
-    validFeedback.style.display = "block";
-    inputField.classList.add("is-valid");
-    closeModal();
-  }
-}
-
-function clearErrorMessage(invalidFeedback, inputField) {
-  invalidFeedback.textContent = "Looks stinky! 🚽";
-  inputField.classList.remove("is-invalid");
-}
-
 function closeModal() {
   var modal = document.getElementById('startGameModal');
   var modalInstance = bootstrap.Modal.getInstance(modal);
   modalInstance.hide();
 }
-
 //?
 //?
 //? end of modal input validation
 
-export { setupGamePage, fetchUserProfile, isPrintableASCII, waitGameFinish, updateMatch, gameInProgress };
+export { init2PlyrPong, fetchUserProfile, isPrintableASCII, waitGameFinish, updateMatch, gameInProgress };

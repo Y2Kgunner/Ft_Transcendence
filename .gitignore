@@ -12,3 +12,10 @@ src/frontend/js/old-router.js
 src/frontend/js/tmProfile.js
 
 src/frontend/assets/images/default-profile-picture.png
+
+src/frontend/js/profile.js
+src/frontend/js/router.js
+src/frontend/js/tournament.js
+src/frontend/pages/pong2.html
+src/frontend/js/inputValz_V69.js
+src/frontend/js/inp-Validation-old.js

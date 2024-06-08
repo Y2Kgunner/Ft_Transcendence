@@ -1,170 +1,163 @@
-import { getCookie, updateProfilePage, fetchUserProfile } from './profile.js';
-import { isPrintableASCII } from './pong3.js';
+//? How to use! import the checkInputV69 and the inputElement class!!
+//? import { inputElement } from './inputElement.js';
 
-const inputIds = ["firstNameInput", "lastNameInput", "phoneInput", "addressInput"];
-const domz = ["firstName", "lastName", "phone", "address"];
+//? How to send an entire inputElementBlock?? ==> here u go!
+//? const _elementBlock = [
+//?   new inputElement('phone', 'phone', true, 10, 15),
+//?   new inputElement('name', 'name', true, 2, 50),
+//?   new inputElement('userName', 'userName', true, 3, 20),
+//? ];
 
-const userData = {
-  first_name: '',
-  last_name: '',
-  phone: '',
-  address: '',
+//? JSDoc-style comments to document the class and its properties.
+/**
+ * Represents an input element
+ */
+class inputElement {
+  /**
+   * @param {string} id - The ID of the input element { string }
+   * @param {string} type - The type of input field: { string }("phone" || "name" || "userName" || "password")
+   * @param {boolean} isRequired - Whether the input is required { boolean }
+   * @param {number} minLen - The minimum length of the input value { int }
+   * @param {number} maxLen - The maximum length of the input value { int }
+   */
+  constructor(id, type, isRequired, minLen, maxLen) {
+    this.id = id;
+    this.type = type;
+    this.isRequired = isRequired;
+    this.minLen = minLen;
+    this.maxLen = maxLen;
+  }
+}
+
+const eventManager = {
+  /**
+   * Adds an event listener to an element
+   * @param {Element} element - The element to add the listener to
+   * @param {string} event - The event to listen for (e.g. "click", "change", "keypress", etc.)
+   * @param {Function} handler - The function to call when the event is triggered
+   */
+  addListener(element, event, handler) {
+    element.removeEventListener(event, handler);
+    element.addEventListener(event, handler);
+  }
 };
 
-function resetFields() {
-  console.log('tf');
-  document.getElementById('firstNameInput').value = "";
-  document.getElementById('lastNameInput').value = "";
-  document.getElementById('phoneInput').value = "";
-  document.getElementById('addressInput').value = "";
-}
+function phoneValidation(field) {
+  const phoneRegex = /^((\+971\s?(5[0-9]))|0(5[0-9]))([-.]?)([0-9]{3})([-.]?)([0-9]{4})$/;
+  const isValidPhone = phoneRegex.test(field.inputValue);
 
-async function failedBackEndTests() {
-  const response = await fetch(`https://127.0.0.1:443/api/profile`, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + getCookie('jwt')
-    },
-    body: JSON.stringify(userData)
-  })
-  if (!response.ok) {
-    if (response.status == 410)
-      displayBootstrapAlert("editProfileAlert", "first name must be a non-empty string and cannot be numeric!", "danger");
-    else if (response.status == 420)
-      displayBootstrapAlert("editProfileAlert", "Last name must be a non-empty string and cannot be numeric", "danger");
-    else if (response.status == 430)
-      displayBootstrapAlert("editProfileAlert", "Phone must be a non-empty string of digits", "danger");
-    else
-      displayBootstrapAlert("editProfileAlert", "value too big!", "danger");
-    return true;
-  }
-  const data = await response.json();
-  fetchUserProfile();
-  return false;
-}
-
-async function checkProfileInput() {
-  var numbr = true; var other = true;
-
-  for (let i = 0; i < inputIds.length; i++) {
-    const inputField = document.getElementById(inputIds[i]);
-    var invalidFeedback = inputField.nextElementSibling;
-    var validFeedback = invalidFeedback.nextElementSibling;
-
-    invalidFeedback.textContent = "Looks stinky! 🚽";
-    validFeedback.style.display = "none";
-    inputField.classList.remove("is-invalid", "is-valid");
-
-    const inputValue = inputField.value.trim();
-    const isEmpty = inputValue === "";
-    const isTooLong = inputValue.length > 20;
-
-    if (inputField.id === "phoneInput") {
-      const phoneRegex = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
-      const isValidPhone = phoneRegex.test(inputValue);
-      if (isEmpty) {
-        userData[Object.keys(userData)[i]] = document.getElementById(domz[i]).value;
-        numbr = true;
-      } else if (!isValidPhone) {
-        invalidFeedback.textContent = "Looks like an invalid phone number!";
-        inputField.classList.add("is-invalid");
-        numbr = false;
-      } else {
-        userData[Object.keys(userData)[i]] = inputValue;
-        numbr = true;
-      }
-      continue;
-    }
-
-    if (isEmpty) {
-      console.log("no. 1 -> ", Object.keys(userData)[i]);
-      userData[Object.keys(userData)[i]] = document.getElementById(domz[i]).value;
-      // inputField.classList.add("is-valid");
-    } else if (isTooLong) {
-      invalidFeedback.textContent = "Input should not exceed 20 characters!";
-      inputField.classList.add("is-invalid");
-      other = false;
-    } else if (!isPrintableASCII(inputValue)) {
-      invalidFeedback.textContent = "Please input printable ASCII characters! else 🤬";
-      inputField.classList.add("is-invalid");
-      other = false;
-    } else {
-      userData[Object.keys(userData)[i]] = inputValue;
-      validFeedback.style.display = "block";
-      inputField.classList.add("is-valid");
-    }
-  }
-  console.log("bumber -> ", numbr);
-  console.log("otehr -> ", other);
-  if (!numbr || !other)
+  if (!isValidPhone) {
+    field.invalidFeedback.textContent = "Looks like an invalid phone number! 😿";
+    field.inputField.classList.add("is-invalid");
+    clearTimeout(window.timeoutId);
+    window.timeoutId = setTimeout(clearErrorMessage, 5000, field);
     return false;
-  var backend = await failedBackEndTests();
-  if (backend)
-    return false;
-  resetFields();
-  displayBootstrapAlert("editProfileAlert", "profile info updated!!", "success");
+  }
   return true;
 }
 
-// function displayBootstrapAlert(id, message, type) {
-//   const alertContainer = document.getElementById(id);
-//   const alertDiv = document.createElement('div');
-//   alertDiv.className = `alert alert-success alert-${type} alert-dismissible fade show`;
-//   alertDiv.role = 'alert';
-//   alertDiv.innerHTML = `
-//     ${message}
-//     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-//   `;
-//   alertContainer.appendChild(alertDiv);
-// }
+function isPrintableASCII(str) {
+  var printableASCIIRegex = /^[!-~]+$/;
+  return printableASCIIRegex.test(str);
+}
 
-// function displayBootstrapAlert(id, message, type) {
-//   const alertContainer = document.getElementById(id);
-//   const alertDiv = document.createElement('div');
-//   alertDiv.className = `alert alert-success alert-${type} alert-dismissible fade show`;
-//   alertDiv.role = 'alert';
-//   alertDiv.innerHTML = `
-//     ${message}
-//     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-//   `;
-//   alertContainer.appendChild(alertDiv);
+function clearErrorMessage(field) {
+  field.invalidFeedback.textContent = "Looks stinky! 🚽";
+  field.inputField.classList.remove("is-invalid");
+}
 
-//   setTimeout(() => {
-//     alertDiv.classList.remove('show');
-//     alertDiv.classList.add('hide');
-//     setTimeout(() => {
-//       alertContainer.removeChild(alertDiv);
-//     }, 300);
-//   }, 3000);
-// }
+function checkInput(inputElements) {
+  let allInputsValid = true;
+  let bigBoiTruncation = (inputElements.length > 4) ? true : false;
+  const seenUsernames = {};
 
+  inputElements.forEach((_element) => {
+    const input_field = document.getElementById(_element.id);
+    const field = {
+      inputField: input_field,
+      inputValue: input_field.value.trim(),
+      invalidFeedback: input_field.nextElementSibling,
+      validFeedback: input_field.nextElementSibling.nextElementSibling
+    };
 
-let alertCount = 0;
-let alerts = [];
+    if (bigBoiTruncation && !allInputsValid)
+      return;
+    if (_element) {
+      field.invalidFeedback.textContent = "Looks stinky! 🚽";
+      field.validFeedback.style.display = "none";
 
-function limitAlerts(alertContainer) {
-  if (alertCount >= 1) {
-    // const oldestAlert = alerts.shift();
-    // if (!oldestAlert)
-    //   return ;
-    // oldestAlert.classList.remove('show');
-    // oldestAlert.classList.add('hide');
-    // setTimeout(() => {
-    //   alertContainer.removeChild(oldestAlert);
-    //   // if (oldestAlert.parentNode === alertContainer)
-    //     alertContainer.removeChild(alertDiv);
-    //   alertCount--;
-    // }, 300);
-    return true;
+      if (_element.isRequired && field.inputField === '') {
+        console.log('empty');
+        field.invalidFeedback.textContent = "input field cannot be empty! 😾";
+        inputField.classList.add("is-invalid");
+        clearTimeout(window.timeoutId);
+        window.timeoutId = setTimeout(clearErrorMessage, 5000, field);
+        allInputsValid = false;
+      }
+      else if (field.inputValue.length && !isPrintableASCII(field.inputValue) && _element.type !== 'name') {
+        console.log('non printable');
+        field.invalidFeedback.textContent = "input can only contain printable ASCII characters! 😸";
+        input_field.classList.add("is-invalid");
+        clearTimeout(window.timeoutId);
+        window.timeoutId = setTimeout(clearErrorMessage, 5000, field);
+        allInputsValid = false;
+      }
+      else if (_element.type !== 'phone' && (_element.isRequired || (field.inputValue.length !== 0)) && ((field.inputValue.length > _element.maxLen) || (field.inputValue.length < _element.minLen))) {
+        if (field.inputValue.length > _element.maxLen) {
+          console.log('too big', field.inputValue.length, _element.maxLen);
+        }
+        if (field.inputValue.length < _element.minLen) {
+          console.log('too smol', field.inputValue.length, _element.minLen);
+        }
+        console.log('length issue -->>', _element.isRequired);
+        field.invalidFeedback.textContent = `input must be between ${_element.minLen} and ${_element.maxLen} characters long! 😼`;
+        input_field.classList.add("is-invalid");
+        clearTimeout(window.timeoutId);
+        window.timeoutId = setTimeout(clearErrorMessage, 5000, field);
+        allInputsValid = false;
+      }
+      else if (_element.type === 'phone') {
+        allInputsValid = (!_element.isRequired && field.inputValue.length === 0) ? allInputsValid : (phoneValidation(field) ? allInputsValid : false);
+        // var abc = phoneValidation(field) ? allInputsValid : false;
+        console.log('phone ternary check', field.inputValue.length);
+      }
+      else if (_element.type === 'name') {
+        // if (!(/^[a-zA-Z]+(?: [a-zA-Z]+)?$/).test(field.inputValue)) {
+        if (!(/^[a-zA-Z]+(?: [a-zA-Z]+)*$/).test(field.inputValue)) {
+          console.log('non printable');
+          field.invalidFeedback.textContent = "no elon musk typeof names only letter!! 💀";
+          input_field.classList.add("is-invalid");
+          clearTimeout(window.timeoutId);
+          window.timeoutId = setTimeout(clearErrorMessage, 5000, field);
+          allInputsValid = false;
+        }
+      }
+      else if (_element.type === 'userName') {
+        const username = field.inputValue.trim();
+        if (seenUsernames[username]) {
+          field.invalidFeedback.textContent = 'Username already taken!';
+          input_field.classList.add("is-invalid");
+          clearTimeout(window.timeoutId);
+          window.timeoutId = setTimeout(clearErrorMessage, 5000, field);
+          allInputsValid = false;
+        } else {
+          seenUsernames[username] = true;
+        }
+      }
+    } else {
+      console.error(`input field with ID ${_element} not found!`);
+    }
+  });
+  if (!allInputsValid) {
+    return !true;
   }
-  return false;
+  return !false;
 }
 
 function displayBootstrapAlert(id, message, type) {
   let alertContainer = document.getElementById(id); // assume this is the container for alerts
   if (limitAlerts(alertContainer))
-    return ;
+    return;
 
   const alertDiv = document.createElement('div');
   alertDiv.className = `alert alert-success alert-${type} alert-dismissible fade show`;
@@ -182,7 +175,7 @@ function displayBootstrapAlert(id, message, type) {
     alertDiv.classList.add('hide');
     setTimeout(() => {
       // if (alertDiv.parentNode === alertContainer)
-        alertContainer.removeChild(alertDiv);
+      alertContainer.removeChild(alertDiv);
       alertCount--;
       const index = alerts.indexOf(alertDiv);
       if (index !== -1) {
@@ -192,9 +185,5 @@ function displayBootstrapAlert(id, message, type) {
   }, 3000);
 }
 
-function clearErrorMessage(invalidFeedback, inputField) {
-  invalidFeedback.textContent = "Looks stinky! 🚽";
-  inputField.classList.remove("is-invalid");
-}
 
-export { checkProfileInput, displayBootstrapAlert };
+export { eventManager, inputElement, checkInput, isPrintableASCII, displayBootstrapAlert };

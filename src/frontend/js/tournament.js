@@ -1,5 +1,5 @@
 import { appRouter } from './router.js';
-import { fetchUserProfile } from './game.js';
+import { fetchUserProfile } from './pong2.js';
 import { createTournament, startTournament, getTournamentDetails, getFirstRound, getSecondRound, updateMatchResult, getNextMatch } from './tournamentApi.js';
 
 
