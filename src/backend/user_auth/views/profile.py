@@ -51,6 +51,9 @@ class UserProfileView(View):
             'last_activitiy': user.updated_at,
             'twofa_enabled': user.twofa_enabled,
             'GDPR_agreement': user.GDPR_agreement,
+            'games_played' : user.pong_games_played,
+            'wins': user.pong_wins,
+            'losses': user.pong_losses
         }
         return JsonResponse(user_data)
 
