@@ -17,7 +17,7 @@
     <div class="modal rounded-3" id="enterTournamentDetails" data-bs-backdrop="static" data-bs-keyboard="false"
         tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="container-fluid gradientHousing rounded-3">
+            <div class="container-fluid gradientHousing rounded-3" id = "gradientHousing">
                 <div class="modal-content custoModal">
                     <div class="modal-header bg-dark justify-content-center">
                         <h5 class="modal-title gradientText h2 pe-1" id="staticBackdropLabel">Welcome to Tournament!</h5>
@@ -35,7 +35,43 @@
                                 <button type="button" class="btn btn-outline-secondary quantity__plus">+</button>
                             </div>
                         </div>
+                        <p class="gradientText h5">color : </p>
+                        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                            <input type="radio" class="btn-check" name="btnradio-color" id="colorPickGreen" autocomplete="off" checked>
+                            <label class="btn btn-outline-primary" for="colorPickGreen">GREEN</label>
+                          
+                            <input type="radio"class="btn-check" name="btnradio-color" id="colorPickRed" autocomplete="off">
+                            <label class="btn btn-outline-primary" for="colorPickRed">RED</label>
+                          
+                            <input type="radio" class="btn-check" name="btnradio-color" id="colorPickBlue" autocomplete="off">
+                            <label class="btn btn-outline-primary" for="colorPickBlue">BLUE</label>
+                        </div>
+                        <p class="gradientText h5">difficultly / speed : </p>
+                        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                            <input type="radio" class="btn-check" name="btnradio-speed" id="normal" autocomplete="off" checked>
+                            <label class="btn btn-outline-primary" for="normal">normal</label>
+                          
+                            <input type="radio"class="btn-check" name="btnradio-speed" id="slow" autocomplete="off">
+                            <label class="btn btn-outline-primary" for="slow">slow</label>
+                          
+                            <input type="radio" class="btn-check" name="btnradio-speed" id="fast" autocomplete="off">
+                            <label class="btn btn-outline-primary" for="fast">fast</label>
+                        </div>
+                        <p class="gradientText h5"> game length : </p>
+                        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                            <input type="radio" class="btn-check" name="btnradio" id="3point" autocomplete="off" checked>
+                            <label class="btn btn-outline-primary" for="3point">3 points</label>
+                          
+                            <input type="radio"class="btn-check" name="btnradio" id="5point" autocomplete="off">
+                            <label class="btn btn-outline-primary" for="5point">5 points</label>
+                            
+                            <input type="radio" class="btn-check" name="btnradio" id="7point" autocomplete="off">
+                            <label class="btn btn-outline-primary" for="7point">7 points</label>
+                        </div>
+                        <!-- <button id="colorPickRed" class="btn btn-primary" type="button" >red</button>
+                        <button id="colorPickBlue" class="btn btn-primary" type="button" >blue</button> -->
                     </div>
+                    
                     <div class="modal-footer justify-content-center pb-4 bg-dark">
                         <div class="gradientHousingBtn">
                             <button type="button" class="btn custoModal" id="continueBtn" data-bs-dismiss="modal"
@@ -168,7 +204,7 @@
                 </p>
             </div>
             <div class="col d-flex justify-content-center">
-                <div class="pongHousing rounded">
+                <div class="pongHousing rounded" id="pongHousing">
                     <div id="board" class="pseudoCanvas rounded">
                         <div class="dottedLine"></div>
                         <div id="paddle_1" class="paddle rounded-1"></div>

@@ -123,7 +123,24 @@ function setupTournamentPage() {
     startModal = new bootstrap.Modal(document.getElementById('startGameModal'));
     matchModal = new bootstrap.Modal(document.getElementById('gameDetailsModal'));
     continueBtn.addEventListener('click', handleNewTournamentFormSubmit)
-
+    // colorPickRed.addEventListener('change', changeColor("red"));
+    // colorPickBlue.addEventListener('change', changeColor("blue"));
+    document.getElementById('colorPickRed').addEventListener('change', function() {
+        document.getElementById('gradientHousing').classList.remove('blue');
+        document.getElementById('gradientHousing').classList.add('red');
+        document.getElementById('pongHousing').classList.remove('blue');
+        document.getElementById('pongHousing').classList.add('red');
+    });
+    document.getElementById('colorPickBlue').addEventListener('change', function() {
+        document.getElementById('gradientHousing').classList.remove('red');
+        document.getElementById('gradientHousing').classList.add('blue');
+        document.getElementById('pongHousing').classList.remove('red');
+        document.getElementById('pongHousing').classList.add('blue');
+    });
+    document.getElementById('colorPickGreen').addEventListener('change', function() {
+        document.getElementById('gradientHousing').classList.remove('red', 'blue');
+        document.getElementById('pongHousing').classList.remove('red', 'blue');
+    });
     function handleNewTournamentFormSubmit(event) {
         event.preventDefault();
 

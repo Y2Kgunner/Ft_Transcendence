@@ -71,7 +71,6 @@ body {
   /* Add this line */
   /* animation: paddleGradient 5s infinite linear; */
 }
-
 /* @keyframes paddleGradient {
   0% {
     background-position: 50% 100%;
@@ -175,7 +174,13 @@ body {
   background-image: conic-gradient(#3cff00, #2c5519, #3cff00, #2c5519, #3cff00);
   animation: spin 4s infinite linear;
 }
-
+/* added for color */
+.gradientHousing.red:before {
+    background-image: conic-gradient(#ff5733, #c70039, #ff5733, #c70039, #ff5733);
+}
+.gradientHousing.blue:before {
+    background-image: conic-gradient(#33ccff, #0d00c7,#33ccff, #0d00c7,#33ccff);
+}
 @keyframes spin {
   100% {
     transform: rotate(360deg);
@@ -203,7 +208,13 @@ body {
   background-image: conic-gradient(#3cff00, #2c5519, #3cff00, #2c5519, #3cff00, #2c5519, #3cff00, #2c5519, #3cff00, #2c5519, #3cff00, #2c5519, #3cff00, #2c5519, #3cff00);
   animation: spin 8s infinite linear;
 }
-
+/* added for color */
+.pongHousing.red:before {
+    background-image: conic-gradient(#ff5733, #c70039, #ff5733, #c70039, #ff5733, #c70039, #ff5733, #c70039, #ff5733, #c70039, #ff5733, #c70039, #ff5733, #c70039, #ff5733);
+}
+.pongHousing.blue:before {
+    background-image: conic-gradient(#33ccff, #0d00c7,#33ccff, #0d00c7,#33ccff, #0d00c7,#33ccff, #0d00c7,#33ccff, #0d00c7,#33ccff, #0d00c7,#33ccff, #0d00c7,#33ccff);
+}
 .gradientText {
   /* font-style: oblique; */
   font-style: italic;
