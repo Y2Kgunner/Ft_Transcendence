@@ -93,11 +93,7 @@ class WebUser(AbstractBaseUser, PermissionsMixin):
     pong_losses = models.IntegerField(default=0)
     pong_scored = models.IntegerField(default=0)
     last_seen = models.DateTimeField(default=timezone.now)
-    ttt_games_played = models.IntegerField(default=0)
-    ttt_wins = models.IntegerField(default=0)
-    ttt_losses = models.IntegerField(default=0)
-    ttt_draws = models.IntegerField(default=0)
-    
+
     objects = WebUserManager()
     
     USERNAME_FIELD = 'username'
