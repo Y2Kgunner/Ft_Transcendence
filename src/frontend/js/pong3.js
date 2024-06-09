@@ -6,13 +6,13 @@ let initialHPaddlePos;
 let intervalId = null;
 let pauseModalVisible = false;
 let gameOver = false;
-const matchPoint = 100;
+const matchPoint = 7;
 
 let ballX = 5;
 let ballY = 5;
 let ballSpeedX = 5;
 let ballSpeedY = 5;
-const initialBallSpeedX = 5;
+const initialBallSpeedX = 4;
 const initialBallSpeedY = 5;
 
 let score1 = matchPoint;
@@ -284,8 +284,8 @@ function resetBall() {
   ballY = board.offsetHeight / 2 - ball.offsetHeight / 2;
   ball.style.left = `${ballX}px`;
   ball.style.top = `${ballY}px`;
-  ballSpeedX = (Math.random() < 0.5 ? -1 : 1);
-  ballSpeedY = (Math.random() < 0.5 ? -1 : 1);
+  ballSpeedX = initialBallSpeedY * (Math.random() < 0.5 ? -1 : 1);
+  ballSpeedY = initialBallSpeedX * (Math.random() < 0.5 ? -1 : 1);
 }
 
 function updateGame() {

@@ -54,6 +54,9 @@ def list_friends(request):
         'username': f.friend.username if f.creator == user else f.creator.username,
         'online_status': f.friend.is_online() if f.creator == user else f.creator.is_online(),
         'last_activity': f.friend.last_seen.strftime('%Y-%m-%d %H:%M:%S') if f.creator == user else f.creator.last_seen.strftime('%Y-%m-%d %H:%M:%S'),
+        'games_played': f.friend.pong_games_played if f.creator == user else f.creator.pong_games_played, 
+        'wins' : f.friend.pong_wins if f.creator == user else f.creator.pong_wins,
+        'losses' : f.friend.pong_losses if f.creator == user else f.creator.pong_losses
         } for f in friendships]
 
     return JsonResponse({'friends': friends_info}, safe=False)
