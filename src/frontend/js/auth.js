@@ -2,6 +2,21 @@ import { navigateBasedOnAuth , updateMainContentVisibility} from './init.js';
 import { appRouter } from './router.js';
 import { displayBootstrapAlert } from './inputValidation.js'
 
+
+
+
+function showGdprConsentModal() {
+    const gdprModalElement = document.getElementById('gdprModal');
+    const gdprModal = new bootstrap.Modal(gdprModalElement);
+    gdprModal.show();
+
+    document.getElementById('agreeButton').onclick = function() {
+        gdprModal.hide();
+        register();
+    };
+}
+
+
 async function isAuthenticated() {
     try {
         const response = await fetch('https://127.0.0.1:443/api/auth_status', {
@@ -55,7 +70,6 @@ async function login(event) {
         }
     } catch (error) {
         console.error('Login failed:', error);
-        // alert(error.message || 'Login failed');
         displayBootstrapAlert('loginAlert', error.message || 'Login failed', 'danger');
 
     }
@@ -103,20 +117,18 @@ function finalizeLogin(data) {
     appRouter.navigate('/');
 }
 
-//amro
-
-async function register(event) {
-    event.preventDefault();
-
+async function register() {
+    // Assume all validation passed and the user agreed to GDPR terms
     const email = document.getElementById('registerEmail').value;
     const username = document.getElementById('registerUserName').value;
     const password = document.getElementById('registerPassword').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
-    
+
     if (password !== confirmPassword) {
         alert('Passwords do not match');
         return;
     }
+
     const hashedPassword = await hashPassword(password);
     const response = await fetch('https://127.0.0.1:443/api/register', {
         method: 'POST',
@@ -129,12 +141,46 @@ async function register(event) {
     if (response.ok) {
         const data = await response.json();
         alert('Registration successful');
+        showLoginForm();
+        
     } else {
         const error = await response.json();
         console.error('Registration failed:', error);
         alert(error.error || 'Registration failed');
     }
 }
+
+
+// async function register(event) {
+//     event.preventDefault();
+
+//     const email = document.getElementById('registerEmail').value;
+//     const username = document.getElementById('registerUserName').value;
+//     const password = document.getElementById('registerPassword').value;
+//     const confirmPassword = document.getElementById('confirmPassword').value;
+    
+//     if (password !== confirmPassword) {
+//         alert('Passwords do not match');
+//         return;
+//     }
+//     const hashedPassword = await hashPassword(password);
+//     const response = await fetch('https://127.0.0.1:443/api/register', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({ email, username, password: hashedPassword }),
+//     });
+
+//     if (response.ok) {
+//         const data = await response.json();
+//         alert('Registration successful');
+//     } else {
+//         const error = await response.json();
+//         console.error('Registration failed:', error);
+//         alert(error.error || 'Registration failed');
+//     }
+// }
 
 async function hashPassword(password) {
     const encoder = new TextEncoder();
@@ -204,6 +250,42 @@ async function verifyOtp(event) {
     }
 }
 
+// function setupEventListeners() {
+//     document.getElementById('showRegisterForm')?.addEventListener('click', function(event) {
+//         event.preventDefault();
+//         showRegisterForm();
+//     });
+
+//     document.getElementById('showLoginForm')?.addEventListener('click', function(event) {
+//         event.preventDefault();
+//         showLoginForm();
+//     });
+
+//     const debouncedLogin = debounce(login, 3000);
+//     document.getElementById('loginButton')?.addEventListener('click', function(event) {
+//         event.preventDefault();
+//         debouncedLogin(event);
+//     });
+
+//     const debouncedVerifyOtp = debounce(verifyOtp, 3000);
+//     document.getElementById('otpButton')?.addEventListener('click', function(event) {
+//         event.preventDefault();
+//         debouncedVerifyOtp(event);
+//     });
+
+//     const fortyTwoButtonLog = document.getElementById("fortytwoLoginButton");
+//     if (fortyTwoButtonLog) {
+//         fortyTwoButtonLog.addEventListener('click', function(event) {
+//             window.location.href = "https://127.0.0.1/api/fortytwo";
+//         });
+//     }
+
+//     document.getElementById('registerButton')?.addEventListener('click', register);
+//     document.getElementById('registerForm')?.addEventListener('submit', register);
+//     document.getElementById('forgotPasswordLink')?.addEventListener('click', forgetPassword);
+//     initializeModals();
+// }
+
 function setupEventListeners() {
     document.getElementById('showRegisterForm')?.addEventListener('click', function(event) {
         event.preventDefault();
@@ -234,12 +316,29 @@ function setupEventListeners() {
         });
     }
 
-    document.getElementById('registerButton')?.addEventListener('click', register);
-    document.getElementById('registerForm')?.addEventListener('submit', register);
+    document.getElementById('registerButton')?.addEventListener('click', function(event) {
+        event.preventDefault();
+        const form = document.getElementById('registerForm');
+        if (form.checkValidity()) {
+            showGdprConsentModal();
+        } else {
+            form.classList.add('was-validated');
+        }
+    });
+    document.getElementById('registerForm')?.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const form = document.getElementById('registerForm');
+        if (form.checkValidity()) {
+            showGdprConsentModal();
+        } else {
+            form.classList.add('was-validated');
+        }
+    });
+
     document.getElementById('forgotPasswordLink')?.addEventListener('click', forgetPassword);
     initializeModals();
 }
-
+ 
 export async function setupAuthPage() {
 
     window.showRegisterForm = function() {
@@ -385,5 +484,5 @@ function getUserId() {
     return localStorage.getItem('userId');
 }
 
-export { isAuthenticated, getAuthToken, login, register , handleOAuthCallback, logoutUser  };
+export { isAuthenticated, getAuthToken, login, register , handleOAuthCallback, logoutUser , hashPassword};
 
