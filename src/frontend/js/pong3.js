@@ -3,7 +3,7 @@ import { eventManager, inputElement, checkInput, isPrintableASCII } from './inpu
 let begin = false;
 let initialVPaddlePos;
 let initialHPaddlePos;
-let intervalId = null;
+let pong3IntervalId = null;
 let pauseModalVisible = false;
 let gameOver = false;
 const matchPoint = 7;
@@ -328,8 +328,8 @@ function haltGame() {
   var restartModal = new bootstrap.Modal(document.getElementById('restartGame'));
   restartModal.show();
 
-  clearInterval(intervalId);
-  intervalId = null;
+  clearInterval(pong3IntervalId);
+  pong3IntervalId = null;
 }
 
 function startGame() {
@@ -340,7 +340,7 @@ function startGame() {
   startGameSession();
   begin = true;
   gameOver = false;
-  intervalId = setInterval(updateGame, 16);
+  pong3IntervalId = setInterval(updateGame, 16);
   document.addEventListener("keydown", handleKeyDown);
   document.addEventListener("keyup", handleKeyUp);
 }
@@ -356,8 +356,8 @@ function togglePause() {
 }
 
 function pauseGame() {
-  clearInterval(intervalId);
-  intervalId = null;
+  clearInterval(pong3IntervalId);
+  pong3IntervalId = null;
   pauseModalInstance = new bootstrap.Modal(document.getElementById('pauseGameModal'));
   pauseModalInstance.show();
   pauseModalVisible = true;
@@ -367,8 +367,8 @@ function continueGame() {
   pauseModalInstance.hide();
   pauseModalInstance._element.addEventListener('hidden.bs.modal', function () {
     pauseModalVisible = false;
-    if (!intervalId)
-      intervalId = setInterval(updateGame, 16);
+    if (!pong3IntervalId)
+      pong3IntervalId = setInterval(updateGame, 16);
   }, { once: true });
 }
 
@@ -411,4 +411,4 @@ function closeModal() {
   modalInstance.hide();
 }
 
-export { init3PlyrPong, gameInProgress3, isPrintableASCII };
+export { init3PlyrPong, gameInProgress3, isPrintableASCII, pong3IntervalId };

@@ -121,7 +121,7 @@ function setupTTT() {
   useMouse = true;
   currentFocusIndex = 0;
 
-  winnerMessageElement = document.getElementById('winner');
+//   winnerMessageElement = document.getElementById('winner');
   nextMoveElement = document.querySelector('.turn');
   boxes = document.querySelectorAll('.box');
   playerNamesElement = document.querySelector('.player-names');
@@ -289,13 +289,21 @@ function checkWinner() {
       boxIndexValues[a] === boxIndexValues[c]
     ) {
       gameOver = true;
+      winnerMessageElement = document.getElementById('winner');
+      if (nextMove == "X")
+      winner = player2Alias;
+      else
+      winner = player1Name;
       winnerMessageElement.innerHTML = WinnerMessage();
+      
       restartModal.show();
+      
       return;
     }
   }
 
   if (!boxIndexValues.includes("") && !gameOver) {
+    winnerMessageElement = document.getElementById('winner');
     winnerMessageElement.innerHTML = "Draw.";
     draw = true;
     gameOver = true;

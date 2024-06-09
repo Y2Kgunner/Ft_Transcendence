@@ -5,7 +5,7 @@ import { inputElement, eventManager, checkInput } from './inputValidation.js';
 
 
 const matchPoint = 1;
-let intervalId = null;
+let tournamentIntervalId = null;
 let paused = false;
 let pauseModalVisible = false;
 let gameOver = false;
@@ -393,8 +393,8 @@ function haltGame(winning_player) {
     paddle1.style.top = initialPaddlePos;
     paddle2.style.top = initialPaddlePos;
     restartModal.show();
-    clearInterval(intervalId);
-    intervalId = null;
+    clearInterval(tournamentIntervalId);
+    tournamentIntervalId = null;
 }
 
 function resetBall() {
@@ -418,10 +418,10 @@ function startGame() {
     tournamentName = document.getElementById("tournamentName").value;
     player1AliasElement.textContent = player1Alias;
     player2AliasElement.textContent = player2Alias;
-    if (intervalId) {
-        clearInterval(intervalId);
+    if (tournamentIntervalId) {
+        clearInterval(tournamentIntervalId);
     }
-    intervalId = setInterval(updateGame, 16);
+    tournamentIntervalId = setInterval(updateGame, 16);
     document.addEventListener("keydown", handleKeyDown);
     document.addEventListener("keyup", handleKeyUp);
 }
@@ -463,8 +463,8 @@ function hideOverflow() {
 
 
 function pauseGame() {
-    clearInterval(intervalId);
-    intervalId = null;
+    clearInterval(tournamentIntervalId);
+    tournamentIntervalId = null;
     pauseModalInstance.show();
     pauseModalVisible = true;
 }
@@ -473,8 +473,8 @@ function continueGame() {
     pauseModalInstance.hide();
     pauseModalInstance._element.addEventListener('hidden.bs.modal', function () {
         pauseModalVisible = false;
-        if (!intervalId)
-            intervalId = setInterval(updateGame, 16);
+        if (!tournamentIntervalId)
+            tournamentIntervalId = setInterval(updateGame, 16);
     }, { once: true });
 }
 
@@ -636,4 +636,4 @@ function getTournamentId() {
     return localStorage.getItem('currentTournamentId');
 }
 
-export { setupTournamentPage, gameInProgressTour, setTournamentId, getTournamentId };
+export { setupTournamentPage, gameInProgressTour, setTournamentId, getTournamentId, tournamentIntervalId };
