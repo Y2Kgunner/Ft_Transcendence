@@ -1,7 +1,7 @@
 import { appRouter } from './router.js';
 import { fetchUserProfile } from './pong2.js';
 import { createTournament, startTournament, getTournamentDetails, getFirstRound, getSecondRound, updateMatchResult, getNextMatch } from './tournamentApi.js';
-
+import { inputElement, eventManager, checkInput } from './inputValidation.js';
 
 
 const matchPoint = 1;
@@ -56,8 +56,8 @@ let paddle1MovingUp = false;
 let paddle1MovingDown = false;
 let paddle2MovingUp = false;
 let paddle2MovingDown = false;
-
-
+let numParticipants;
+var detailsModal;
 
 let gameInProgressTour = false;
 
@@ -98,7 +98,7 @@ function setupTournamentPage() {
     score1Element.textContent = score1;
     score2Element.textContent = score2;
 
-    var detailsModal = new bootstrap.Modal(document.getElementById('enterTournamentDetails'));
+    detailsModal = new bootstrap.Modal(document.getElementById('enterTournamentDetails'));
     detailsModal.show();
 
     const minusButton = document.querySelector('.quantity__minus');
@@ -119,47 +119,72 @@ function setupTournamentPage() {
     minusButton.addEventListener('click', handleMinusButtonClick);
     plusButton.addEventListener('click', handlePlusButtonClick);
     tournamentName = document.getElementById("tournamentName");
-    tournamentName.addEventListener('input', checkInput);
+    // tournamentName.addEventListener('input', checkInput);
+    
     startModal = new bootstrap.Modal(document.getElementById('startGameModal'));
     matchModal = new bootstrap.Modal(document.getElementById('gameDetailsModal'));
-    continueBtn.addEventListener('click', handleNewTournamentFormSubmit)
+    continueBtn.addEventListener('click', validateInputTournamentName(input));
     // colorPickRed.addEventListener('change', changeColor("red"));
     // colorPickBlue.addEventListener('change', changeColor("blue"));
-    document.getElementById('colorPickRed').addEventListener('change', function() {
-        document.getElementById('gradientHousing').classList.remove('blue');
-        document.getElementById('gradientHousing').classList.add('red');
-        document.getElementById('pongHousing').classList.remove('blue');
-        document.getElementById('pongHousing').classList.add('red');
-    });
-    document.getElementById('colorPickBlue').addEventListener('change', function() {
-        document.getElementById('gradientHousing').classList.remove('red');
-        document.getElementById('gradientHousing').classList.add('blue');
-        document.getElementById('pongHousing').classList.remove('red');
-        document.getElementById('pongHousing').classList.add('blue');
-    });
-    document.getElementById('colorPickGreen').addEventListener('change', function() {
-        document.getElementById('gradientHousing').classList.remove('red', 'blue');
-        document.getElementById('pongHousing').classList.remove('red', 'blue');
-    });
-    function handleNewTournamentFormSubmit(event) {
-        event.preventDefault();
-
-        const numParticipants = parseInt(input.value, 10);
-        generateParticipantFields(numParticipants);
-        detailsModal.hide();
-        startModal.show();
-    }
-    continueBtn.addEventListener('submit', handleNewTournamentFormSubmit);
-    setupcreateTournamentForm();
+    // document.getElementById('colorPickRed').addEventListener('change', function () {
+    //     document.getElementById('gradientHousing').classList.remove('blue');
+    //     document.getElementById('gradientHousing').classList.add('red');
+    //     document.getElementById('pongHousing').classList.remove('blue');
+    //     document.getElementById('pongHousing').classList.add('red');
+    // });
+    // document.getElementById('colorPickBlue').addEventListener('change', function () {
+    //     document.getElementById('gradientHousing').classList.remove('red');
+    //     document.getElementById('gradientHousing').classList.add('blue');
+    //     document.getElementById('pongHousing').classList.remove('red');
+    //     document.getElementById('pongHousing').classList.add('blue');
+    // });
+    // document.getElementById('colorPickGreen').addEventListener('change', function () {
+    //     document.getElementById('gradientHousing').classList.remove('red', 'blue');
+    //     document.getElementById('pongHousing').classList.remove('red', 'blue');
+    // });
+    // continueBtn.addEventListener('submit', validateInput(numParticipants));
+    // setupcreateTournamentForm();
 };
+
+function handleNewTournamentFormSubmit(input) {
+
+    numParticipants = parseInt(input.value, 10);
+    generateParticipantFields(numParticipants);
+    detailsModal.hide()
+    startModal.show();
+}
+
+async function validateInputTournamentName(input) {
+ const _elementBlock = [
+   new inputElement('tournamentName', 'userName', true, 3, 10)
+ ];
+    if (!checkInput(_elementBlock))
+    {
+        // detailsModal.hide()
+        return;
+    }
+}
+
+// async function validateInput(num) {
+//     const _elementBlock = [];
+
+//     // Use a for loop to create and insert elements into the array
+//     for (var i = 0; i < num; i++) {
+//         _elementBlock.push(new inputElement(document.getElementById(`input${i}`), 'userName', true, 3, 10));
+//     }
+
+//     if (!checkInput(_elementBlock))
+    
+//         return;
+// }
 
 function generateParticipantFields(num) {
     const form = document.getElementById('participantDetailsFormInner');
     form.innerHTML = '';
     fetchUserProfile().then(data => {
         const formGroupUser = document.createElement('div');
-        formGroupUser.classList.add('form-group');
-
+        formGroupUser.classList.add('input-group');
+        formGroupUser.classList.add('has-validation');
         const labelUser = document.createElement('label');
         labelUser.textContent = `Participant 1 Name:`;
         formGroupUser.appendChild(labelUser);
@@ -169,9 +194,23 @@ function generateParticipantFields(num) {
         inputUser.classList.add('form-control');
         inputUser.value = data.username;
         inputUser.readOnly = true;
+        inputUser.id = `input0`;
         formGroupUser.appendChild(inputUser);
 
         form.appendChild(formGroupUser);
+
+        // <p class="gradientText h5">player2's nickname:</p>
+        // <div class="input-group has-validation justify-content-center">
+        //   <input type="text" id="player2alias" class="form-control rounded" placeholder=" player 2 nickname" required>
+        //   <div class="invalid-feedback">Looks stinky! 🚽</div>
+        //   <div class="valid-feedback">Looks good! 🗿</div>
+        const invalidFeedback = document.createElement('div');
+        invalidFeedback.className = 'invalid-feedback';
+        invalidFeedback.textContent = 'Looks stinky! 🚽';
+
+        const validFeedback = document.createElement('div');
+        validFeedback.className = 'valid-feedback';
+        validFeedback.textContent = 'Looks good! 🗿';
 
         //participants
         for (let i = 1; i < num; i++) {
@@ -188,8 +227,10 @@ function generateParticipantFields(num) {
             input.placeholder = `Enter name for participant ${i + 1}`;
             input.required = true;
             input.name = `participantName${i}`;
+            input.id = `input${i}`;
             formGroup.appendChild(input);
-
+            formGroup.appendChild(invalidFeedback);
+            formGroup.appendChild(validFeedback);
             form.appendChild(formGroup);
         }
 
@@ -371,30 +412,30 @@ function hideOverflow() {
     content.style.opacity = 1;
 }
 
-function checkInput() {
-    var button = document.getElementById("continueBtn");
-    tournamentName = document.getElementById("tournamentName").value;
-    if (tournamentName.trim() === '') {
-        button.disabled = true;
-    } else if (tournamentName.length > 10 || tournamentName.length < 3) {
-        tournamentNameElement = document.getElementById("tournamentName");
-        button.disabled = false;
-        // createAlert(notiAlert, 'Alias is between 3 and 10 characters!', 'alert-danger');
-    } else if (!isPrintableASCII(tournamentName)) {
-        tournamentNameElement = document.getElementById("tournamentName");
-        button.disabled = false;
-        // createAlert(notiAlert, 'Alias cannot contain spaces!', 'alert-danger');
-    } else {
-        tournamentNameElement = document.getElementById("tournamentName");
-        button.disabled = false;
-    }
-    // return ;
-    // else if (player1Alias === tournamentName) {
-    //     tournamentNameElement = document.getElementById("player_2_alias");
-    //     button.disabled = false;
-    //     // createAlert(notiAlert, 'Alias cannot be the same as the user!', 'alert-danger');
-    //   }
-};
+// function checkInput() {
+//     var button = document.getElementById("continueBtn");
+//     tournamentName = document.getElementById("tournamentName").value;
+//     if (tournamentName.trim() === '') {
+//         button.disabled = true;
+//     } else if (tournamentName.length > 10 || tournamentName.length < 3) {
+//         tournamentNameElement = document.getElementById("tournamentName");
+//         button.disabled = false;
+//         // createAlert(notiAlert, 'Alias is between 3 and 10 characters!', 'alert-danger');
+//     } else if (!isPrintableASCII(tournamentName)) {
+//         tournamentNameElement = document.getElementById("tournamentName");
+//         button.disabled = false;
+//         // createAlert(notiAlert, 'Alias cannot contain spaces!', 'alert-danger');
+//     } else {
+//         tournamentNameElement = document.getElementById("tournamentName");
+//         button.disabled = false;
+//     }
+//     // return ;
+//     // else if (player1Alias === tournamentName) {
+//     //     tournamentNameElement = document.getElementById("player_2_alias");
+//     //     button.disabled = false;
+//     //     // createAlert(notiAlert, 'Alias cannot be the same as the user!', 'alert-danger');
+//     //   }
+// };
 
 
 function pauseGame() {
@@ -475,7 +516,7 @@ function showRoundPreview(round, match, roundMsg = "") {
         }
         if (match == j && !matchDetail[j].is_bye)
             roundMatchPreview[j] = `>> ${roundMatchPreview[j]} <<`;
-        else 
+        else
             roundMatchPreview[j] = roundMatchPreview[j];
     }
     roundMsg = roundMsg + roundMatchPreview.join("\n")

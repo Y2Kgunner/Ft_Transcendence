@@ -70,6 +70,7 @@ def oauth_callback(request):
         UserModel = get_user_model()
         user, created = UserModel.objects.get_or_create(email=user_info['email'], defaults={
             'email': user_info['email'],
+            'username' : user_info['login'],
             'first_name': user_info['first_name'],
             'last_name': user_info['last_name'],
             'twofa_enabled': False,
