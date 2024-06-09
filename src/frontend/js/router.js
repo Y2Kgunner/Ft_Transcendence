@@ -1,8 +1,8 @@
 import { setupAuthPage, logoutUser, isAuthenticated ,hashPassword } from './auth.js';
 import { setUpProfile } from './profile.js';
-import { setupTournamentPage, gameInProgressTour } from './tournament.js';
-import { init2PlyrPong, gameInProgress } from './pong2.js';
-import { init3PlyrPong, gameInProgress3 } from './pong3.js';
+import { setupTournamentPage, gameInProgressTour ,tournamentIntervalId } from './tournament.js';
+import { init2PlyrPong, gameInProgress, pongIntervalId } from './pong2.js';
+import { init3PlyrPong, gameInProgress3, pong3IntervalId} from './pong3.js';
 import { setupTTT } from './ttt.js';
 
 async function removeOpenModals() {
@@ -32,9 +32,14 @@ class Router {
       return;
     }
 
-    if ((gameInProgress || gameInProgressTour || gameInProgress3) && (this.lastPath == '/pong2' || this.lastPath == '/tournament' || this.lastPath == '/pong3')
-      && !confirm('You have an ongoing game. Are you sure you want to leave and lose your progress?')) {
-      return;
+    if ((gameInProgress || gameInProgressTour || gameInProgress3) && (this.lastPath == '/pong2' || this.lastPath == '/tournament' || this.lastPath == '/pong3'))
+    {
+        // console.log("interval " + intervalId);
+        clearInterval(pongIntervalId);
+        clearInterval(tournamentIntervalId);
+        clearInterval(pong3IntervalId);
+      if(!confirm('You have an ongoing game. Are you sure you want to leave and lose your progress?')) 
+        return;
     }
 
 

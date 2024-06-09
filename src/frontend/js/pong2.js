@@ -2,7 +2,7 @@ import { getCookie } from './profile.js';
 import { inputElement, checkInput, eventManager } from './inputValidation.js';
 
 const matchPoint = 11;
-let intervalId = null;
+let pongIntervalId = null;
 let pauseModalVisible = false;
 let gameOver = false;
 let modalInit = false;
@@ -374,8 +374,8 @@ function haltGame(winner) {
   paddle2.style.top = initialPaddlePos;
   var restartModal = new bootstrap.Modal(document.getElementById('restartGame'));
   restartModal.show();
-  clearInterval(intervalId);
-  intervalId = null;
+  clearInterval(pongIntervalId);
+  pongIntervalId = null;
 }
 
 function startGame() {
@@ -383,10 +383,10 @@ function startGame() {
   gameOver = false;
   player2Alias = document.getElementById("player2alias").value;
   player2AliasElement.textContent = player2Alias;
-  if (intervalId)
-    clearInterval(intervalId);
+  if (pongIntervalId)
+    clearInterval(pongIntervalId);
   resetBall();
-  intervalId = setInterval(updateGame, 16);
+  pongIntervalId = setInterval(updateGame, 16);
   document.addEventListener("keydown", handleKeyDown);
   document.addEventListener("keyup", handleKeyUp);
 }
@@ -397,8 +397,8 @@ function isPrintableASCII(str) {
 }
 
 function pauseGame() {
-  clearInterval(intervalId);
-  intervalId = null;
+  clearInterval(pongIntervalId);
+  pongIntervalId = null;
   pauseModalInstance.show();
   pauseModalVisible = true;
 }
@@ -406,8 +406,8 @@ function pauseGame() {
 function continueGame() {
   pauseModalInstance._element.addEventListener('hidden.bs.modal', function () {
     pauseModalVisible = false;
-    if (!intervalId) {
-      intervalId = setInterval(updateGame, 16);
+    if (!pongIntervalId) {
+      pongIntervalId = setInterval(updateGame, 16);
     }
   }, { once: true });
   pauseModalInstance.hide();
@@ -453,4 +453,4 @@ function closeModal() {
 //?
 //? end of modal input validation
 
-export { init2PlyrPong, fetchUserProfile, isPrintableASCII, waitGameFinish, updateMatch, gameInProgress };
+export { init2PlyrPong, fetchUserProfile, isPrintableASCII, waitGameFinish, updateMatch, gameInProgress, pongIntervalId};
