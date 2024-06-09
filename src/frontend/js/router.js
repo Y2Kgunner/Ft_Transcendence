@@ -117,7 +117,8 @@ const routes = {
   '/pong3': { path: 'pages/pong3.html', method: init3PlyrPong },
   '/tournament': { path: 'pages/tournament.html', method: setupTournamentPage },
   '/logout': { path: '', method: null },
-  '/forgot-password': { path: 'pages/forgot-password.html', method: setupPasswordResetPage }
+  '/forgot-password': { path: 'pages/forgot-password.html', method: setupPasswordResetPage },
+  '/NeverGonnaGiveYouUp': { path: 'pages/never-gonna-give-you-up.html', method: null }
 };
 
 async function setupProfilePage() {
