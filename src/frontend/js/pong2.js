@@ -6,7 +6,7 @@ let intervalId = null;
 let pauseModalVisible = false;
 let gameOver = false;
 let modalInit = false;
-let pause = false;
+let paused = false;
 
 let ballX = 10;
 let ballY = 10;
@@ -137,7 +137,7 @@ async function validateInput() {
   const _elementBlock = [
     new inputElement('player2alias', 'userName', true, 3, 10),
   ];
-  if (!checkInputV69(_elementBlock))
+  if (!checkInput(_elementBlock))
     return;
   closeModal();
   await createMatch("Pong");

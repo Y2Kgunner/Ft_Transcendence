@@ -62,12 +62,12 @@ var detailsModal;
 let gameInProgressTour = false;
 
 export function startGameSession() {
-    gameInProgressTour = true;
+    // gameInProgressTour = true;
     window.addEventListener('beforeunload', handleBeforeUnload);
 }
 
 export function endGameSession() {
-    gameInProgressTour = false;
+    // gameInProgressTour = false;
     window.removeEventListener('beforeunload', handleBeforeUnload);
 }
 function handleBeforeUnload(event) {
@@ -191,18 +191,17 @@ async function validateInputParticipants() {
 }
 
 async function setupcreateTournamentForm() {
-    console.log("starting tourney")
-
-    console.log("starting tourney")
+    gameInProgressTour = true;
     await createTournament();
     const details = await getTournamentDetails();
     startModal.hide();
+    
     participants = details.participants;
     creator = details.creator;
     participants[0].username = creator.username;
     await startTournament();
     startGameLoop();
-
+    
 }
 
 
@@ -612,6 +611,7 @@ async function startGameLoop() {
     winnerMsg = document.getElementById('tournamentWinner');
     winnerMsg.textContent = win.username + " wins Tournament!";
     finishTournamentModal.toggle();
+    gameInProgressTour = false;
     var restartTournament = document.getElementById("restartTournament");
     restartTournament.addEventListener('click', function () {
         finishTournamentModal.hide();
