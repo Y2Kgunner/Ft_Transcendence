@@ -1,4 +1,4 @@
-import { fetchUserProfile, isPrintableASCII } from './game.js';
+import { fetchUserProfile, isPrintableASCII } from './pong2.js';
 import { getCookie } from './profile.js';
 
 let player1Name = "";

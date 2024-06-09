@@ -155,8 +155,8 @@ function checkInput(inputElements) {
 }
 
 function displayBootstrapAlert(id, message, type) {
-  let alertContainer = document.getElementById(id); // assume this is the container for alerts
-  if (limitAlerts(alertContainer))
+  let alertContainer = document.getElementById(id);
+  if (alertContainer.querySelector('.alert'))
     return;
 
   const alertDiv = document.createElement('div');
@@ -174,16 +174,14 @@ function displayBootstrapAlert(id, message, type) {
     alertDiv.classList.remove('show');
     alertDiv.classList.add('hide');
     setTimeout(() => {
-      // if (alertDiv.parentNode === alertContainer)
       alertContainer.removeChild(alertDiv);
       alertCount--;
       const index = alerts.indexOf(alertDiv);
-      if (index !== -1) {
+      if (index!== -1) {
         alerts.splice(index, 1);
       }
     }, 300);
-  }, 3000);
+  }, 5000);
 }
-
 
 export { eventManager, inputElement, checkInput, isPrintableASCII, displayBootstrapAlert };
