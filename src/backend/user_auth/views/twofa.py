@@ -102,5 +102,5 @@ def check_2fa_status(request):
     # except User.DoesNotExist:
     #     return JsonResponse({'error': 'User not found.'}, status=404)
     return JsonResponse({'twofa_enabled': user.twofa_enabled}, status=200)
-  except DoesNotExist as e:
+  except Exception as e:
     return JsonResponse({'error': {e}}, status=400)

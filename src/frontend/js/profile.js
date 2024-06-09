@@ -89,27 +89,97 @@ async function enable2FA() {
   }
 }
 
+
 async function disable2FA() {
   try {
-    const response = await fetch('https://127.0.0.1:443/api/disable_2fa', {
+    // Request the server to send an OTP to the user's email
+    const sendOtpResponse = await fetch('https://127.0.0.1:443/api/send_otp_email', {
       method: 'POST',
       headers: {
-        'Authorization': 'Bearer ' + getCookie('jwt')
+        'Authorization': 'Bearer ' + getCookie('jwt'),
+        'Content-Type': 'application/json'
       },
       credentials: 'include'
     });
-    if (!response.ok) {
-      if (response.status === 400)
-        console.error('internal pointer variable error 🙈🙉🙊');
-      else
-        console.error('Unknown error');
+
+    const sendOtpData = await sendOtpResponse.json();
+    if (!sendOtpResponse.ok) {
+      console.error('Failed to send OTP:', sendOtpData.error);
+      return;
     }
-    const responseData = await response.json();
-    console.log(responseData);
+
+    // Show the OTP modal for user to enter the OTP
+    const otpModal = new bootstrap.Modal(document.getElementById('otpModal'));
+    otpModal.show();
+
+    // Set up event listener for OTP verification button
+    document.getElementById('verifyOtpButton').onclick = async () => {
+      const otpInput = document.getElementById('otpInput').value;
+      const verifyOtpResponse = await fetch('https://127.0.0.1:443/api/verify_otp', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + getCookie('jwt'),
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ otp: otpInput }),
+        credentials: 'include'
+      });
+
+      const verifyOtpData = await verifyOtpResponse.json();
+      if (verifyOtpResponse.ok) {
+        console.log('OTP verified successfully');
+        otpModal.hide();
+        // Proceed with disabling 2FA
+        await performDisable2FA();
+      } else {
+        console.error('Failed to verify OTP:', verifyOtpData.error);
+      }
+    };
   } catch (error) {
     console.error('Error disabling 2FA:', error);
   }
 }
+
+async function performDisable2FA() {
+  const response = await fetch('https://127.0.0.1:443/api/disable_2fa', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer ' + getCookie('jwt')
+    },
+    credentials: 'include'
+  });
+  if (!response.ok) {
+    if (response.status === 400)
+      console.error('internal pointer variable error 🙈🙉🙊');
+    else
+      console.error('Unknown error');
+  }
+  const responseData = await response.json();
+  console.log(responseData);
+}
+
+
+// async function disable2FA() {
+//   try {
+//     const response = await fetch('https://127.0.0.1:443/api/disable_2fa', {
+//       method: 'POST',
+//       headers: {
+//         'Authorization': 'Bearer ' + getCookie('jwt')
+//       },
+//       credentials: 'include'
+//     });
+//     if (!response.ok) {
+//       if (response.status === 400)
+//         console.error('internal pointer variable error 🙈🙉🙊');
+//       else
+//         console.error('Unknown error');
+//     }
+//     const responseData = await response.json();
+//     console.log(responseData);
+//   } catch (error) {
+//     console.error('Error disabling 2FA:', error);
+//   }
+// }
 
 function setupDeleteProfileButton() {
   const debouncedDeleteFunc = debounce(deleteProfile, 3000);
