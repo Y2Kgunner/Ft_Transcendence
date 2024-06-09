@@ -1,4 +1,4 @@
-import { setupAuthPage, logoutUser, isAuthenticated } from './auth.js';
+import { setupAuthPage, logoutUser, isAuthenticated ,hashPassword } from './auth.js';
 import { setUpProfile } from './profile.js';
 import { setupTournamentPage, gameInProgressTour } from './tournament.js';
 import { init2PlyrPong, gameInProgress } from './pong2.js';
@@ -146,6 +146,7 @@ async function setupPasswordResetPage() {
       alert('Passwords do not match!');
       return;
     }
+    const password = hashPassword(newPassword)
     const url = `https://127.0.0.1/api/reset_password/${token}/`;
 
     fetch(url, {
@@ -153,7 +154,7 @@ async function setupPasswordResetPage() {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ new_password: newPassword })
+      body: JSON.stringify({ new_password: password })
     })
       .then(response => response.json())
       .then(data => {
