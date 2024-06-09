@@ -170,6 +170,10 @@ EMAIL_USE_TLS = True
 EMIAL_USE_SSL = False
 
 #SEND_GRID_RECOVER_CODE  = FWHVDD5UD66EDBKHFQUX4CNS
+AUTHENTICATION_BACKENDS = [
+    'user_auth.authentication_backends.HashedPasswordBackend',
+    'django.contrib.auth.backends.ModelBackend'
+]
 
 
 

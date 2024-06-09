@@ -9,16 +9,6 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth import get_user_model
 import logging
 
-'''
-group of helper functions to handle the registration process
-'''
-
-def get_data(request):
-    data = json.loads(request.body)
-    username = data['username']
-    password = data['password']
-    email = data['email']
-    return username, password, email
 
 def is_username_valid(username):
     username_policy = re.compile(r'^[a-zA-Z]{4,}$')
@@ -33,10 +23,11 @@ returns: JsonResponse
 '''
 
 def is_password_strong(password):
-    password_policy = re.compile(r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$')
-    if not password_policy.match(password):
-        return 'Password must be at least 8 characters long and include at least one lowercase letter, one uppercase letter, and one number.'
-    return None
+    # password_policy = re.compile(r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$')
+    # if not password_policy.match(password):
+    #     return 'Password must be at least 8 characters long and include at least one lowercase letter, one uppercase letter, and one number.'
+    # return None
+    pass
 
 def is_email_valid(email):
     email_policy = re.compile(r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')

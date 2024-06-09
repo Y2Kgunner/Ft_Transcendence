@@ -32,14 +32,14 @@ async function login(event) {
     event.preventDefault();
     const username = document.getElementById('LoginUserName').value;
     const password = document.getElementById('loginPassword').value;
-
+    const hashedPassword = await hashPassword(password);
     try {
         const response = await fetch('https://127.0.0.1:443/api/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ username, password }),
+            body: JSON.stringify({ username, password: hashedPassword }),
             credentials: 'include'
         });
 
@@ -103,37 +103,78 @@ function finalizeLogin(data) {
     appRouter.navigate('/');
 }
 
+//amro
+
 async function register(event) {
     event.preventDefault();
+
     const email = document.getElementById('registerEmail').value;
     const username = document.getElementById('registerUserName').value;
     const password = document.getElementById('registerPassword').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
-            
+    
     if (password !== confirmPassword) {
         alert('Passwords do not match');
         return;
     }
-
+    const hashedPassword = await hashPassword(password);
     const response = await fetch('https://127.0.0.1:443/api/register', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, username, password }),
+        body: JSON.stringify({ email, username, password: hashedPassword }),
     });
 
     if (response.ok) {
         const data = await response.json();
-        await appRouter.navigate('/login', { force: true });
+        alert('Registration successful');
     } else {
         const error = await response.json();
         console.error('Registration failed:', error);
-        // alert(error.error || 'Registration failed');
-        displayBootstrapAlert('registerAlert', error.error || 'Registration failed', 'danger');
-
+        alert(error.error || 'Registration failed');
     }
 }
+
+async function hashPassword(password) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    const hash = await crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+
+// async function register(event) {
+//     event.preventDefault();
+//     const email = document.getElementById('registerEmail').value;
+//     const username = document.getElementById('registerUserName').value;
+//     const password = document.getElementById('registerPassword').value;
+//     const confirmPassword = document.getElementById('confirmPassword').value;
+            
+//     if (password !== confirmPassword) {
+//         alert('Passwords do not match');
+//         return;
+//     }
+
+//     const response = await fetch('https://127.0.0.1:443/api/register', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({ email, username, password }),
+//     });
+
+//     if (response.ok) {
+//         const data = await response.json();
+//         await appRouter.navigate('/login', { force: true });
+//     } else {
+//         const error = await response.json();
+//         console.error('Registration failed:', error);
+//         // alert(error.error || 'Registration failed');
+//         displayBootstrapAlert('registerAlert', error.error || 'Registration failed', 'danger');
+
+//     }
+// }
 
 async function verifyOtp(event) {
     event.preventDefault();
