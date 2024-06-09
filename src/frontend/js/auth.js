@@ -2,9 +2,6 @@ import { navigateBasedOnAuth , updateMainContentVisibility} from './init.js';
 import { appRouter } from './router.js';
 import { displayBootstrapAlert } from './inputValidation.js'
 
-
-
-
 function showGdprConsentModal() {
     const gdprModalElement = document.getElementById('gdprModal');
     const gdprModal = new bootstrap.Modal(gdprModalElement);
@@ -15,7 +12,6 @@ function showGdprConsentModal() {
         register();
     };
 }
-
 
 async function isAuthenticated() {
     try {
@@ -484,5 +480,5 @@ function getUserId() {
     return localStorage.getItem('userId');
 }
 
-export { isAuthenticated, getAuthToken, login, register , handleOAuthCallback, logoutUser , hashPassword};
+export { isAuthenticated, getAuthToken, login, register , handleOAuthCallback, logoutUser , hashPassword, debounce };
 
