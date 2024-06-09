@@ -56,7 +56,7 @@ let paddle1MovingUp = false;
 let paddle1MovingDown = false;
 let paddle2MovingUp = false;
 let paddle2MovingDown = false;
-let numParticipants;
+let numParticipants = 0;
 var detailsModal;
 
 let gameInProgressTour = false;
@@ -99,6 +99,9 @@ function setupTournamentPage() {
     score2Element.textContent = score2;
 
     detailsModal = new bootstrap.Modal(document.getElementById('enterTournamentDetails'));
+    startModal = new bootstrap.Modal(document.getElementById('startGameModal'));
+    matchModal = new bootstrap.Modal(document.getElementById('gameDetailsModal'));
+
     detailsModal.show();
 
     const minusButton = document.querySelector('.quantity__minus');
@@ -120,10 +123,16 @@ function setupTournamentPage() {
     plusButton.addEventListener('click', handlePlusButtonClick);
     tournamentName = document.getElementById("tournamentName");
     // tournamentName.addEventListener('input', checkInput);
-    
-    startModal = new bootstrap.Modal(document.getElementById('startGameModal'));
-    matchModal = new bootstrap.Modal(document.getElementById('gameDetailsModal'));
-    continueBtn.addEventListener('click', validateInputTournamentName(input));
+    // numParticipants = parseInt(input.value, 10);
+    // console.log(numParticipants);
+    continueBtn.addEventListener('click', validateInputTournamentName);
+
+    console.log(numParticipants);
+    // eventManager.addListener(document.getElementById("continueBtn"), "click", validateInputTournamentName);
+    // eventManager.addListener(document.getElementById('submitBtn'), "click", validateInputParticipants);
+    // 
+
+    // continueBtn.addEventListener('click', validateInputTournamentName(input));
     // colorPickRed.addEventListener('change', changeColor("red"));
     // colorPickBlue.addEventListener('change', changeColor("blue"));
     // document.getElementById('colorPickRed').addEventListener('change', function () {
@@ -146,45 +155,65 @@ function setupTournamentPage() {
     // setupcreateTournamentForm();
 };
 
-function handleNewTournamentFormSubmit(input) {
-
+function handleNewTournamentFormSubmit() {
+    const input = document.getElementById('numParticipants');
     numParticipants = parseInt(input.value, 10);
-    generateParticipantFields(numParticipants);
-    detailsModal.hide()
+    console.log(numParticipants);
+    detailsModal.hide();
+
     startModal.show();
+    generateParticipantFields(numParticipants);
+    const startGameBtn = document.getElementById('startGameBtn')
+    startGameBtn.addEventListener('click', validateInputParticipants);
 }
 
 async function validateInputTournamentName(input) {
- const _elementBlock = [
-   new inputElement('tournamentName', 'userName', true, 3, 10)
- ];
-    if (!checkInput(_elementBlock))
-    {
+    const _elementBlock = [
+        new inputElement('tournamentName', 'userName', true, 3, 10)
+    ];
+    if (!checkInput(_elementBlock)) {
         // detailsModal.hide()
         return;
     }
+    handleNewTournamentFormSubmit();
 }
 
-// async function validateInput(num) {
-//     const _elementBlock = [];
-
-//     // Use a for loop to create and insert elements into the array
-//     for (var i = 0; i < num; i++) {
-//         _elementBlock.push(new inputElement(document.getElementById(`input${i}`), 'userName', true, 3, 10));
-//     }
-
-//     if (!checkInput(_elementBlock))
+async function validateInputParticipants() {
+    const _elementBlock = [];
     
-//         return;
-// }
+    for (var i = 0; i < numParticipants; i++) {
+        _elementBlock.push(new inputElement(`input${i}`, 'userName', true, 3, 10));
+    }
+
+    if (!checkInput(_elementBlock))
+        return;
+    setupcreateTournamentForm();
+}
+
+async function setupcreateTournamentForm() {
+    console.log("starting tourney")
+
+    console.log("starting tourney")
+    await createTournament();
+    const details = await getTournamentDetails();
+    startModal.hide();
+    participants = details.participants;
+    creator = details.creator;
+    participants[0].username = creator.username;
+    await startTournament();
+    startGameLoop();
+
+}
+
 
 function generateParticipantFields(num) {
-    const form = document.getElementById('participantDetailsFormInner');
+    const form = document.getElementById('participantDetailsForm');
+    console.log(form)
     form.innerHTML = '';
     fetchUserProfile().then(data => {
         const formGroupUser = document.createElement('div');
-        formGroupUser.classList.add('input-group');
-        formGroupUser.classList.add('has-validation');
+        formGroupUser.classList.add('form-group');
+
         const labelUser = document.createElement('label');
         labelUser.textContent = `Participant 1 Name:`;
         formGroupUser.appendChild(labelUser);
@@ -195,15 +224,7 @@ function generateParticipantFields(num) {
         inputUser.value = data.username;
         inputUser.readOnly = true;
         inputUser.id = `input0`;
-        formGroupUser.appendChild(inputUser);
 
-        form.appendChild(formGroupUser);
-
-        // <p class="gradientText h5">player2's nickname:</p>
-        // <div class="input-group has-validation justify-content-center">
-        //   <input type="text" id="player2alias" class="form-control rounded" placeholder=" player 2 nickname" required>
-        //   <div class="invalid-feedback">Looks stinky! 🚽</div>
-        //   <div class="valid-feedback">Looks good! 🗿</div>
         const invalidFeedback = document.createElement('div');
         invalidFeedback.className = 'invalid-feedback';
         invalidFeedback.textContent = 'Looks stinky! 🚽';
@@ -211,8 +232,11 @@ function generateParticipantFields(num) {
         const validFeedback = document.createElement('div');
         validFeedback.className = 'valid-feedback';
         validFeedback.textContent = 'Looks good! 🗿';
+        formGroupUser.appendChild(inputUser);
+        formGroupUser.appendChild(invalidFeedback);
+        formGroupUser.appendChild(validFeedback);
 
-        //participants
+        form.appendChild(formGroupUser);
         for (let i = 1; i < num; i++) {
             const formGroup = document.createElement('div');
             formGroup.classList.add('form-group');
@@ -228,17 +252,18 @@ function generateParticipantFields(num) {
             input.required = true;
             input.name = `participantName${i}`;
             input.id = `input${i}`;
+            const invalidFeedback = document.createElement('div');
+            invalidFeedback.className = 'invalid-feedback';
+            invalidFeedback.textContent = 'Looks stinky! 🚽';
+
+            const validFeedback = document.createElement('div');
+            validFeedback.className = 'valid-feedback';
+            validFeedback.textContent = 'Looks good! 🗿';
             formGroup.appendChild(input);
             formGroup.appendChild(invalidFeedback);
             formGroup.appendChild(validFeedback);
             form.appendChild(formGroup);
         }
-
-        const submitButton = document.createElement('button');
-        submitButton.type = 'submit';
-        submitButton.classList.add('btn', 'btn-primary', 'mt-3');
-        submitButton.textContent = 'Submit Tournament';
-        form.appendChild(submitButton);
     });
 
 };
@@ -600,20 +625,6 @@ function waitSubmission(element) {
             element.removeEventListener('click', onClick);
             resolve(event);
         });
-    });
-}
-
-function setupcreateTournamentForm() {
-    const form = document.getElementById('participantDetailsFormInner');
-    form.addEventListener('submit', async function (event) {
-        event.preventDefault();
-        await createTournament();
-        const details = await getTournamentDetails();
-        participants = details.participants;
-        creator = details.creator;
-        participants[0].username = creator.username;
-        await startTournament();
-        startGameLoop();
     });
 }
 

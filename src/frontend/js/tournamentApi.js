@@ -3,9 +3,11 @@ import { setTournamentId, getTournamentId } from './tournament.js';
 
 async function createTournament() {
   const tournamentName = document.getElementById('tournamentName').value;
-  const participantInputs = document.querySelectorAll('#participantDetailsFormInner .form-control:not([readonly])');
+  
+  
+  const participantInputs = document.querySelectorAll('#participantDetailsForm .form-control:not([readonly])');
   const participants = Array.from(participantInputs).map(input => ({ temp_username: input.value }));
-  const loggedInUser = document.querySelector('#participantDetailsFormInner .form-control[readonly]').value;
+  const loggedInUser = document.querySelector('#participantDetailsForm .form-control[readonly]').value;
   participants.unshift({ username: loggedInUser });
 
   const tournamentData = {
