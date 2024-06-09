@@ -1,5 +1,6 @@
 import { inputElement, checkInput, displayBootstrapAlert } from './inputValidation.js';
 import { appRouter } from './router.js';
+import { debounce } from './auth.js';
 var editModal;
 var deleteModal;
 
@@ -21,13 +22,106 @@ function setUpProfile() {
   eventManager.addListener(document.getElementById("closeEditProfileModal"), "click", closeEditModal);
   eventManager.addListener(document.getElementById("verifyDeleteOtpButton"), "click", verifyAndDeleteAccount); //? line 229
   eventManager.addListener(document.getElementById("uploadPicButton"), "click", editPfp); //? line 221
-  eventManager.addListener(document.getElementById("deleteProfileButton"), "click", deleteProfile); //? line 235
   eventManager.addListener(document.getElementById("anonymizeButton"), "click", anonymizeUser); //? line 284
-
+  eventManager.addListener(document.getElementById("twoFAbtn"), "click", check2FAStatus); //? line 284
+  eventManager.addListener(document.getElementById('deleteProfileButton'), 'click', setupDeleteProfileButton());
   document.getElementById('closeDeleteOtpModal').addEventListener('click', deleteModal.hide());
   fetchUserProfile();
-
   setupFriends();
+}
+
+async function check2FAStatus() {
+  try {
+    const response = await fetch('https://127.0.0.1:443/api/check_2fa_status', {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + getCookie('jwt')
+      },
+      credentials: 'include'
+    });
+    if (!response.ok) {
+      if (response.status === 400)
+        console.error('internal pointer variable error 🙈🙉🙊');
+      else
+        console.error('Unknown error');
+      return null;
+    }
+    const responseData = await response.json();
+    const twoFAbtn = document.getElementById('twoFAbtn');
+    
+    if (responseData.twofa_enabled) {
+      console.log('en came here');
+      disable2FA();
+      twoFAbtn.classList.add('TwoFAbtnEnable');
+      twoFAbtn.classList.remove('TwoFAbtnDisable');
+      twoFAbtn.textContent = 'Enable 2FA';
+    } else {
+      console.log('dis came here');
+      enable2FA();
+      twoFAbtn.classList.add('TwoFAbtnDisable');
+      twoFAbtn.classList.remove('TwoFAbtnEnable');
+      twoFAbtn.textContent = 'Disable 2FA';
+    }
+  } catch (error) {
+    console.error('Error checking 2FA status:', error);
+  }
+}
+
+async function enable2FA() {
+  try {
+    const response = await fetch('https://127.0.0.1:443/api/enable_2fa', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + getCookie('jwt')
+      },
+      credentials: 'include'
+    });
+    if (!response.ok) {
+      if (response.status === 400)
+        console.error('internal pointer variable error 🙈🙉🙊');
+      else
+        console.error('Unknown error');
+    }
+    const responseData = await response.json();
+    console.log(responseData);
+  } catch (error) {
+    console.error('Error enabling 2FA:', error);
+  }
+}
+
+async function disable2FA() {
+  try {
+    const response = await fetch('https://127.0.0.1:443/api/disable_2fa', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + getCookie('jwt')
+      },
+      credentials: 'include'
+    });
+    if (!response.ok) {
+      if (response.status === 400)
+        console.error('internal pointer variable error 🙈🙉🙊');
+      else
+        console.error('Unknown error');
+    }
+    const responseData = await response.json();
+    console.log(responseData);
+  } catch (error) {
+    console.error('Error disabling 2FA:', error);
+  }
+}
+
+function setupDeleteProfileButton() {
+  const debouncedDeleteFunc = debounce(deleteProfile, 3000);
+
+  return function (event) {
+    event.preventDefault();
+    const button = event.target;
+    button.disabled = true;
+    button.querySelector('.spinner-grow').classList.remove('d-none');
+
+    debouncedDeleteFunc(event);
+  };
 }
 
 //? ------------------->> grab profile to display!
@@ -37,10 +131,10 @@ async function fetchUserProfile() {
   profileData.winrate = profileData.wins / profileData.games_played * 100;
   await updateProfilePage(profileData);
   fetchProfilePicture();
+
 }
 
 async function getUserProfile(playerData) {
-  const jwt = getCookie('jwt');
   const response = await fetch(`https://127.0.0.1:443/api/profile`, {
     method: 'GET',
     headers: {
@@ -75,7 +169,7 @@ function chkInp() {
   ];
   if (checkInput(_elementBlock))
     editModal.hide();
-    return;
+  return;
 }
 
 async function openEditModal() {
@@ -125,7 +219,6 @@ const elementMap = {
   gamesWin: 'wins',
   gamesLose: "losses",
   winRate: "winrate"
-
 };
 
 const formatElementMap = {
@@ -180,8 +273,16 @@ function updateProfilePage(userData) {
   });
   document.getElementById('twoFactorAuth').textContent = userData.twofa_enabled ? 'Enabled' : 'Disabled';
 
+  if (userData.twofa_enabled) {
+    twoFAbtn.classList.add('TwoFAbtnDisable');
+    twoFAbtn.classList.remove('TwoFAbtnEnable');
+    twoFAbtn.textContent = 'Disable 2FA';
+  } else {
+    twoFAbtn.classList.add('TwoFAbtnEnable');
+    twoFAbtn.classList.remove('TwoFAbtnDisable');
+    twoFAbtn.textContent = 'Enable 2FA';
+  }
   const profilePicture = document.getElementById('profilePicture');
-
   const tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'));
   const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
     return new bootstrap.Tooltip(tooltipTriggerEl);
@@ -269,6 +370,7 @@ function editPfp() {
 //? opens delete profile modal
 function deleteProfile() {
   const token = getCookie('jwt');
+  const button = document.getElementById('deleteProfileButton');
 
   fetch('https://127.0.0.1:443/api/initiate_delete_account', {
     method: 'POST',
@@ -279,9 +381,13 @@ function deleteProfile() {
     credentials: 'include'
   })
     .then(response => response.json())
-    .then(data => { deleteModal.show(); })
+    .then(data => {
+      deleteModal.show();
+      button.disabled = false;
+      button.querySelector('.spinner-grow').classList.add('d-none');
+    })
     .catch(error => console.error('Error initiating account deletion:', error));
-};
+}
 
 //? once u provide the otp and click the button it comes here!
 function verifyAndDeleteAccount() {

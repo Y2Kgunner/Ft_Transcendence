@@ -61,13 +61,20 @@
           <div class="row mb-3">
             <div class="col d-flex justify-content-center">
               <div class="rounded pt-3 mx-md-5">
-                <button id="TwoFAbtn" class="btn">Enable 2FA</button>
+                <button id="twoFAbtn" class="btn TwoFAbtnEnable">Enable 2FA</button>
               </div>
               <div class="rounded pt-3 mx-md-5">
                 <button id="anonymizeButton" class="btn">Anonymise profile (GDPR)</button>
               </div>
-              <div class="rounded pt-3 mx-md-5">
+              <!-- <div class="rounded pt-3 mx-md-5">
                 <button id="deleteProfileButton" class="btn">Delete profile</button>
+              </div> -->
+              <div class="rounded pt-3 mx-md-5">
+                <button id="deleteProfileButton" class="btn">
+                  Delete profile
+                  <span class="spinner-grow spinner-grow-sm d-none" aria-hidden="true"></span>
+                  <span class="visually-hidden" role="status">Loading...</span>
+                </button>
               </div>
             </div>
           </div>

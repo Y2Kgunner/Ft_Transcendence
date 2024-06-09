@@ -15,7 +15,7 @@
 class inputElement {
   /**
    * @param {string} id - The ID of the input element { string }
-   * @param {string} type - The type of input field: { string }("phone" || "name" || "userName" || "password")
+   * @param {string} type - The type of input field: { string }("phone" || "name" || "userName" || "password" || "email")
    * @param {boolean} isRequired - Whether the input is required { boolean }
    * @param {number} minLen - The minimum length of the input value { int }
    * @param {number} maxLen - The maximum length of the input value { int }
@@ -118,11 +118,9 @@ function checkInput(inputElements) {
       }
       else if (_element.type === 'phone') {
         allInputsValid = (!_element.isRequired && field.inputValue.length === 0) ? allInputsValid : (phoneValidation(field) ? allInputsValid : false);
-        // var abc = phoneValidation(field) ? allInputsValid : false;
         console.log('phone ternary check', field.inputValue.length);
       }
       else if (_element.type === 'name') {
-        // if (!(/^[a-zA-Z]+(?: [a-zA-Z]+)?$/).test(field.inputValue)) {
         if (!(/^[a-zA-Z]+(?: [a-zA-Z]+)*$/).test(field.inputValue)) {
           console.log('non printable');
           field.invalidFeedback.textContent = "no elon musk typeof names only letter!! 💀";
@@ -142,6 +140,26 @@ function checkInput(inputElements) {
           allInputsValid = false;
         } else {
           seenUsernames[username] = true;
+        }
+      }
+      else if (_element.type === 'password') {
+        if (!(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/).test(field.inputValue)) {
+          console.log('non printable');
+          field.invalidFeedback.textContent = "Weak password! 🔒️ {8+ chars, 1 UPPER, 1 lower, 1 num}";
+          input_field.classList.add("is-invalid");
+          clearTimeout(window.timeoutId);
+          window.timeoutId = setTimeout(clearErrorMessage, 5000, field);
+          allInputsValid = false;
+        }
+      }
+      else if (_element.type === 'email') {
+        if (!(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/).test(field.inputValue)) {
+          console.log('non printable');
+          field.invalidFeedback.textContent = "Invalid email format";
+          input_field.classList.add("is-invalid");
+          clearTimeout(window.timeoutId);
+          window.timeoutId = setTimeout(clearErrorMessage, 5000, field);
+          allInputsValid = false;
         }
       }
     } else {
@@ -167,19 +185,12 @@ function displayBootstrapAlert(id, message, type) {
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
   `;
   alertContainer.appendChild(alertDiv);
-  alerts.push(alertDiv);
-  alertCount++;
 
   setTimeout(() => {
     alertDiv.classList.remove('show');
     alertDiv.classList.add('hide');
     setTimeout(() => {
       alertContainer.removeChild(alertDiv);
-      alertCount--;
-      const index = alerts.indexOf(alertDiv);
-      if (index!== -1) {
-        alerts.splice(index, 1);
-      }
     }, 300);
   }, 5000);
 }

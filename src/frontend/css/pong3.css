@@ -137,14 +137,14 @@ body {
   box-shadow: 0 0 5px 2px #161616;
 }
 
-#player2alias, #player3alias {
+#player2aliasPong3, #player3aliasPong3 {
   background-color: #181915;
   color: #51a40c;
   border: none;
   padding-left: 1em;
 }
 
-#player2alias:focus, #player3alias:focus {
+#player2aliasPong3:focus, #player3aliasPong3:focus {
   box-shadow: 0 0 5px #57ae10;
 }
 
@@ -239,7 +239,7 @@ input[type="text"]::placeholder {
 }
 /*! -----------------> end of gradient pongTable border */
 
-.input-group .valid-feedback,
+/* .input-group .valid-feedback,
 .input-group .invalid-feedback {
   display: none;
-}
+} */

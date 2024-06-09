@@ -390,7 +390,7 @@ input[type="text"]::placeholder, input[type="tel"]::placeholder {
   --bs-btn-active-border-color: none;
 }
 
-#TwoFAbtn {
+.TwoFAbtnEnable {
   --bs-btn-bg: #5f5200;
   --bs-btn-border-color: none;
   --bs-btn-color: #d8d8d8;
@@ -399,6 +399,18 @@ input[type="text"]::placeholder, input[type="tel"]::placeholder {
   --bs-btn-hover-border-color: none;
   --bs-btn-active-color: #a4a4a4;
   --bs-btn-active-bg: #52530a;
+  --bs-btn-active-border-color: none;
+}
+
+.TwoFAbtnDisable {
+  --bs-btn-bg: #5f2000;
+  --bs-btn-border-color: none;
+  --bs-btn-color: #d8d8d8;
+  --bs-btn-hover-bg: #a14000;
+  --bs-btn-hover-color: #d8d8d8;
+  --bs-btn-hover-border-color: none;
+  --bs-btn-active-color: #a4a4a4;
+  --bs-btn-active-bg: #53210a;
   --bs-btn-active-border-color: none;
 }
 

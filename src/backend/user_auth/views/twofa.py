@@ -80,17 +80,27 @@ def send_otp_email(user, otp):
         server.send_message(em) 
         server.quit()
 
+
+from user_auth.jwt_utils import * 
+
 @csrf_exempt
 @require_http_methods(["GET"])
 def check_2fa_status(request):
-    user_identifier = request.GET.get('user_identifier')
-    if not user_identifier:
-        return JsonResponse({'error': 'User identifier not provided.'}, status=400)
-
-    User = get_user_model()
-    try:
-        user = User.objects.get(username=user_identifier)
-    except User.DoesNotExist:
-        return JsonResponse({'error': 'User not found.'}, status=404)
-
-    return JsonResponse({'twofa_enabled': user.twofa_enabled})
+  try:
+    token = request.COOKIES.get('jwt')
+    user = JWTHandler.get_user_from_token(token)
+    print('2fa')
+    print(user.username)
+    print(user.twofa_enabled)
+    print(user.email)
+    # user_identifier = request.GET.get('user_identifier')
+    # if not user_identifier:
+    #     return JsonResponse({'error': 'User identifier not provided.'}, status=400)
+    # User = get_user_model()
+    # try:
+    #     user = User.objects.get(username=user_identifier)
+    # except User.DoesNotExist:
+    #     return JsonResponse({'error': 'User not found.'}, status=404)
+    return JsonResponse({'twofa_enabled': user.twofa_enabled}, status=200)
+  except DoesNotExist as e:
+    return JsonResponse({'error': {e}}, status=400)
