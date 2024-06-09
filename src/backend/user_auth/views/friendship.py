@@ -102,7 +102,7 @@ def check_username(request, username):
         if user == request.user:
             return JsonResponse({"message": "You cannot add yourself as a friend."}, status=400)
         if Friendship.objects.filter((models.Q(creator=request.user, friend=user) | models.Q(creator=user, friend=request.user)), status='accepted').exists():
-            return JsonResponse({"message": "You are already friends."}, status=200)
+            return JsonResponse({"message": "You are already friends."}, status=401)
         return JsonResponse({
             "message": "User exists.",
             "user_info": {

@@ -93,7 +93,11 @@
               <thead>
                 <tr>
                   <th scope="col">name</th>
-                  <th scope="col">status</th>
+                  <th scope="col">online</th>
+                  <th scope="col">last activity</th>
+                  <th scope="col">played</th>
+                  <th scope="col">wins</th>
+                  <th scope="col">losses</th>
                 </tr>
               </thead>
               <tbody id="friendsList">
@@ -117,10 +121,12 @@
             </div>
           </div>
           <form id="addFriendForm" class="needs-validation pt-1" novalidate onsubmit="return false;">
-            <div class="d-flex flex-row align-items-center justify-content-center">
+            <div class="input-group has-validation justify-content-center">
               <p class="h5 no-wrap pe-1 pe-md-3">Add friend:</p>
               <input type="text" id="friendUserName" class="form-control rounded" placeholder=" enter player username"
                 required>
+                <div class="invalid-feedback">Looks stinky! 🚽</div>
+                <div class="valid-feedback">Looks good! 🗿</div>
             </div>
             <div class="rounded d-flex justify-content-center pt-3">
               <button id="addFriendBtn" class="btn">send friend request</button>

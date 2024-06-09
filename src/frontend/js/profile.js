@@ -603,6 +603,10 @@ async function updateFriendList() {
       let freindListDiv = `<tr>
       <th scope="col">${friendList.friends[i].username}</th>
       <th scope="col">${friendList.friends[i].online_status}</th>
+      <th scope="col">${friendList.friends[i].last_activity}</th>
+      <th scope="col">${friendList.friends[i].games_played}</th>
+      <th scope="col">${friendList.friends[i].wins}</th>
+      <th scope="col">${friendList.friends[i].losses}</th>
     </tr>`
       friendsList.innerHTML += freindListDiv;
     }
@@ -625,8 +629,8 @@ async function addUser(userId) {
     }
   })
   if (!response.ok) {
-    if (response.status == 400)
-      displayBootstrapAlert('editProfileAlert', 'cannot add yourself as a friend 😹', 'warning');
+    // 
+    
     // alert("cannot add yourself as friend");
     return null;
   }
@@ -645,6 +649,12 @@ async function checkUsername(username) {
     }
   })
   if (!response.ok) {
+    if (response.status == 401)
+    displayBootstrapAlert('editProfileAlert', 'You are already friends 😹', 'warning');
+    if (response.status == 404)
+    displayBootstrapAlert('editProfileAlert', 'User not found 😹', 'warning');
+    if (response.status == 400)
+    displayBootstrapAlert('editProfileAlert', 'You cannot add yourself as a friend 😹', 'warning');
     return null;
   }
   const data = await response.json();
@@ -707,10 +717,8 @@ async function addFriend() {
   let username = friendUserName.value;
   console.log(username);
   const friendData = await checkUsername(username);
-  if (friendData == null)
-    displayBootstrapAlert('editProfileAlert', 'friend not found! 😿', 'warning');
-  // alert(" friend not found!");
-  else {
+  if (friendData != null)
+{
     console.log(friendData);
     userInfo = friendData.user_info;
     console.log(userInfo);
@@ -789,12 +797,23 @@ async function setupFriends() {
       }
     });
   });
-  eventManager.addListener(addFriendBtn, "click", addFriend);
+  eventManager.addListener(addFriendBtn, "click", chkInpFriend);
   // addFriendBtn.addEventListener('click', async function () {
   //   await addFriend();
   // });
 }
 
+function chkInpFriend() {
+    const _elementBlock = [
+      new inputElement('friendUserName', 'name', true, 3, 10)
+    ];
+    if (checkInput(_elementBlock))
+        addFriend()
+    return;
+  }
+
+  
+  
 async function getFriendslist() {
   const response = await fetch(`https://127.0.0.1:443/api/list_friends`, {
     method: 'GET',
