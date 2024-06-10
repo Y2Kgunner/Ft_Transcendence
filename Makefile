@@ -21,10 +21,6 @@ clean:
 fclean: clean
 	cd $(SRC_DIR) && docker volume rm $$(docker volume ls -q)
 
-## WARNING: This will delete all data in the database
-flush:
-	docker-compose run django python manage.py flush
-
 makemigrations:
 	cd $(SRC_DIR) && docker-compose run --rm django python manage.py makemigrations
 
@@ -33,18 +29,8 @@ migrate:
 
 make-and-apply-migrations: makemigrations migrate
 
-inspect:
-	docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' postgres
-
-clean_db:
-	cd $(SRC_DIR) && docker-compose down -v
-	docker volume rm $(docker volume ls -q --filter name=src_postgres_data) || true
 
 bash:
 	bash dock.sh
-
-create-users:
-	cd $(SRC_DIR) && docker-compose exec backend /bin/bash -c "./create_user.sh"
-
 
 .PHONY: all build up down flush fclean clean re makemigrations migrate inspect clean_db make-migrations-apply makemigrations migrate make-and-apply-migrations
