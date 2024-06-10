@@ -107,6 +107,13 @@ function init3PlyrPong() {
 
   eventManager.addListener(document.getElementById("startGameBtn"), "click", validateInput);
 
+  const restartGameBtn = document.getElementById('restartGameBtn');
+  restartGameBtn.addEventListener('click', async function (event) {
+	// await createMatch("Pong");
+	startGame();
+    await waitGameFinish(gameOver);
+    updateMatch();
+  });
   form = document.querySelector('.needs-validation');
   if (form) {
     form.addEventListener('keyup', function (event) {
@@ -119,7 +126,7 @@ function init3PlyrPong() {
     console.log("form not found");
   }
   // realTimeChecker();
-}
+} 
 
 function handleKeyDown(event) {
   switch (event.key) {
