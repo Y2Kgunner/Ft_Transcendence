@@ -46,6 +46,7 @@ var startModal;
 var form;
 
 let gameInProgress;
+let countdownIntervalId;
 
 function resetBall() {
   ballX = board.offsetWidth / 2 - ball.offsetWidth / 2;
@@ -171,6 +172,7 @@ function init2PlyrPong() {
       is_draw: false
     }
     updateMatch(matchData);
+	startGame();
   });
 }
 
@@ -445,6 +447,44 @@ function haltGame(game_winner) {
   pongIntervalId = null;
 }
 
+function showCountdown(callback) {
+	const countdownElement = document.createElement('div');
+	countdownElement.id = 'countdown';
+	countdownElement.style.position = 'absolute';
+	countdownElement.style.top = '50%';
+	countdownElement.style.left = '50%';
+	countdownElement.style.transform = 'translate(-50%, -50%)';
+	countdownElement.style.fontSize = '48px';
+	countdownElement.style.fontWeight = 'bold';
+	countdownElement.style.zIndex = '1000';
+	countdownElement.style.color = '#07ed26';
+	countdownElement.textContent = '5';
+	document.body.appendChild(countdownElement);
+  
+	let count = 5;
+	countdownIntervalId = setInterval(() => {
+	  count--;
+	  countdownElement.textContent = count;
+	  if (count === 0) {
+		clearInterval(countdownIntervalId);
+		document.body.removeChild(countdownElement);
+		callback();
+	  }
+	}, 1000);
+}
+
+function cancelCountdown() {
+	if (countdownIntervalId) {
+	  clearInterval(countdownIntervalId);
+	  countdownIntervalId = null;
+	  const countdownElement = document.getElementById('countdown');
+	  if (countdownElement) {
+		countdownElement.textContent = '';
+		document.body.removeChild(countdownElement);
+	  }
+	}
+}
+
 function startGame() {
   begin = true;
   gameOver = false;
@@ -453,9 +493,15 @@ function startGame() {
   if (pongIntervalId)
     clearInterval(pongIntervalId);
   resetBall();
-  pongIntervalId = setInterval(updateGame, 16);
-  document.addEventListener("keydown", handleKeyDown);
-  document.addEventListener("keyup", handleKeyUp);
+  cancelCountdown();
+//   pongIntervalId = setInterval(updateGame, 16);
+//   document.addEventListener("keydown", handleKeyDown);
+//   document.addEventListener("keyup", handleKeyUp);
+showCountdown(() => {
+	pongIntervalId = setInterval(updateGame, 1000 / 60);
+	document.addEventListener("keydown", handleKeyDown);
+	document.addEventListener("keyup", handleKeyUp);
+  });
 }
 
 function isPrintableASCII(str) {

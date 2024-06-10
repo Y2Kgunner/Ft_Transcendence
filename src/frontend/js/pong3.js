@@ -56,7 +56,7 @@ var form;
 var modalInit = false;
 let pauseModalInstance;
 let gameInProgress3;
-
+let countdownIntervalId;
 
 
 
@@ -241,7 +241,7 @@ function init3PlyrPong() {
       score_guest_player: score3,
       winner: draw ? null : winner,
       is_draw: draw
-    }
+	}
     updateMatch(matchData);
     startGame();
   });
@@ -489,17 +489,58 @@ function haltGame() {
   pong3IntervalId = null;
 }
 
+function showCountdown(callback) {
+	const countdownElement = document.createElement('div');
+	countdownElement.id = 'countdown';
+	countdownElement.style.position = 'absolute';
+	countdownElement.style.top = '50%';
+	countdownElement.style.left = '50%';
+	countdownElement.style.transform = 'translate(-50%, -50%)';
+	countdownElement.style.fontSize = '48px';
+	countdownElement.style.fontWeight = 'bold';
+	countdownElement.style.zIndex = '1000';
+	countdownElement.style.color = '#07ed26';
+	countdownElement.textContent = '5';
+	document.body.appendChild(countdownElement);
+  
+	let count = 5;
+	countdownIntervalId = setInterval(() => {
+	  count--;
+	  countdownElement.textContent = count;
+	  if (count === 0) {
+		clearInterval(countdownIntervalId);
+		document.body.removeChild(countdownElement);
+		callback();
+	  }
+	}, 1000);
+}
+
+function cancelCountdown() {
+	if (countdownIntervalId) {
+	  clearInterval(countdownIntervalId);
+	  countdownIntervalId = null;
+	  const countdownElement = document.getElementById('countdown');
+	  if (countdownElement) {
+		countdownElement.textContent = '';
+		document.body.removeChild(countdownElement);
+	  }
+	}
+}
+
 function startGame() {
   player2aliasPong3Element = document.getElementById("player_2_alias");
   player3aliasPong3Element = document.getElementById("player_3_alias");
   player2aliasPong3Element.textContent = player2aliasPong3;
   player3aliasPong3Element.textContent = player3aliasPong3;
+  cancelCountdown();
   startGameSession();
   begin = true;
   gameOver = false;
-  pong3IntervalId = setInterval(updateGame, 16);
-  document.addEventListener("keydown", handleKeyDown);
-  document.addEventListener("keyup", handleKeyUp);
+  showCountdown(() => {
+	pong3IntervalId = setInterval(updateGame, 1000 / 60);
+	document.addEventListener("keydown", handleKeyDown);
+	document.addEventListener("keyup", handleKeyUp);
+  });	
 }
 
 // Pause and Resume
