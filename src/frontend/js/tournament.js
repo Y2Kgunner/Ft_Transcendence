@@ -211,7 +211,9 @@ function generateParticipantFields(num) {
     form.innerHTML = '';
     fetchUserProfile().then(data => {
         const formGroupUser = document.createElement('div');
-        formGroupUser.classList.add('form-group');
+        formGroupUser.classList.add('input-group');
+        formGroupUser.classList.add('d-flex');
+        formGroupUser.classList.add('flex-column');
 
         const labelUser = document.createElement('label');
         labelUser.textContent = `Participant 1 Name:`;
@@ -220,8 +222,11 @@ function generateParticipantFields(num) {
         const inputUser = document.createElement('input');
         inputUser.type = 'text';
         inputUser.classList.add('form-control');
+        inputUser.classList.add('rounded-1');
+        inputUser.classList.add('generatedInput');
         inputUser.value = data.username;
         inputUser.readOnly = true;
+        inputUser.disabled = true;
         inputUser.id = `input0`;
 
         const invalidFeedback = document.createElement('div');
@@ -238,7 +243,9 @@ function generateParticipantFields(num) {
         form.appendChild(formGroupUser);
         for (let i = 1; i < num; i++) {
             const formGroup = document.createElement('div');
-            formGroup.classList.add('form-group');
+            formGroup.classList.add('input-group');
+            formGroup.classList.add('d-flex');
+            formGroup.classList.add('flex-column');
 
             const label = document.createElement('label');
             label.textContent = `Participant ${i + 1} Name:`;
@@ -247,6 +254,8 @@ function generateParticipantFields(num) {
             const input = document.createElement('input');
             input.type = 'text';
             input.classList.add('form-control');
+            input.classList.add('rounded-1');
+            input.classList.add('generatedInput');
             input.placeholder = `Enter name for participant ${i + 1}`;
             input.required = true;
             input.name = `participantName${i}`;
