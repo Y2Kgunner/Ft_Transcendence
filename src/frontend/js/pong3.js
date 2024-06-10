@@ -155,7 +155,38 @@ function init3PlyrPong() {
     });
     
     eventManager.addListener(document.getElementById("startGameBtn"), "click", validateInput);
-
+    
+    restartGameBtn.addEventListener('click', async function (event) {
+    player2aliasPong3 = document.getElementById("player2aliasPong3").value;
+    player3aliasPong3= document.getElementById("player3aliasPong3").value;
+    // player2aliasPong3 = player2aliasPong3Element;
+    // player3aliasPong3 = player3aliasPong3Element.value;
+    console.log(player2aliasPong3 + player3aliasPong3);
+    closeModal();
+    let matchData = {
+        player_id: playerId,
+        guest_player1: player2aliasPong3,
+        guest_player2: player3aliasPong3,
+        game_type: "Pong"
+    };
+    await createMatch(matchData).then(data => {
+        matchId = data.match_id;
+    });
+    startGame();
+    await waitGameFinish();
+    console.log(gameOver);
+    matchData = {
+        match_id: matchId,
+        score_player: score1,
+        score_guest_player1 : score2,
+        score_guest_player : score3,
+        winner: draw ? null : winner,
+        is_draw: draw
+    }
+    updateMatch(matchData);
+    startGame();
+      });
+    
     form = document.querySelector('.needs-validation');
     if (form) {
         form.addEventListener('keyup', function (event) {
