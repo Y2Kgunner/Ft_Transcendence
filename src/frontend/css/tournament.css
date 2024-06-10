@@ -24,6 +24,10 @@ body {
   overflow: hidden;
 }
 
+.input-group>.form-control {
+  width: 100%;
+}
+
 .modal-custom {
   overflow: hidden;
 }

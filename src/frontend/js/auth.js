@@ -153,12 +153,15 @@ async function register() {
     const data = await response.json();
     alert('Registration successful');
     showLoginForm();
-
   } else {
     const error = await response.json();
     console.error('Registration failed:', error);
     alert(error.error || 'Registration failed');
   }
+  document.getElementById('registerEmail').value = "";
+  document.getElementById('registerUserName').value = "";
+  document.getElementById('registerPassword').value = "";
+  document.getElementById('confirmPassword').value = "";
 }
 
 

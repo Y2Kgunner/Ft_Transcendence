@@ -28,7 +28,7 @@ STATIC_ROOT = '/frontend/staticfiles'
 
 # to be removed ==================================================================================
 SECRET_KEY = 'django-insecure-6llr!9x37@9f)m=l-eshn0*65=1=1u#k)=*=6=_llj6p*xtqh1'
-DEBUG = True
+DEBUG = False
 # ===================================================================================
 
 #This allows access to your backend from these hosts/domains, but it doesn't directly affect CORS. CORS relies on different headers sent by the backend API.
@@ -72,6 +72,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'user_auth.sanitize_json_middleware.SanitizeJsonMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -80,6 +81,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'user_auth.middleware.UpdateLastActivityMiddleware',
 ]
+
 
 ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
@@ -147,7 +149,7 @@ JWT_SECRET_KEY = SECRET_KEY
 JWT_ALGORITHM = 'HS256'
 JWT_EXPIRATION_DELTA = timedelta(hours=1) 
 
-# 42 OAuth settings
+# 42 OAuth settings .env 
 CLIENT_ID_42 = 'u-s4t2ud-d0c4077a43cbefbff3d67add430fbc7edaadbc4522099efc1eb7a28773e0037a'
 CLIENT_SECRET_42 = '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'
 CALLBACK_URL_42 = 'https://127.0.0.1:443/oauth_callback'
@@ -169,28 +171,7 @@ EMAIL_HOST_PASSWORD = 'aoqlnbmaqviznnmw'
 EMAIL_USE_TLS = True
 EMIAL_USE_SSL = False
 
-#SEND_GRID_RECOVER_CODE  = FWHVDD5UD66EDBKHFQUX4CNS
 AUTHENTICATION_BACKENDS = [
     'user_auth.authentication_backends.HashedPasswordBackend',
     'django.contrib.auth.backends.ModelBackend'
 ]
-
-
-
-# # genrate oauth token 
-# curl -X POST https://api.intra.42.fr/oauth/token \
-#      -d grant_type=client_credentials \
-#      -d client_id=u-s4t2ud-d0c4077a43cbefbff3d67add430fbc7edaadbc4522099efc1eb7a28773e0037a\
-#      -d client_secret=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\
-#      -d scope=public\
-#      -d resource_owner_id=
-
-# # get the uesr info 
-# curl -H "Authorization: Bearer 12e32f1d1cc53b908cf34704bdc7ed67a3d2b3f0a408b8589408a82905aa7c94" https://api.intra.42.fr/v2/me
-
-# # get user by id 
-# curl  -H "Authorization: Bearer 12e32f1d1cc53b908cf34704bdc7ed67a3d2b3f0a408b8589408a82905aa7c94" "https://api.intra.42.fr/v2/users/101375"
-
-# # filter by id / login
-# curl  -H "Authorization: Bearer 12e32f1d1cc53b908cf34704bdc7ed67a3d2b3f0a408b8589408a82905aa7c94" 'https://api.intra.42.fr/v2/users?filter\[login\]=aelsiddi'
-# # curl  -H "Authorization: Bearer 12e32f1d1cc53b908cf34704bdc7ed67a3d2b3f0a408b8589408a82905aa7c94" 'https://api.intra.42.fr/v2/users?filter\[id\]=101375'

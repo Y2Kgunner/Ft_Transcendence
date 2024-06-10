@@ -3,6 +3,7 @@ import { appRouter } from './router.js';
 import { debounce } from './auth.js';
 var editModal;
 var deleteModal;
+var otpModal;
 
 const eventManager = {
   addListener(element, event, handler) {
@@ -15,6 +16,7 @@ const eventManager = {
 function setUpProfile() {
   deleteModal = new bootstrap.Modal(document.getElementById('deleteOtpModal'));
   editModal = new bootstrap.Modal(document.getElementById('editProfileModal'));
+  otpModal = new bootstrap.Modal(document.getElementById('editProfileModal'));
 
   eventManager.addListener(document.getElementById("editProfileModal"), "keypress", chkIfInput);
   eventManager.addListener(document.getElementById("editBtn"), "click", openEditModal);
@@ -188,6 +190,7 @@ function setupDeleteProfileButton() {
     event.preventDefault();
     const button = event.target;
     button.disabled = true;
+    document.body.classList.add('no-pointer-events');
     button.querySelector('.spinner-grow').classList.remove('d-none');
 
     debouncedDeleteFunc(event);
@@ -454,6 +457,7 @@ function deleteProfile() {
     .then(data => {
       deleteModal.show();
       button.disabled = false;
+      document.body.classList.remove('no-pointer-events');
       button.querySelector('.spinner-grow').classList.add('d-none');
     })
     .catch(error => console.error('Error initiating account deletion:', error));
