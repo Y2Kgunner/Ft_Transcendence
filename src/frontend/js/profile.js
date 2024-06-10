@@ -613,8 +613,12 @@ async function updateFriendList() {
   }
   else {
     let freindListDiv = `<tr>
-      <th scope="col">No Friends!</th>
-      <th scope="col">None</th>
+      <th scope="col">--</th>
+      <th scope="col">--</th>
+      <th scope="col">--</th>
+      <th scope="col">--</th>
+      <th scope="col">--</th>
+      <th scope="col">--</th>
     </tr>`
     friendsList.innerHTML += freindListDiv;
   }

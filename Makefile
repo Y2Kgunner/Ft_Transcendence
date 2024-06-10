@@ -1,4 +1,4 @@
-all: build up make-and-apply-migrations bash create-users
+all: build up make-and-apply-migrations bash
 
 SRC_DIR=src
 
