@@ -50,7 +50,7 @@ function getAuthToken() {
 
 async function login(event) {
   const _elementBlock = [
-    new inputElement('LoginUserName', 'userName', true, 3, 8),
+    new inputElement('LoginUserName', 'userName', true, 4, 8),
     new inputElement('loginPassword', 'password', true, 8, 15)
   ];
   if (!checkInput(_elementBlock))

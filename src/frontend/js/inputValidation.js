@@ -5,7 +5,7 @@
 //? const _elementBlock = [
 //?   new inputElement('phone', 'phone', true, 10, 15),
 //?   new inputElement('name', 'name', true, 2, 50),
-//?   new inputElement('userName', 'userName', true, 3, 20),
+//?   new inputElement('userName', 'userName', true, 4, 20),
 //? ];
 
 //? JSDoc-style comments to document the class and its properties.
@@ -102,6 +102,7 @@ function visibilityValidation(field) {
 }
 
 function lengthValidation(field, _element) {
+  console.log("elllloooooo---------");
   if ((field.inputValue.length > _element.maxLen) || (field.inputValue.length < _element.minLen)) {
     console.log('length issue -->>', _element.isRequired);
     return printInvalidFeedback(field, `${_element.type} must be between ${_element.minLen} and ${_element.maxLen} characters long! 😼`);
@@ -172,7 +173,7 @@ function checkInput(inputElements) {
       else if (currentElementStatus && (_element.type === 'userName')) {
         console.log("cur -> userName");
         if (!(/^[a-zA-Z]{4,}$/).test(field.inputValue))
-          currentElementStatus = printInvalidFeedback(field, 'Username can only contain letters!');
+          currentElementStatus = printInvalidFeedback(field, 'Invalid Username {min 4 <-> max 10} only letters');
         else if (seenUsernames[field.inputValue])
           currentElementStatus = printInvalidFeedback(field, 'Username already taken!');
         else

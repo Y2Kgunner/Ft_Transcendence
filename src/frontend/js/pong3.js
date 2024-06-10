@@ -72,8 +72,9 @@ function handleBeforeUnload(event) {
 
 async function validateInput() {
   const _elementBlock = [
-    new inputElement('player2aliasPong3', 'userName', true, 3, 10),
-    new inputElement('player3aliasPong3', 'userName', true, 3, 10),
+    // new inputElement('player2aliasPong3', 'userName', true, 4, 10),
+    new inputElement('player2aliasPong3', 'userName', true, 4, 10),
+    new inputElement('player3aliasPong3', 'userName', true, 4, 10),
   ];
   if (!checkInput(_elementBlock))
     return;

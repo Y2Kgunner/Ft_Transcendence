@@ -135,7 +135,7 @@ function init2PlyrPong() {
 
 async function validateInput() {
   const _elementBlock = [
-    new inputElement('player2alias', 'userName', true, 3, 10),
+    new inputElement('player2alias', 'userName', true, 4, 10),
   ];
   if (!checkInput(_elementBlock))
     return;
