@@ -23,7 +23,8 @@ tbody tr:hover {
   color: #ffffff !important;
   border: none;
   box-shadow: none;
-  box-shadow: inset 0 0 10px #c6faae !important;
+  border-radius: 5px;
+  box-shadow: 0 0 5px #c6faae !important;
 }
 
 .testt:hover {
@@ -155,7 +156,6 @@ tbody tr:hover {
   box-shadow: 0 0 15px 2px #586a53, 0 0 15px #282f26;
   --bs-modal-header-border-color: #5a6a53de;
   --bs-modal-footer-border-color: #5a6a53de;
-  /* z-index: 100; */
 }
 
 .gradientProfile {
@@ -163,19 +163,22 @@ tbody tr:hover {
   text-shadow: .1vmin .1vmin .1vw #000000;
 }
 
-#firstNameInput, #lastNameInput, #phoneInput, #addressInput {
+#firstNameInput,
+#lastNameInput,
+#phoneInput,
+#addressInput {
   background: #1e2c1d;
   border: none;
   box-shadow: 0 0 .2vmin #586a53;
   color: #7d6e10;
 }
 
-input[type="text"]::placeholder, input[type="tel"]::placeholder {
+input[type="text"]::placeholder,
+input[type="tel"]::placeholder {
   color: #504e45;
 }
 
 .gradient-text {
-  /* background: linear-gradient(to right, #1e681a, #7d104e, #1e681a, #7d104e, #1e681a); */
   background: linear-gradient(to right, #1e681a, #7d6e10, #1e681a, #7d6e10, #1e681a, #7d6e10, #1e681a, #7d6e10, #1e681a);
   background-clip: text;
   -webkit-background-clip: text;
@@ -183,18 +186,6 @@ input[type="text"]::placeholder, input[type="tel"]::placeholder {
   background-size: 200% 100%;
   animation: gradient 1s ease infinite;
 }
-
-/* @keyframes gradient {
-  0% {
-    background-position: 100% 60%;
-  }
-  50% {
-    background-position: 0% 100%;
-  }
-  100% {
-    background-position: 120% 80%;
-  }
-} */
 
 @keyframes gradient {
   0% {
@@ -256,8 +247,6 @@ input[type="text"]::placeholder, input[type="tel"]::placeholder {
 
 
 .custoModalbtn:hover {
-  /* animation-play-state: paused;
-  box-shadow: none !important; */
   box-shadow: 0 0 5px 0 #b9b9b9;
 }
 
@@ -276,28 +265,6 @@ input[type="text"]::placeholder, input[type="tel"]::placeholder {
     box-shadow: 0 0 5px 2px #f5d7e8;
   }
 }
-
-/* .customEditIcon {
-  background: linear-gradient(to right, #b62684, #cbcb0f, #b62684, #cbcb0f, #b62684);
-  background-clip: text;
-  background-size: 200% 100%;
-  animation: icn 1s ease infinite;
-}
-
-
-@keyframes icn {
-  0% {
-    background-position: 0% 10%;
-  }
-
-  50% {
-    background-position: 50% 10%;
-  }
-
-  100% {
-    background-position: 100% 10%;
-  }
-} */
 
 .customEditIcon {
   color: #1b6b11;
@@ -345,7 +312,7 @@ input[type="text"]::placeholder, input[type="tel"]::placeholder {
   --bs-btn-hover-color: #d8d8d8;
   --bs-btn-hover-bg: #266428;
   --bs-btn-hover-border-color: #0dfd1594;
-  --bs-btn-focus-shadow-rgb: 13,110,253;
+  --bs-btn-focus-shadow-rgb: 13, 110, 253;
   --bs-btn-active-color: #d8d8d8;
   --bs-btn-active-bg: #0dfd1594;
   --bs-btn-active-border-color: #007a04;
@@ -446,7 +413,6 @@ input[type="text"]::placeholder, input[type="tel"]::placeholder {
   width: 70%;
   max-width: 400px;
   background: #e6e6e6;
-  /* width: calc(auto + 10%); */
 }
 
 #invitationz {
@@ -462,9 +428,9 @@ input[type="text"]::placeholder, input[type="tel"]::placeholder {
 
 
 .alert-dark-success {
-  background-color: #1c1c1c; /* Dark background */
-  color: #28a745; /* Success green text */
-  border-color: #28a745; /* Success green border */
+  background-color: #1c1c1c;
+  color: #28a745;
+  border-color: #28a745;
 }
 
 .alert-anonymize {
@@ -474,3 +440,6 @@ input[type="text"]::placeholder, input[type="tel"]::placeholder {
   --bs-alert-link-color: #5f8100;
 }
 
+.no-pointer-events {
+  pointer-events: none;
+}
