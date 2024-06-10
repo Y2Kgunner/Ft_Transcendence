@@ -123,6 +123,7 @@ function checkInput(inputElements) {
   console.log("input valz");
   let allInputsValid = true;
   let bigBoiTruncation = (inputElements.length > 4) ? true : false;
+  const passwordGroup = {};
   const seenUsernames = {};
 
   inputElements.forEach((_element) => {
@@ -178,11 +179,15 @@ function checkInput(inputElements) {
           seenUsernames[field.inputValue] = true;
       }
       else if (currentElementStatus && (_element.type === 'password')) {
-        console.log("eggor");
+        console.log("pass ---->", Object.keys(passwordGroup).length);
         currentElementStatus = passwordValidation(field) ? currentElementStatus : false;
+        if (!passwordGroup[field.inputValue] && Object.keys(passwordGroup).length == 1)
+          currentElementStatus = printInvalidFeedback(field, 'passwords don\'t match!');
+        else
+          passwordGroup[field.inputValue] = true;
       }
       else if (currentElementStatus && (_element.type === 'email')) {
-        console.log("eggor");
+        console.log("email");
         currentElementStatus = emailValidation(field) ? currentElementStatus : false;
       }
       if (!currentElementStatus) {

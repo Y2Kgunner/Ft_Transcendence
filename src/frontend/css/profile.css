@@ -56,6 +56,8 @@ tbody tr:hover {
 .profile-picture {
   width: 18vmin;
   height: 18vmin;
+  max-width: 250px;
+  max-height: 250px;
   top: -1%;
   left: -1%;
   position: absolute;
@@ -64,6 +66,8 @@ tbody tr:hover {
 .profilePicHousing {
   width: 17vmin;
   height: 17vmin;
+  max-width: 240px;
+  max-height: 240px;
   border-radius: 50%;
   box-shadow: 0 0 10px #6fe537;
   position: relative;
