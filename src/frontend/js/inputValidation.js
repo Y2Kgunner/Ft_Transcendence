@@ -172,8 +172,8 @@ function checkInput(inputElements) {
       }
       else if (currentElementStatus && (_element.type === 'userName')) {
         console.log("cur -> userName");
-        if (!(/^[a-zA-Z]{4,}$/).test(field.inputValue))
-          currentElementStatus = printInvalidFeedback(field, 'Invalid Username {min 4 <-> max 10} only letters');
+        if (_element.isRequired && (field.inputValue.length !== 0) &&  !(/^[a-zA-Z]{4,}$/).test(field.inputValue))
+          currentElementStatus = printInvalidFeedback(field, 'Invalid Username {min 4, max 10} only letters');
         else if (seenUsernames[field.inputValue])
           currentElementStatus = printInvalidFeedback(field, 'Username already taken!');
         else
