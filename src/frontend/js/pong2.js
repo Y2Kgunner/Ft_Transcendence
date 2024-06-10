@@ -125,7 +125,7 @@ function init2PlyrPong() {
   inputField.addEventListener('input', function () {
     updateValidationIcon();
   });
-
+  const restartGameBtn = document.getElementById('restartGameBtn');
   restartGameBtn.addEventListener('click', async function (event) {
     await createMatch("Pong");
     startGame();
