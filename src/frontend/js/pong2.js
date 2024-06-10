@@ -127,10 +127,25 @@ function init2PlyrPong() {
   });
   const restartGameBtn = document.getElementById('restartGameBtn');
   restartGameBtn.addEventListener('click', async function (event) {
-    await createMatch("Pong");
+    let matchData = {
+        player_id: playerId,
+        guest_player1: player2Alias,
+        game_type: "Pong"
+    };
+    await createMatch(matchData).then(data => {
+        matchId = data.match_id;
+    });
     startGame();
     await waitGameFinish(gameOver);
-    updateMatch();
+    matchData = {
+        match_id: matchId,
+        score_player: score1,
+        score_guest_player1: score2,
+        score_guest_player2: score3,
+        winner: winner,
+        is_draw : false
+    }
+    updateMatch(matchData);
   });
 }
 
@@ -141,11 +156,23 @@ async function validateInput() {
   if (!checkInput(_elementBlock))
     return;
   closeModal();
-  await createMatch("Pong");
+  let matchData = {
+    player_id: playerId,
+    guest_player1: player2Alias,
+    game_type: "Pong"
+};
+  await createMatch(matchData);
   startGame();
   await waitGameFinish();
   console.log(gameOver);
-  updateMatch();
+  matchData = {
+    match_id: matchId,
+    score_player: score1,
+    score_guest_player1: score2,
+    winner: winner,
+    is_draw : false
+}
+  updateMatch(matchData);
 }
 
 function waitGameFinish( interval = 100) {
@@ -163,26 +190,26 @@ function waitGameFinish( interval = 100) {
   })
 }
 
-async function updateMatch(score3 = null,draw = false) {
-    let matchData;
-    if (draw) {
-        matchData = {
-          match_id: matchId,
-          score_player: 0,
-          score_guest_player1: 0,
-          score_guest_player2: score3,
-          is_draw: draw,
-        };
-      } else {
-  matchData = {
-    match_id: matchId,
-    score_player: score1,
-    score_guest_player1: score2,
-    score_guest_player2: score3,
-    winner: winner,
-    is_draw : false
-  };
-}
+async function updateMatch(matchData) {
+//     let matchData;
+//     if (draw) {
+//         matchData = {
+//           match_id: matchId,
+//           score_player: 0,
+//           score_guest_player1: 0,
+//           score_guest_player2: score3,
+//           is_draw: draw,
+//         };
+//       } else {
+//   matchData = {
+//     match_id: matchId,
+//     score_player: score1,
+//     score_guest_player1: score2,
+//     score_guest_player2: score3,
+//     winner: winner,
+//     is_draw : false
+//   };
+// }
   endGameSession();
   console.log(matchData)
   const response = await fetch('https://127.0.0.1:443/pongApp/update_match', {
@@ -225,12 +252,12 @@ function fetchUserProfile() {
     });
 }
 
-async function createMatch(type) {
-  const matchData = {
-    player_id: playerId,
-    guest_player1: player2Alias,
-    game_type: type
-  };
+async function createMatch(matchData) {
+//   const matchData = {
+//     player_id: playerId,
+//     guest_player1: player2Alias,
+//     game_type: type
+//   };
   console.log(matchData);
   startGameSession();
   const response = await fetch('https://127.0.0.1:443/pongApp/create', {
@@ -242,8 +269,7 @@ async function createMatch(type) {
     body: JSON.stringify(matchData)
   })
   const data = await response.json();
-  console.log(data.match_id);
-  matchId = data.match_id;
+
   return data;
 }
 
