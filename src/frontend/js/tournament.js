@@ -304,76 +304,93 @@ function togglePause() {
 
 function updateGame() {
     if (begin && !pauseModalVisible) {
-        // Update paddle positions
-        if (paddle1MovingUp && paddle1.offsetTop > 0) {
-            paddle1.style.top = `${paddle1.offsetTop - 10}px`;
-        } else if (paddle1MovingDown && paddle1.offsetTop + paddle1.offsetHeight < board.offsetHeight) {
-            paddle1.style.top = `${paddle1.offsetTop + 10}px`;
+        if (paddle1MovingUp && paddle1.offsetTop > 6) {
+          paddle1.style.top = `${paddle1.offsetTop - paddleSpeed}px`;
+        } else if (paddle1MovingDown && paddle1.offsetTop + paddle1.offsetHeight < (board.offsetHeight - 6)) {
+          paddle1.style.top = `${paddle1.offsetTop + paddleSpeed}px`;
         }
-
-        if (paddle2MovingUp && paddle2.offsetTop > 0) {
-            paddle2.style.top = `${paddle2.offsetTop - 10}px`;
-        } else if (paddle2MovingDown && paddle2.offsetTop + paddle2.offsetHeight < board.offsetHeight) {
-            paddle2.style.top = `${paddle2.offsetTop + 10}px`;
+        if (paddle2MovingUp && paddle2.offsetTop > 6) {
+          paddle2.style.top = `${paddle2.offsetTop - paddleSpeed}px`;
+        } else if (paddle2MovingDown && paddle2.offsetTop + paddle2.offsetHeight < (board.offsetHeight - 6)) {
+          paddle2.style.top = `${paddle2.offsetTop + paddleSpeed}px`;
         }
-
+    
+    
         ballX += ballSpeedX;
         ballY += ballSpeedY;
+    
+        if (ballX <= 0) {
+          score2++;
+          score2Element.textContent = score2;
+          resetBall();
+        } else if (ballX + ball.offsetWidth >= board.offsetWidth) {
+          score1++;
+          score1Element.textContent = score1;
+          resetBall();
+        }
+    
+        if (ballY <= 0 || ballY + ball.offsetHeight >= board.offsetHeight)
+          ballSpeedY = -ballSpeedY;
+    
         ball.style.left = `${ballX}px`;
         ball.style.top = `${ballY}px`;
-
-        if (ballX <= 0) {
-            score2++;
-            score2Element.textContent = score2;
-            resetBall();
-        } else if (ballX + ball.offsetWidth >= board.offsetWidth) {
-            score1++;
-            score1Element.textContent = score1;
-            resetBall();
-        }
-        if (score1 === matchPoint || score2 === matchPoint) {
-            haltGame(score1 === matchPoint ? player1Alias : player2Alias);
-        }
-
-        if (ballY <= 0 || ballY + ball.offsetHeight >= board.offsetHeight)
-            ballSpeedY = -ballSpeedY;
-
+    
         const ballRect = ball.getBoundingClientRect();
         const paddle1Rect = paddle1.getBoundingClientRect();
         const paddle2Rect = paddle2.getBoundingClientRect();
-
+    
         let paddleCollision =
-            (ballRect.right >= paddle1Rect.left &&
-                ballRect.left <= paddle1Rect.right &&
-                ballRect.top <= paddle1Rect.bottom &&
-                ballRect.bottom >= paddle1Rect.top &&
-                ballSpeedX < 0) ||
-            (ballRect.right >= paddle2Rect.left &&
-                ballRect.left <= paddle2Rect.right &&
-                ballRect.top <= paddle2Rect.bottom &&
-                ballRect.bottom >= paddle2Rect.top &&
-                ballSpeedX > 0);
-
+          (ballRect.right >= paddle1Rect.left &&
+            ballRect.left <= paddle1Rect.right &&
+            ballRect.top <= paddle1Rect.bottom &&
+            ballRect.bottom >= paddle1Rect.top &&
+            ballSpeedX < 0) ||
+          (ballRect.right >= paddle2Rect.left &&
+            ballRect.left <= paddle2Rect.right &&
+            ballRect.top <= paddle2Rect.bottom &&
+            ballRect.bottom >= paddle2Rect.top &&
+            ballSpeedX > 0);
+    
         if (paddleCollision) {
-            const ballCenterY = ballY + ball.offsetHeight / 2;
-            const paddle1CenterY = paddle1.offsetTop + paddle1.offsetHeight / 2;
-            const paddle2CenterY = paddle2.offsetTop + paddle2.offsetHeight / 2;
-
-            let paddleCenterY;
-            if (ballSpeedX < 0) {
-                paddleCenterY = paddle1CenterY;
+          const ballCenterY = ballY + ball.offsetHeight / 2;
+          const paddle1CenterY = paddle1.offsetTop + paddle1.offsetHeight / 2;
+          const paddle2CenterY = paddle2.offsetTop + paddle2.offsetHeight / 2;
+          let paddleCenterY;
+          if (ballSpeedX < 0) {
+            paddleCenterY = paddle1CenterY;
+          } else {
+            paddleCenterY = paddle2CenterY;
+          }
+          const collisionOffset = ballCenterY - paddleCenterY;
+          const maxOffset = paddle1.offsetHeight / 2;
+          const angle = collisionOffset / maxOffset;
+    
+          const paddle1BottomThreshold = board.offsetHeight - paddle1.offsetHeight / 2;
+          const paddle2BottomThreshold = board.offsetHeight - paddle2.offsetHeight / 2;
+          if ((paddle1.offsetTop > 6 && (paddle1.offsetTop + paddle1.offsetHeight) < (board.offsetHeight - 6))
+            && (paddle2.offsetTop > 6 && (paddle2.offsetTop + paddle2.offsetHeight) < (board.offsetHeight - 6))) {
+            if (
+              (ballSpeedX < 0 && paddle1.offsetTop > paddle1BottomThreshold && angle > 0) ||
+              (ballSpeedX > 0 && paddle2.offsetTop > paddle2BottomThreshold && angle > 0)
+            ) {
+              ballSpeedY = -initialBallSpeedY * Math.abs(angle);
             } else {
-                paddleCenterY = paddle2CenterY;
+              ballSpeedY = initialBallSpeedY * angle;
             }
-
-            const collisionOffset = ballCenterY - paddleCenterY;
-            const maxOffset = paddle1.offsetHeight / 2;
-
-            const angle = collisionOffset / maxOffset;
-            ballSpeedY = initialBallSpeedY * angle;
             ballSpeedX = -ballSpeedX;
+          } else {
+            if (paddle1.offsetTop > 6 || paddle2.offsetTop > 6)
+              ballSpeedY = -(ballSpeedY + 2.1);
+            if ((paddle1.offsetTop + paddle1.offsetHeight) < (board.offsetHeight - 2)
+              || (paddle2.offsetTop + paddle2.offsetHeight) < (board.offsetHeight - 2))
+              ballSpeedY = -(ballSpeedY + 2.5);
+            ballSpeedX = -ballSpeedX;
+          }
         }
-    }
+        if (score1 === matchPoint || score2 === matchPoint) {
+          haltGame(score1 === matchPoint ? player1Alias : player2Alias);
+        }
+      }
 }
 
 function haltGame(winning_player) {

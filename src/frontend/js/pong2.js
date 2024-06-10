@@ -19,6 +19,7 @@ let score2 = 0;
 let player1Alias = "Player 1";
 let player2Alias = "";
 let initialPaddlePos;
+let winner;
 
 let playerId;
 let matchId;
@@ -142,32 +143,46 @@ async function validateInput() {
   closeModal();
   await createMatch("Pong");
   startGame();
-  await waitGameFinish(gameOver);
+  await waitGameFinish();
+  console.log(gameOver);
   updateMatch();
 }
 
-function waitGameFinish(gameStatus, interval = 100) {
+function waitGameFinish( interval = 100) {
   return new Promise(resolve => {
     const check = () => {
-      if (gameStatus) {
+      if (gameOver) {
         console.log("game over")
         resolve();
       } else {
+        console.log(gameOver);
         setTimeout(check, interval);
       }
     };
     check();
-
   })
 }
 
-async function updateMatch() {
-  const matchData = {
+async function updateMatch(score3 = null,draw = false) {
+    let matchData;
+    if (draw) {
+        matchData = {
+          match_id: matchId,
+          score_player: 0,
+          score_guest_player1: 0,
+          score_guest_player2: score3,
+          is_draw: draw,
+        };
+      } else {
+  matchData = {
     match_id: matchId,
     score_player: score1,
     score_guest_player1: score2,
-    winner: winner_match
+    score_guest_player2: score3,
+    winner: winner,
+    is_draw : false
   };
+}
   endGameSession();
   console.log(matchData)
   const response = await fetch('https://127.0.0.1:443/pongApp/update_match', {
@@ -358,12 +373,13 @@ function updateGame() {
   }
 }
 
-function haltGame(winner) {
+function haltGame(game_winner) {
   paused = false;
   pauseModalVisible = false;
   gameOver = true;
   let winnerMsg = document.getElementById('GameWinner');
-  winnerMsg.textContent = winner.toString() + " wins!";
+  winnerMsg.textContent = game_winner.toString() + " wins!";
+  winner = game_winner;
   score1 = 0;
   score2 = 0;
   resetBall();
@@ -453,4 +469,4 @@ function closeModal() {
 //?
 //? end of modal input validation
 
-export { init2PlyrPong, fetchUserProfile, isPrintableASCII, waitGameFinish, updateMatch, gameInProgress, pongIntervalId};
+export { init2PlyrPong, fetchUserProfile, isPrintableASCII, waitGameFinish, updateMatch,createMatch, gameInProgress, pongIntervalId};

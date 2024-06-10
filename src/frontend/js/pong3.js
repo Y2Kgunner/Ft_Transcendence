@@ -1,4 +1,5 @@
 import { eventManager, inputElement, checkInput, isPrintableASCII } from './inputValidation.js';
+import { fetchUserProfile, waitGameFinish, updateMatch} from './pong2.js'
 
 let begin = false;
 let initialVPaddlePos;
@@ -6,7 +7,7 @@ let initialHPaddlePos;
 let pong3IntervalId = null;
 let pauseModalVisible = false;
 let gameOver = false;
-const matchPoint = 7;
+const matchPoint = 1;
 
 let ballX = 5;
 let ballY = 5;
@@ -373,39 +374,32 @@ function continueGame() {
   }, { once: true });
 }
 
-// function realTimeChecker() {
-//   inputIds.forEach((inputId) => {
-//     var inputField = document.getElementById(inputId);
-//     inputField.addEventListener('input', function () {
-//       var invalidFeedback = inputField.nextElementSibling;
-//       var validFeedback = invalidFeedback.nextElementSibling;
-//       inputId = inputField.value.trim();
-
-//       invalidFeedback.style.display = "none";
-//       validFeedback.style.display = "none";
-//       inputField.classList.remove("is-invalid", "is-valid");
-
-//       if (!modalInit) modalInit = true;
-//       else if (inputId.length > 10 || inputId.length < 3) {
-//         inputField.classList.add("is-invalid");
-//         invalidFeedback.style.display = "block";
-//       } else if (!isPrintableASCII(inputId)) {
-//         inputField.classList.add("is-invalid");
-//         invalidFeedback.style.display = "block";
-//       } else if (player1Alias === inputId) {
-//         inputField.classList.add("is-invalid");
-//         invalidFeedback.style.display = "block";
-//       } else if (inputId === '') {
-//         inputField.classList.add("is-invalid");
-//         invalidFeedback.style.display = "block";
-//       } else {
-//         inputField.classList.add("is-valid");
-//         validFeedback.style.display = "block";
-//       }
-//     });
-//   });
-// }
-
+// async function updateMatch() {
+//     const matchData = {
+//       match_id: matchId,
+//       score_player: score1,
+//       score_guest_player1: score2,
+//       winner: winner,
+//       is_draw : false
+//     };
+//     endGameSession();
+//     console.log(matchData)
+//     const response = await fetch('https://127.0.0.1:443/pongApp/update_match', {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         'Authorization': 'Bearer ' + getCookie('jwt')
+//       },
+//       body: JSON.stringify(matchData)
+  
+//     })
+//     if (!response.ok) {
+//       throw new Error('Network response was not ok');
+//     }
+//     const data = await response.json();
+//     return data;
+//   }
+  
 function closeModal() {
   var modal = document.getElementById('startGameModal');
   var modalInstance = bootstrap.Modal.getInstance(modal);
