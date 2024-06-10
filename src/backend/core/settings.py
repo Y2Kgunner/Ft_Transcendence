@@ -13,23 +13,24 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 import os
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
+import environ
 
 
-################## path for other files ##################
+
+env = environ.Env()
+environ.Env.read_env()
+
+
 BASE_DIR = Path(__file__).resolve().parent.parent
-# FRONTEND_DIR = Path('/app/frontend')  
-
 MEDIA_URL = '/media/'
 MEDIA_ROOT = '/backend/media'
 STATIC_URL = '/static/'
 STATIC_ROOT = '/frontend/staticfiles'
 
-# very important! not to be removed! ================================================
-SECRET_KEY = 'django-insecure-6llr!9x37@9f)m=l-eshn0*65=1=1u#k)=*=6=_llj6p*xtqh1'
-DEBUG = True
-# ===================================================================================
+
+SECRET_KEY = env('SECRET_KEY')
+DEBUG = env.bool('DEBUG', default=False)
+
 
 #This allows access to your backend from these hosts/domains, but it doesn't directly affect CORS. CORS relies on different headers sent by the backend API.
 ALLOWED_HOSTS = ['127.0.0.1','localhost']
@@ -82,7 +83,6 @@ MIDDLEWARE = [
     'user_auth.middleware.UpdateLastActivityMiddleware',
 ]
 
-
 ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
@@ -101,16 +101,16 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'core.wsgi.application'
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',  # Specify the correct database backend
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD':'postgres',
-        'HOST': 'db',
-        'PORT': 5432
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DB_HOST'),
+        'PORT': env('DB_PORT'),
     }
 }
 
@@ -145,13 +145,13 @@ LOGIN_URL = '/login'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # JWT Settings
-JWT_SECRET_KEY = SECRET_KEY 
+JWT_SECRET_KEY = env('JWT_SECRET_KEY')
 JWT_ALGORITHM = 'HS256'
 JWT_EXPIRATION_DELTA = timedelta(hours=1) 
 
 # 42 OAuth settings .env 
-CLIENT_ID_42 = 'u-s4t2ud-d0c4077a43cbefbff3d67add430fbc7edaadbc4522099efc1eb7a28773e0037a'
-CLIENT_SECRET_42 = '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'
+CLIENT_ID_42 = env('CLIENT_ID_42')
+CLIENT_SECRET_42 = env('CLIENT_SECRET_42')
 CALLBACK_URL_42 = 'https://127.0.0.1:443/oauth_callback'
 
 # SSL Settings
@@ -166,8 +166,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'ft.transcendence.pong@gmail.com'
-EMAIL_HOST_PASSWORD = 'aoqlnbmaqviznnmw'
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
 EMIAL_USE_SSL = False
 
