@@ -30,7 +30,7 @@ def update_match(request):
             match.score_guest_player2 = score_guest_player2
             match.is_draw = is_draw
             if is_draw:
-                match.winner = "darw"
+                match.winner = "draw"
             else:
                 match.winner = data.get('winner')
             match.game_completed = True
