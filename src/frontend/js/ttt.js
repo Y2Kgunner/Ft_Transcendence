@@ -192,9 +192,16 @@ function setupTTT() {
     });
 
     restartTTTBtn.addEventListener('click', async function (event) {
-        await createMatch("TTT").then(data => {
-            matchId = data.match_id;
-        });
+      if (!isInputValid)
+      return;
+  let matchData = {
+      player_id: playerId,
+      guest_player1: player2Alias,
+      game_type: "TTT"
+  };
+  await createMatch(matchData).then(data => {
+      matchId = data.match_id;
+  });
         boxIndexValues = new Array(9).fill("");
         nextMove = 'X';
         gameOver = false;
@@ -215,7 +222,15 @@ function setupTTT() {
             winner = player2Alias;
         else
             winner = player1Name;
-        updateMatch();
+            matchData = {
+              match_id: matchId,
+              score_player: 0,
+              score_guest_player1: 0,
+              is_draw: draw ? true : false,
+              winner : draw ? null : winner
+      }
+      console.log(matchData);
+      updateMatch(matchData);
     });
     realTimeChecker();
 }
