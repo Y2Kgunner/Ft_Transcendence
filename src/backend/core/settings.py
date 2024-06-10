@@ -26,9 +26,9 @@ MEDIA_ROOT = '/backend/media'
 STATIC_URL = '/static/'
 STATIC_ROOT = '/frontend/staticfiles'
 
-# to be removed ==================================================================================
+# very important! not to be removed! ================================================
 SECRET_KEY = 'django-insecure-6llr!9x37@9f)m=l-eshn0*65=1=1u#k)=*=6=_llj6p*xtqh1'
-DEBUG = False
+DEBUG = True
 # ===================================================================================
 
 #This allows access to your backend from these hosts/domains, but it doesn't directly affect CORS. CORS relies on different headers sent by the backend API.

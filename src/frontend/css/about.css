@@ -1,97 +1,113 @@
-/* Ensure that social icons have a fixed size and margin */
-.socialIcons {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 10px;
+body {
+  font-family: 'PixelatedFont', sans-serif;
+}
+
+@font-face {
+  font-family: 'PixelatedFont';
+  src: url('../assets/Pixelated/pix/pix.ttf') format('truetype');
+}
+
+section {
+  top: 20vh;
+  position: relative;
+  color: rgb(255, 255, 254);
+  z-index: 1;
 }
 
 .socialIcons > a {
-    text-decoration: none;
-    margin: 0 5px; /* Adjust as necessary */
+  text-decoration: none;
 }
 
-.icon {
-    width: 30px;
-    height: 30px;
+.btn:hover {
+  --bs-btn-hover-color: #ffffff;
+  --bs-btn-hover-bg: #9c9ea0;
+  box-shadow: 0 0 15px 3px #12190e;
 }
 
-/* Card Housing Styles */
+/* .icon:hover {
+  box-shadow: 0 0 10px 5px #585f51;
+} */
+
+.icon:hover {
+  filter: drop-shadow(0 0 3px #bbf99c);
+}
+
+.cardButton {
+  width: 75%;
+}
+
+.customH1 {
+  color: #f6fff4;
+  text-shadow: 5px 5px 10px #3a9a0a;
+}
+
+.cardHousing:hover > .card {
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+}
+
 .cardHousing {
-    width: 9.4vw;
-    min-width: 230px;
-    max-width: 250px;
-    height: 38vh;
-    min-height: 450px;
-    max-height: 500px;
-    margin-top: 20px;
-    margin-bottom: 40px; /* Ensure space between cards */
-    perspective: 1000px;
-    -webkit-perspective: 1000px;
-    z-index: 1;
+  width: 9.4vw;
+  min-width: 230px;
+  max-width: 250px;
+  height: 38vh;
+  min-height: 450px;
+  max-height: 500px;
+  margin-top: 20px;
+  perspective: 1000px;
+  -webkit-perspective: 1000px;
+  z-index: 1;
 }
 
-/* Media query for smaller screens */
-@media (max-width: 768px) {
-    .cardHousing {
-        margin-bottom: 60px; /* Increase margin for smaller screens */
-    }
-}
-
-/* Media query for larger screens */
-@media (min-width: 769px) {
-    .cardHousing {
-        margin-bottom: 40px; /* Default margin for larger screens */
-    }
-}
-
-/* General styles for the card */
 .card {
-    height: 100%;
-    width: 100%;
-    margin-bottom: 10px;
-    padding: 25px;
-    position: relative;
-    transition: transform 869ms;
-    transform-style: preserve-3d;
-    -webkit-transform-style: preserve-3d;
-    -webkit-backface-visibility: hidden;
-    transform: translateZ(-1px);
-    -webkit-transform: translateZ(-1px);
+  height: 100%;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 25px;
+  position: relative;
+  transition: transform 869ms;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
 }
 
 .front, .back {
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    box-shadow: 0 0 15px #bbf99c;
-    padding: 1px;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  box-shadow: 0 0 15px #bbf99c;
+  padding: 1px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .front {
-    backface-visibility: visible;
-    -webkit-backface-visibility: visible;
+  transform: rotateY(0deg);
+  -webkit-transform: rotateY(0deg);
 }
 
 .back {
-    display: flex;
-    padding-left: 2px;
-    padding-right: 2px;
-    transform: rotateY(180deg);
-    -webkit-transform: rotateY(180deg);
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+  display: flex;
+  padding-left: 2px;
+  padding-right: 2px;
+  pointer-events: auto;
 }
 
 .customWidth {
-    width: 2vmin;
-    height: 2vmin;
-    min-width: 200px;
-    min-height: 200px;
-    max-width: 250px;
-    max-height: 250px;
-    box-shadow: 0 0 10px #c9dbc0;
+  width: 2vmin;
+  height: 2vmin;
+  min-width: 200px;
+  min-height: 200px;
+  max-width: 250px;
+  max-height: 250px;
+  box-shadow: 0 0 10px #c9dbc0;
 }
 
 .grid-fade {
-    opacity: 0.8;
+  opacity: 0.8;
 }
+
+/* 
+I want it to be having the front face only when hover flip and reveal the back part! the code provided by u keeps back in default and flip back to the back!
+*/
