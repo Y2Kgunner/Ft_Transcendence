@@ -1,13 +1,14 @@
-import { setupAuthPage, logoutUser, isAuthenticated ,hashPassword } from './auth.js';
+import { setupAuthPage, logoutUser, isAuthenticated, hashPassword } from './auth.js';
 import { setUpProfile } from './profile.js';
-import { setupTournamentPage, gameInProgressTour ,tournamentIntervalId } from './tournament.js';
+import { setupTournamentPage, gameInProgressTour, tournamentIntervalId } from './tournament.js';
 import { init2PlyrPong, gameInProgress, pongIntervalId } from './pong2.js';
-import { init3PlyrPong, gameInProgress3, pong3IntervalId} from './pong3.js';
+import { init3PlyrPong, gameInProgress3, pong3IntervalId } from './pong3.js';
 import { setupTTT } from './ttt.js';
 
 async function removeOpenModals() {
   const modals = document.querySelectorAll('.modal.show');
   modals.forEach((modal) => {
+    console.log("found modal", modal);
     const modalInstance = bootstrap.Modal.getInstance(modal);
     modalInstance.hide();
     modalInstance._element.addEventListener('hidden.bs.modal', function () {
@@ -32,14 +33,13 @@ class Router {
       return;
     }
 
-    if ((gameInProgress || gameInProgressTour || gameInProgress3) && (this.lastPath == '/pong2' || this.lastPath == '/tournament' || this.lastPath == '/pong3'))
-    {
-        // console.log("interval " + intervalId);
-        clearInterval(pongIntervalId);
-        clearInterval(tournamentIntervalId);
-        clearInterval(pong3IntervalId);
-      if(!confirm('You have an ongoing game. Are you sure you want to leave and lose your progress?')) 
+    if ((gameInProgress || gameInProgressTour || gameInProgress3) && (this.lastPath == '/pong2' || this.lastPath == '/tournament' || this.lastPath == '/pong3')) {
+      // console.log("interval " + intervalId);
+      if (!confirm('You have an ongoing game. Are you sure you want to leave and lose your progress?'))
         return;
+      clearInterval(pongIntervalId);
+      clearInterval(tournamentIntervalId);
+      clearInterval(pong3IntervalId);
     }
 
 

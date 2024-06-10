@@ -2,20 +2,20 @@ import { getCookie } from './profile.js';
 import { inputElement, checkInput, eventManager } from './inputValidation.js';
 
 const matchPoint = 11;
-let pongIntervalId = null;
-let pauseModalVisible = false;
-let gameOver = false;
-let modalInit = false;
-let paused = false;
+let pongIntervalId;
+let pauseModalVisible;
+let gameOver;
+let modalInit;
+let paused;
 
-let ballX = 10;
-let ballY = 10;
-let ballSpeedX = 5;
-let ballSpeedY = 5;
-let initialBallSpeedX = 10;
-let initialBallSpeedY = 10;
-let score1 = 0;
-let score2 = 0;
+let ballX;
+let ballY;
+let ballSpeedX;
+let ballSpeedY;
+let initialBallSpeedX;
+let initialBallSpeedY;
+let score1;
+let score2;
 let player1Alias = "Player 1";
 let player2Alias = "";
 let initialPaddlePos;
@@ -26,18 +26,18 @@ let matchId;
 
 let paddle1;
 let paddle2;
-let paddleSpeed = 12;
+const paddleSpeed = 12;
 let ball;
 let board;
 let score1Element;
 let score2Element;
 let player1AliasElement;
 let player2AliasElement;
-let begin = false;
-let paddle1MovingUp = false;
-let paddle1MovingDown = false;
-let paddle2MovingUp = false;
-let paddle2MovingDown = false;
+let begin;
+let paddle1MovingUp;
+let paddle1MovingDown;
+let paddle2MovingUp;
+let paddle2MovingDown;
 let pauseModalInstance;
 
 var inputField;
@@ -45,7 +45,7 @@ var startGameBtn;
 var startModal;
 var form;
 
-let gameInProgress = false;
+let gameInProgress;
 
 function resetBall() {
   ballX = board.offsetWidth / 2 - ball.offsetWidth / 2;
@@ -91,7 +91,26 @@ function startEnterKey(event) {
 }
 
 function init2PlyrPong() {
-  console.log('what the sigma??');
+  ballX = 10;
+  ballY = 10;
+  ballSpeedX = 5;
+  ballSpeedY = 5;
+  initialBallSpeedX = 10;
+  initialBallSpeedY = 10;
+  score1 = 0;
+  score2 = 0;
+  begin = false;
+  paddle1MovingUp = false;
+  paddle1MovingDown = false;
+  paddle2MovingUp = false;
+  paddle2MovingDown = false;
+  pongIntervalId = null;
+  pauseModalVisible = false;
+  gameOver = false;
+  modalInit = false;
+  paused = false;
+  gameInProgress = false;
+
   board = document.getElementById("board");
   paddle1 = document.getElementById("paddle_1");
   paddle2 = document.getElementById("paddle_2");
@@ -128,22 +147,22 @@ function init2PlyrPong() {
   const restartGameBtn = document.getElementById('restartGameBtn');
   restartGameBtn.addEventListener('click', async function (event) {
     let matchData = {
-        player_id: playerId,
-        guest_player1: player2Alias,
-        game_type: "Pong"
+      player_id: playerId,
+      guest_player1: player2Alias,
+      game_type: "Pong"
     };
     await createMatch(matchData).then(data => {
-        matchId = data.match_id;
+      matchId = data.match_id;
     });
     startGame();
     await waitGameFinish(gameOver);
     matchData = {
-        match_id: matchId,
-        score_player: score1,
-        score_guest_player1: score2,
-        score_guest_player2: score3,
-        winner: winner,
-        is_draw : false
+      match_id: matchId,
+      score_player: score1,
+      score_guest_player1: score2,
+      score_guest_player2: score3,
+      winner: winner,
+      is_draw: false
     }
     updateMatch(matchData);
   });
@@ -160,7 +179,7 @@ async function validateInput() {
     player_id: playerId,
     guest_player1: player2Alias,
     game_type: "Pong"
-};
+  };
   await createMatch(matchData);
   startGame();
   await waitGameFinish();
@@ -170,12 +189,12 @@ async function validateInput() {
     score_player: score1,
     score_guest_player1: score2,
     winner: winner,
-    is_draw : false
-}
+    is_draw: false
+  }
   updateMatch(matchData);
 }
 
-function waitGameFinish( interval = 100) {
+function waitGameFinish(interval = 100) {
   return new Promise(resolve => {
     const check = () => {
       if (gameOver) {
@@ -191,25 +210,25 @@ function waitGameFinish( interval = 100) {
 }
 
 async function updateMatch(matchData) {
-//     let matchData;
-//     if (draw) {
-//         matchData = {
-//           match_id: matchId,
-//           score_player: 0,
-//           score_guest_player1: 0,
-//           score_guest_player2: score3,
-//           is_draw: draw,
-//         };
-//       } else {
-//   matchData = {
-//     match_id: matchId,
-//     score_player: score1,
-//     score_guest_player1: score2,
-//     score_guest_player2: score3,
-//     winner: winner,
-//     is_draw : false
-//   };
-// }
+  //     let matchData;
+  //     if (draw) {
+  //         matchData = {
+  //           match_id: matchId,
+  //           score_player: 0,
+  //           score_guest_player1: 0,
+  //           score_guest_player2: score3,
+  //           is_draw: draw,
+  //         };
+  //       } else {
+  //   matchData = {
+  //     match_id: matchId,
+  //     score_player: score1,
+  //     score_guest_player1: score2,
+  //     score_guest_player2: score3,
+  //     winner: winner,
+  //     is_draw : false
+  //   };
+  // }
   endGameSession();
   console.log(matchData)
   const response = await fetch('https://127.0.0.1:443/pongApp/update_match', {
@@ -253,11 +272,11 @@ function fetchUserProfile() {
 }
 
 async function createMatch(matchData) {
-//   const matchData = {
-//     player_id: playerId,
-//     guest_player1: player2Alias,
-//     game_type: type
-//   };
+  //   const matchData = {
+  //     player_id: playerId,
+  //     guest_player1: player2Alias,
+  //     game_type: type
+  //   };
   console.log(matchData);
   startGameSession();
   const response = await fetch('https://127.0.0.1:443/pongApp/create', {
@@ -495,4 +514,4 @@ function closeModal() {
 //?
 //? end of modal input validation
 
-export { init2PlyrPong, fetchUserProfile, isPrintableASCII, waitGameFinish, updateMatch,createMatch, gameInProgress, pongIntervalId};
+export { init2PlyrPong, fetchUserProfile, isPrintableASCII, waitGameFinish, updateMatch, createMatch, gameInProgress, pongIntervalId };
