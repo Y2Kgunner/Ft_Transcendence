@@ -7,9 +7,9 @@ let initialHPaddlePos;
 let pong3IntervalId = null;
 let pauseModalVisible = false;
 let gameOver = false;
-const matchPoint = 1;
+const matchPoint = 3;
 let matchId;
-let draw;
+let draw = false;
 let winner;
 
 let ballX = 5;
