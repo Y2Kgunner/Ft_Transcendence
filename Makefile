@@ -29,8 +29,7 @@ migrate:
 
 make-and-apply-migrations: makemigrations migrate
 
-
 bash:
-	bash dock.sh
+	bash src/frontend/scripts/dock.sh
 
 .PHONY: all build up down flush fclean clean re makemigrations migrate inspect clean_db make-migrations-apply makemigrations migrate make-and-apply-migrations
