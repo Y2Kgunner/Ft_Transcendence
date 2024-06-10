@@ -19,13 +19,16 @@ class inputElement {
    * @param {boolean} isRequired - Whether the input is required { boolean }
    * @param {number} minLen - The minimum length of the input value { int }
    * @param {number} maxLen - The maximum length of the input value { int }
+  //  * @param {boolean} isFormFloating - Whether the input is in form-floating { boolean }
    */
+  // constructor(id, type, isRequired, minLen, maxLen, isFormFloating) {
   constructor(id, type, isRequired, minLen, maxLen) {
     this.id = id;
     this.type = type;
     this.isRequired = isRequired;
     this.minLen = minLen;
     this.maxLen = maxLen;
+    // this.isFormFloating = isFormFloating;
   }
 }
 
@@ -42,16 +45,66 @@ const eventManager = {
   }
 };
 
+function printInvalidFeedback(field, msg) {
+  field.invalidFeedback.textContent = msg;
+  field.inputField.classList.add("is-invalid");
+  const timeoutId = setTimeout(clearErrorMessage, 5000, field);
+  window.timeoutId = timeoutId;
+  console.log('printttt err');
+  return false;
+}
+
 function phoneValidation(field) {
   const phoneRegex = /^((\+971\s?(5[0-9]))|0(5[0-9]))([-.]?)([0-9]{3})([-.]?)([0-9]{4})$/;
   const isValidPhone = phoneRegex.test(field.inputValue);
 
-  if (!isValidPhone) {
-    field.invalidFeedback.textContent = "Looks like an invalid phone number! 😿";
-    field.inputField.classList.add("is-invalid");
-    clearTimeout(window.timeoutId);
-    window.timeoutId = setTimeout(clearErrorMessage, 5000, field);
-    return false;
+  if (!isValidPhone)
+    return printInvalidFeedback(field, "Looks like an invalid phone number! 😿");
+  return true;
+}
+
+function emailValidation(field) {
+  if (!(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/).test(field.inputValue)) {
+    console.log('non printable');
+    return printInvalidFeedback(field, "Invalid email format");
+  }
+  return true;
+}
+
+function passwordValidation(field) {
+  if (!(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/).test(field.inputValue)) {
+    console.log('non printable');
+    return printInvalidFeedback(field, "Weak password! 🔒️ {8+ chars, 1 UPPER, 1 lower, 1 num}");
+  }
+  return true;
+}
+
+// function userNameValidation(field, seenUsernames) {
+//   const username = field.inputValue.trim();
+//   if (seenUsernames[username])
+//     return printInvalidFeedback(field, 'Username already taken!');
+//   else
+//     seenUsernames[username] = true;
+//   return true;
+// }
+
+function nameValidation(field) {
+  if (!(/^[a-zA-Z]+(?: [a-zA-Z]+)*$/).test(field.inputValue)) {
+    console.log('non printable');
+    return printInvalidFeedback(field, "no elon musk typeof names only letter!! 💀");
+  }
+  return true;
+}
+
+function visibilityValidation(field) {
+  console.log('non printable');
+  return printInvalidFeedback(field, "input can only contain printable ASCII characters! 😸");
+}
+
+function lengthValidation(field, _element) {
+  if ((field.inputValue.length > _element.maxLen) || (field.inputValue.length < _element.minLen)) {
+    console.log('length issue -->>', _element.isRequired);
+    return printInvalidFeedback(field, `${_element.type} must be between ${_element.minLen} and ${_element.maxLen} characters long! 😼`);
   }
   return true;
 }
@@ -62,105 +115,86 @@ function isPrintableASCII(str) {
 }
 
 function clearErrorMessage(field) {
-  field.invalidFeedback.textContent = "Looks stinky! 🚽";
+  field.invalidFeedback.textContent = "";
   field.inputField.classList.remove("is-invalid");
 }
 
 function checkInput(inputElements) {
+  console.log("input valz");
   let allInputsValid = true;
   let bigBoiTruncation = (inputElements.length > 4) ? true : false;
   const seenUsernames = {};
 
   inputElements.forEach((_element) => {
+    let currentElementStatus = true;
     const input_field = document.getElementById(_element.id);
     const field = {
       inputField: input_field,
       inputValue: input_field.value.trim(),
-      invalidFeedback: input_field.nextElementSibling,
-      validFeedback: input_field.nextElementSibling.nextElementSibling
-    };
-
+      invalidFeedback: null,
+      validFeedback: null
+    }
+    field.invalidFeedback = field.inputField.closest('.input-group').querySelector('.invalid-feedback');
+    // if (_element.isFormFloating) {
+    // field.invalidFeedback = field.inputField.parentNode.nextElementSibling;
+    // field.invalidFeedback.textContent = 'dafag';
+    // console.log('floating');
+    // } else {
+    // field.invalidFeedback = field.inputField.nextElementSibling;
+    // }
     if (bigBoiTruncation && !allInputsValid)
       return;
     if (_element) {
-      field.invalidFeedback.textContent = "Looks stinky! 🚽";
-      field.validFeedback.style.display = "none";
+      field.invalidFeedback.textContent = "";
 
-      if (_element.isRequired && field.inputField === '') {
-        console.log('empty');
-        field.invalidFeedback.textContent = "input field cannot be empty! 😾";
-        inputField.classList.add("is-invalid");
+      if (_element.isRequired && field.inputValue === '') {
+        field.invalidFeedback.textContent = `${_element.type} cannot be empty! 😾`;
+        field.inputField.classList.add("is-invalid");
         clearTimeout(window.timeoutId);
         window.timeoutId = setTimeout(clearErrorMessage, 5000, field);
-        allInputsValid = false;
+        currentElementStatus = false;
       }
       else if (field.inputValue.length && !isPrintableASCII(field.inputValue) && _element.type !== 'name') {
-        console.log('non printable');
-        field.invalidFeedback.textContent = "input can only contain printable ASCII characters! 😸";
-        input_field.classList.add("is-invalid");
-        clearTimeout(window.timeoutId);
-        window.timeoutId = setTimeout(clearErrorMessage, 5000, field);
-        allInputsValid = false;
+        visibilityValidation(field);
+        currentElementStatus = false;
       }
-      else if (_element.type !== 'phone' && (_element.isRequired || (field.inputValue.length !== 0)) && ((field.inputValue.length > _element.maxLen) || (field.inputValue.length < _element.minLen))) {
-        if (field.inputValue.length > _element.maxLen) {
-          console.log('too big', field.inputValue.length, _element.maxLen);
-        }
-        if (field.inputValue.length < _element.minLen) {
-          console.log('too smol', field.inputValue.length, _element.minLen);
-        }
-        console.log('length issue -->>', _element.isRequired);
-        field.invalidFeedback.textContent = `input must be between ${_element.minLen} and ${_element.maxLen} characters long! 😼`;
-        input_field.classList.add("is-invalid");
-        clearTimeout(window.timeoutId);
-        window.timeoutId = setTimeout(clearErrorMessage, 5000, field);
-        allInputsValid = false;
+      else if (_element.type !== 'phone' && (_element.isRequired || (field.inputValue.length !== 0))) {
+        currentElementStatus = lengthValidation(field, _element) ? currentElementStatus : false;
       }
-      else if (_element.type === 'phone') {
-        allInputsValid = (!_element.isRequired && field.inputValue.length === 0) ? allInputsValid : (phoneValidation(field) ? allInputsValid : false);
+      if (currentElementStatus && (_element.type === 'phone')) {
+        currentElementStatus = (!_element.isRequired && field.inputValue.length === 0) ? currentElementStatus : (phoneValidation(field) ? currentElementStatus : false);
         console.log('phone ternary check', field.inputValue.length);
       }
-      else if (_element.type === 'name') {
-        if (!(/^[a-zA-Z]+(?: [a-zA-Z]+)*$/).test(field.inputValue)) {
-          console.log('non printable');
-          field.invalidFeedback.textContent = "no elon musk typeof names only letter!! 💀";
-          input_field.classList.add("is-invalid");
-          clearTimeout(window.timeoutId);
-          window.timeoutId = setTimeout(clearErrorMessage, 5000, field);
-          allInputsValid = false;
-        }
+      else if (currentElementStatus && (_element.type === 'name')) {
+        currentElementStatus = nameValidation(field) ? currentElementStatus : false;
       }
-      else if (_element.type === 'userName') {
-        const username = field.inputValue.trim();
-        if (seenUsernames[username]) {
-          field.invalidFeedback.textContent = 'Username already taken!';
-          input_field.classList.add("is-invalid");
-          clearTimeout(window.timeoutId);
-          window.timeoutId = setTimeout(clearErrorMessage, 5000, field);
-          allInputsValid = false;
-        } else {
-          seenUsernames[username] = true;
-        }
+      else if (currentElementStatus && (_element.type === 'userName')) {
+        console.log("cur -> userName");
+        if (!(/^[a-zA-Z]{4,}$/).test(field.inputValue))
+          currentElementStatus = printInvalidFeedback(field, 'Username can only contain letters!');
+        else if (seenUsernames[field.inputValue])
+          currentElementStatus = printInvalidFeedback(field, 'Username already taken!');
+        else
+          seenUsernames[field.inputValue] = true;
       }
-      else if (_element.type === 'password') {
-        if (!(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/).test(field.inputValue)) {
-          console.log('non printable');
-          field.invalidFeedback.textContent = "Weak password! 🔒️ {8+ chars, 1 UPPER, 1 lower, 1 num}";
-          input_field.classList.add("is-invalid");
-          clearTimeout(window.timeoutId);
-          window.timeoutId = setTimeout(clearErrorMessage, 5000, field);
-          allInputsValid = false;
-        }
+      else if (currentElementStatus && (_element.type === 'password')) {
+        console.log("eggor");
+        currentElementStatus = passwordValidation(field) ? currentElementStatus : false;
       }
-      else if (_element.type === 'email') {
-        if (!(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/).test(field.inputValue)) {
-          console.log('non printable');
-          field.invalidFeedback.textContent = "Invalid email format";
-          input_field.classList.add("is-invalid");
-          clearTimeout(window.timeoutId);
-          window.timeoutId = setTimeout(clearErrorMessage, 5000, field);
-          allInputsValid = false;
-        }
+      else if (currentElementStatus && (_element.type === 'email')) {
+        console.log("eggor");
+        currentElementStatus = emailValidation(field) ? currentElementStatus : false;
+      }
+      if (!currentElementStatus) {
+        allInputsValid = !true;
+        field.inputField.classList.add('is-invalid');
+        field.inputField.classList.remove('is-valid');
+        // if (_element.isFormFloating)
+        field.invalidFeedback.style.display = 'block';
+      } else {
+        field.inputField.classList.remove('is-invalid');
+        // field.inputField.classList.add('is-valid');
+        clearTimeout(window.timeoutId);
       }
     } else {
       console.error(`input field with ID ${_element} not found!`);
