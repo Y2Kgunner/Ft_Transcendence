@@ -90,8 +90,9 @@ function startEnterKey(event) {
   }
 }
 
-function init2PlyrPong() {
-  ballX = 10;
+function initVariables()
+{
+    ballX = 10;
   ballY = 10;
   ballSpeedX = 5;
   ballSpeedY = 5;
@@ -123,6 +124,10 @@ function init2PlyrPong() {
   score1Element.textContent = score1;
   score2Element.textContent = score2;
 
+}
+
+function init2PlyrPong() {
+    initVariables();
   pauseModalInstance = new bootstrap.Modal(document.getElementById('pauseGameModal'));
   startModal = new bootstrap.Modal(document.getElementById('startGameModal'));
   startModal.show();
@@ -146,6 +151,7 @@ function init2PlyrPong() {
   });
   const restartGameBtn = document.getElementById('restartGameBtn');
   restartGameBtn.addEventListener('click', async function (event) {
+    initVariables();
     let matchData = {
       player_id: playerId,
       guest_player1: player2Alias,
@@ -229,7 +235,6 @@ async function updateMatch(matchData) {
   //     is_draw : false
   //   };
   // }
-  endGameSession();
   console.log(matchData)
   const response = await fetch('https://127.0.0.1:443/pongApp/update_match', {
     method: 'POST',
@@ -433,6 +438,7 @@ function haltGame(game_winner) {
   score2Element.textContent = score2;
   paddle1.style.top = initialPaddlePos;
   paddle2.style.top = initialPaddlePos;
+  endGameSession();
   var restartModal = new bootstrap.Modal(document.getElementById('restartGame'));
   restartModal.show();
   clearInterval(pongIntervalId);

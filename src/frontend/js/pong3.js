@@ -7,7 +7,7 @@ let initialHPaddlePos;
 let pong3IntervalId;
 let pauseModalVisible;
 let gameOver;
-const matchPoint = 1;
+const matchPoint = 3;
 let matchId;
 let draw;
 let winner;
@@ -79,6 +79,37 @@ function handleBeforeUnload(event) {
   }
 }
 
+async function initGame(){
+    player2aliasPong3 = document.getElementById("player2aliasPong3").value;
+    player3aliasPong3 = document.getElementById("player3aliasPong3").value;
+    // player2aliasPong3 = player2aliasPong3Element;
+    // player3aliasPong3 = player3aliasPong3Element.value;
+    console.log(player2aliasPong3 + player3aliasPong3);
+    closeModal();
+    let matchData = {
+      player_id: playerId,
+      guest_player1: player2aliasPong3,
+      guest_player2: player3aliasPong3,
+      game_type: "Pong"
+    };
+    await createMatch(matchData).then(data => {
+      matchId = data.match_id;
+    });
+    startGame();
+    await waitGameFinish();
+    console.log(gameOver);
+    matchData = {
+      match_id: matchId,
+      score_player: score1,
+      score_guest_player1: score2,
+      score_guest_player: score3,
+      winner: draw ? null : winner,
+      is_draw: draw
+    }
+    updateMatch(matchData);
+    startGame();
+}
+
 async function validateInput() {
   // const US = document.createElement('div');
   // formGroupUser.classList.add('input-group');
@@ -92,34 +123,7 @@ async function validateInput() {
   ];
   if (!checkInput(_elementBlock))
     return;
-  player2aliasPong3 = document.getElementById("player2aliasPong3").value;
-  player3aliasPong3 = document.getElementById("player3aliasPong3").value;
-  // player2aliasPong3 = player2aliasPong3Element;
-  // player3aliasPong3 = player3aliasPong3Element.value;
-  console.log(player2aliasPong3 + player3aliasPong3);
-  closeModal();
-  let matchData = {
-    player_id: playerId,
-    guest_player1: player2aliasPong3,
-    guest_player2: player3aliasPong3,
-    game_type: "Pong"
-  };
-  await createMatch(matchData).then(data => {
-    matchId = data.match_id;
-  });
-  startGame();
-  await waitGameFinish();
-  console.log(gameOver);
-  matchData = {
-    match_id: matchId,
-    score_player: score1,
-    score_guest_player1: score2,
-    score_guest_player: score3,
-    winner: draw ? null : winner,
-    is_draw: draw
-  }
-  updateMatch(matchData);
-  startGame();
+  initGame();
 }
 
 function waitGameFinish(gameStatus, interval = 100) {
@@ -136,48 +140,71 @@ function waitGameFinish(gameStatus, interval = 100) {
   });
 }
 
-function init3PlyrPong() {
-  score1 = matchPoint;
-  score2 = matchPoint;
-  score3 = matchPoint;
-  ballX = 5;
-  ballY = 5;
-  ballSpeedX = 5;
-  ballSpeedY = 5;
-  pong3IntervalId = null;
-  pauseModalVisible = false;
-  gameOver = false;
-  begin = false;
-  draw = false;
-  paddle1MovingUp = false;
-  paddle1MovingDown = false;
-  paddle2MovingUp = false;
-  paddle2MovingDown = false;
-  paddle3MovingLeft = false;
-  paddle3MovingRight = false;
-  gameInProgress3 = false;
+function initVariables() {
+    score1 = matchPoint;
+    score2 = matchPoint;
+    score3 = matchPoint;
+    ballX = 5;
+    ballY = 5;
+    ballSpeedX = 5;
+    ballSpeedY = 5;
+    pong3IntervalId = null;
+    pauseModalVisible = false;
+    gameOver = false;
+    begin = false;
+    draw = false;
+    paddle1MovingUp = false;
+    paddle1MovingDown = false;
+    paddle2MovingUp = false;
+    paddle2MovingDown = false;
+    paddle3MovingLeft = false;
+    paddle3MovingRight = false;
+    gameInProgress3 = false;
+    board = document.getElementById("board");
+    paddle1 = document.getElementById("paddle_1");
+    paddle2 = document.getElementById("paddle_2");
+    paddle3 = document.getElementById("paddle_3");
+  
+    ball = document.getElementById("ball");
+    ballX = board.offsetWidth / 2 - ball.offsetWidth / 2;
+    ballY = board.offsetHeight / 2 - ball.offsetHeight / 2;
+  
+    score1Element = document.getElementById("player_1_score");
+    score1Element.textContent = score1;
+    score2Element = document.getElementById("player_2_score");
+    score2Element.textContent = score2;
+    score3Element = document.getElementById("player_3_score");
+    score3Element.textContent = score3;
+  
+    initialVPaddlePos = paddle1.style.top;
+    initialHPaddlePos = paddle3.style.left;
+}
 
+function init3PlyrPong() {
+//   score1 = matchPoint;
+//   score2 = matchPoint;
+//   score3 = matchPoint;
+//   ballX = 5;
+//   ballY = 5;
+//   ballSpeedX = 5;
+//   ballSpeedY = 5;
+//   pong3IntervalId = null;
+//   pauseModalVisible = false;
+//   gameOver = false;
+//   begin = false;
+//   draw = false;
+//   paddle1MovingUp = false;
+//   paddle1MovingDown = false;
+//   paddle2MovingUp = false;
+//   paddle2MovingDown = false;
+//   paddle3MovingLeft = false;
+//   paddle3MovingRight = false;
+//   gameInProgress3 = false;
+  initVariables();
   restartModal = new bootstrap.Modal(document.getElementById('restartGame'));
   startModal = new bootstrap.Modal(document.getElementById('startGameModal'));
   startModal.show();
-  board = document.getElementById("board");
-  paddle1 = document.getElementById("paddle_1");
-  paddle2 = document.getElementById("paddle_2");
-  paddle3 = document.getElementById("paddle_3");
 
-  ball = document.getElementById("ball");
-  ballX = board.offsetWidth / 2 - ball.offsetWidth / 2;
-  ballY = board.offsetHeight / 2 - ball.offsetHeight / 2;
-
-  score1Element = document.getElementById("player_1_score");
-  score1Element.textContent = score1;
-  score2Element = document.getElementById("player_2_score");
-  score2Element.textContent = score2;
-  score3Element = document.getElementById("player_3_score");
-  score3Element.textContent = score3;
-
-  initialVPaddlePos = paddle1.style.top;
-  initialHPaddlePos = paddle3.style.left;
   fetchUserProfile().then(data => {
     playerId = data.id;
     player1AliasElement = document.getElementById("player_1_alias");
@@ -188,12 +215,13 @@ function init3PlyrPong() {
   eventManager.addListener(document.getElementById("startGameBtn"), "click", validateInput);
 
   restartGameBtn.addEventListener('click', async function (event) {
+    initVariables();
     player2aliasPong3 = document.getElementById("player2aliasPong3").value;
     player3aliasPong3 = document.getElementById("player3aliasPong3").value;
     // player2aliasPong3 = player2aliasPong3Element;
     // player3aliasPong3 = player3aliasPong3Element.value;
     console.log(player2aliasPong3 + player3aliasPong3);
-    closeModal();
+    restartModal.hide();
     let matchData = {
       player_id: playerId,
       guest_player1: player2aliasPong3,
@@ -452,8 +480,10 @@ function haltGame() {
   paddle3.style.left = initialHPaddlePos;
   endGameSession();
   restartModal.show();
-
-  console.log("AWefawefawefawefawefawefawef ");
+//   restartGameBtn.addEventListener('click', function() {
+//     restartModal.hide();
+//     init3PlyrPong()
+// });
 
   clearInterval(pong3IntervalId);
   pong3IntervalId = null;
