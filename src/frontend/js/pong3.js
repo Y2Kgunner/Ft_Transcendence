@@ -1,5 +1,6 @@
 import { eventManager, inputElement, checkInput, isPrintableASCII } from './inputValidation.js';
 import { fetchUserProfile, updateMatch, createMatch } from './pong2.js'
+import { appRouter } from './router.js';
 
 let begin;
 let initialVPaddlePos;
@@ -50,7 +51,6 @@ let paddle3MovingLeft;
 let paddle3MovingRight;
 
 var startModal;
-var form;
 let gameInProgress3;
 let countdownIntervalIdPong3;
 
@@ -128,8 +128,8 @@ function initVariables() {
   score1 = matchPoint;
   score2 = matchPoint;
   score3 = matchPoint;
-  ballX = 5;
-  ballY = 5;
+  ballX = 10;
+  ballY = 10;
   ballSpeedX = 5;
   ballSpeedY = 5;
   pong3IntervalId = null;
@@ -167,6 +167,7 @@ function chkIfInput(event) {
     document.getElementById("startGameBtn").click();
   }
 }
+  
 
 function init3PlyrPong() {
   initVariables();
@@ -183,7 +184,11 @@ function init3PlyrPong() {
 
   eventManager.addListener(document.getElementById("startGameBtn"), "click", validateInput);
   eventManager.addListener(document.getElementById("startGameModal"), "keypress", chkIfInput);
-
+  eventManager.addListener(document.getElementById("backToMenu"), "click", function() {
+    gameInProgress3 = false;
+    appRouter.navigate('/pong3', { force: true });
+  });
+  
   restartGameBtn.addEventListener('click', async function (event) {
     initVariables();
     player2aliasPong3 = document.getElementById("player2aliasPong3").value;

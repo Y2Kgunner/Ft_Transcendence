@@ -36,8 +36,7 @@ let paddle1MovingDown;
 let paddle2MovingUp;
 let paddle2MovingDown;
 
-var form;
-var startGameBtn;
+
 var startModal;
 var restartModal;
 
