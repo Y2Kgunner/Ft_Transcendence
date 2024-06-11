@@ -73,7 +73,8 @@ def verify_otp(request):
             user = get_user_model().objects.get(id=user_id)
             print("Verify6")
             print(user)
-            return finalize_login(request, user)
+            return JsonResponse({'message': '2FA confirmed'}, status=200)
+            #finalize_login(request, user)
         else:
 
             return JsonResponse({'error': 'Invalid or expired OTP'}, status=400)

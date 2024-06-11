@@ -227,6 +227,7 @@ async function verifyOtp(event) {
         if (response.ok) {
             otpModal.hide();
             handleBtnBlocker('loginButton', false);
+            
             finalizeLogin(data);
         } else {
             throw new Error(data.error || 'Invalid or expired OTP. Please try again.');
@@ -286,7 +287,7 @@ function setupEventListeners() {
         handleBtnBlocker('loginButton', true);
         await login(event);
     });
-
+    
     eventManager.addListener(document.getElementById('otpButton'), "click", verifyOtp);
     //   const debouncedVerifyOtp = debounce(verifyOtp, 3000);
     //   document.getElementById('otpButton')?.addEventListener('click', function (event) {
