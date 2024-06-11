@@ -1,4 +1,4 @@
-import { inputElement, checkInput, displayBootstrapAlert, eventManager } from './inputValidation.js';
+import { inputElement, checkInput, displayBootstrapAlert } from './inputValidation.js';
 import { appRouter } from './router.js';
 import { debounce } from './auth.js';
 
