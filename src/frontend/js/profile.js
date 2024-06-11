@@ -1,10 +1,15 @@
 import { inputElement, checkInput, displayBootstrapAlert } from './inputValidation.js';
 import { appRouter } from './router.js';
 import { debounce } from './auth.js';
+
 var editModal;
 var deleteModal;
 var otpModal;
 var otpSuccess;
+let addFriendBtnTimeout = null;
+let addAnTt = null;
+let addrd1Tt = null;
+let addrd2Tt = null;
 
 const eventManager = {
   addListener(element, event, handler) {
@@ -63,7 +68,6 @@ async function check2FAStatus() {
         twoFAbtn.querySelector('.twoFAContent').textContent = 'Enable 2FA';
       }
     } else {
-      console.log('dis came here');
       enable2FA();
       twoFAbtn.classList.add('TwoFAbtnDisable');
       twoFAbtn.classList.remove('TwoFAbtnEnable');
@@ -114,7 +118,7 @@ function handleBtnBlocker(button, other, block) {
     document.body.classList.remove('no-pointer-events');
     btn.querySelector('.spinner-grow').classList.add('d-none');
   }
-  
+
 }
 
 async function open2FAOTP() {
@@ -134,7 +138,7 @@ async function open2FAOTP() {
       return;
     }
     otpModal.show();
-      handleBtnBlocker('twoFAbtn', 'deleteProfileButton', false);
+    handleBtnBlocker('twoFAbtn', 'deleteProfileButton', false);
   } catch (error) {
     console.error('Error disabling 2FA:', error);
   }
@@ -485,6 +489,10 @@ function verifyAndDeleteAccount() {
 };
 
 function anonymizeUser() {
+  document.getElementById('anonymizeButton').disabled = true;
+  addAnTt = setTimeout(() => {
+    document.getElementById('anonymizeButton').disabled = false;
+  }, 2000);
   const token = getCookie('jwt');
 
   fetch('https://127.0.0.1:443/api/anonymize', {
@@ -786,11 +794,21 @@ async function setupFriends() {
   radioButtons.forEach((radioButton) => {
     radioButton.addEventListener('click', (e) => {
       if (e.target.id === 'btnradio1') {
+        if (addFriendForm.style.display === 'block') return;
+        document.getElementById('btnradio1').disabled = true;
+        addrd1Tt = setTimeout(() => {
+          document.getElementById('btnradio1').disabled = false;
+        }, 2000);
         addFriendForm.style.display = 'block';
         invitationzDiv.style.display = 'none'
         //show invites
         updateFriendList();
       } else if (e.target.id === 'btnradio3') {
+        if (invitationzDiv.style.display === 'block') return;
+        document.getElementById('btnradio3').disabled = true;
+        addrd2Tt = setTimeout(() => {
+          document.getElementById('btnradio3').disabled = false;
+        }, 2000);
         addFriendForm.style.display = 'none';
         invitationzDiv.style.display = 'block';
         showInvites();
@@ -804,11 +822,16 @@ async function setupFriends() {
 }
 
 function chkInpFriend() {
+  document.getElementById('addFriendBtn').disabled = true;
   const _elementBlock = [
     new inputElement('friendUserName', 'name', true, 3, 10, "")
   ];
-  if (checkInput(_elementBlock))
+  addFriendBtnTimeout = setTimeout(() => {
+    document.getElementById('addFriendBtn').disabled = false;
+  }, 2000);
+  if (checkInput(_elementBlock)) {
     addFriend()
+  }
   return;
 }
 
@@ -830,4 +853,4 @@ async function getFriendslist() {
 }
 
 
-export { setUpProfile, getCookie, updateProfilePage, fetchUserProfile };
+export { setUpProfile, getCookie, updateProfilePage, fetchUserProfile, addFriendBtnTimeout, addAnTt, addrd1Tt, addrd2Tt };
