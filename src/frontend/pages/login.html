@@ -44,7 +44,11 @@
         </div>
         <div class="row">
           <div class="d-grid col-lg-6 col-12 mb-4 mx-auto">
-            <button id="loginButton" type="submit" class="btn btn-success logColor">Log in</button>
+            <button id="loginButton" class="btn btn-success logColor">
+                <span class="loginBlah">Log in</span>
+                <span class="spinner-grow spinner-grow-sm d-none" aria-hidden="true"></span>
+                <span class="visually-hidden" role="status">Loading...</span>
+              </button>
           </div>
           <div id="showRegisterForm" class="d-grid gap-2 col-lg-6 mb-4 mx-auto">
             <button type="submit" class="btn btn-info signColor">Sign up</button>
@@ -62,12 +66,12 @@
                 alt="42 logo"></a>
           </div>
         </div>
-        <div class="modal fade" id="otpModal" tabindex="-1" aria-labelledby="otpModalLabel" aria-hidden="true">
+        <div class="modal" id="otpModal" tabindex="-1" aria-labelledby="otpModalLabel" aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content custoModal">
               <div class="modal-header">
                 <h5 class="modal-title" id="otpModalLabel">OTP Verification</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button id="closeLoginOtp" type="button" class="btn-close" aria-label="Close"></button>
               </div>
               <div class="modal-body">
                 <input type="text" class="form-control" id="otpInput" placeholder="Enter OTP">

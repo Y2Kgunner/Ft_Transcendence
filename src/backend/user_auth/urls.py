@@ -7,7 +7,7 @@ urlpatterns = [
     path('register', register),
     path('login', login),
     path('finalize_login', finalize_login),
-    path('verify_otp', verify_otp),
+    path('verify_otp_login', verify_otp),
     path('password_reset', password_reset),
     path('logout', logout),
     path('enable_2fa', enable_2fa_api),

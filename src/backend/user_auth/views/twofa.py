@@ -53,6 +53,7 @@ def send_otp_email_api(request):
 def verify_otp_api(request):
     if request.method == 'POST':
         try:
+            print("Enter")
             data = json.loads(request.body)
             received_otp = data.get('otp')
             stored_otp = request.session.get('otp')
@@ -60,10 +61,13 @@ def verify_otp_api(request):
                 del request.session['otp']
                 return JsonResponse({'message': 'OTP verified successfully'})
             else:
+                print("OTP")
                 return JsonResponse({'error': 'Invalid OTP'}, status=400)
         except json.JSONDecodeError:
+            print("JSON")
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
     else:
+        print("ELSE")
         return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 @csrf_exempt

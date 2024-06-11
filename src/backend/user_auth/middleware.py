@@ -26,7 +26,7 @@ class JWTAuthenticationMiddleware(MiddlewareMixin):
             re.compile(r'^/api/proceed_with_login$'),
             re.compile(r'^/api/finalize_login$'),
             re.compile(r'^/api/check_2fa_status$'),
-            re.compile(r'^/api/verify_otp$'),
+            re.compile(r'^/api/verify_otp_login$'),
             re.compile(r'^/api/forgot_password_send_email$'),
             re.compile(r'^/api/reset_password/.+/$'),
         ]
