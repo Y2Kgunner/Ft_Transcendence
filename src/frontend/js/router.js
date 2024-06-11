@@ -53,7 +53,7 @@ class Router {
     if (addFriendBtnTimeout) {
       clearTimeout(addFriendBtnTimeout);
     }
-``
+
     const modal = document.getElementById('myModal');
     if (modal && !modal.hasAttribute('data-loaded')) {
       const modalInstance = bootstrap.Modal.getInstance(modal);
