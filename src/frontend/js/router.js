@@ -5,6 +5,7 @@ import { init2PlyrPong, gameInProgress, pongIntervalId, countdownIntervalPong2 }
 import { init3PlyrPong, gameInProgress3, pong3IntervalId, countdownIntervalIdPong3 } from './pong3.js';
 import { eventManager } from './inputValidation.js';
 import { setupTTT } from './ttt.js';
+import { aboutPage } from './about.js';
 
 async function removeOpenModals() {
   const modals = document.querySelectorAll('.modal.show');
@@ -136,7 +137,7 @@ const routes = {
   '/home': { path: 'pages/home.html', method: null },
   '/login': { path: 'pages/login.html', method: setupAuthPage },
   '/profile': { path: 'pages/profile.html', method: setupProfilePage },
-  '/about': { path: 'pages/about.html', method: null },
+  '/about': { path: 'pages/about.html', method: aboutPage },
   '/ttt': { path: 'pages/ttt.html', method: setupTTT },
   '/pong2': { path: 'pages/pong2.html', method: init2PlyrPong },
   '/pong3': { path: 'pages/pong3.html', method: init3PlyrPong },

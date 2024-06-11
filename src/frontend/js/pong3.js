@@ -8,6 +8,7 @@ let initialHPaddlePos;
 let pong3IntervalId;
 let gameOver;
 const matchPoint = 3;
+const paddleSpeed = 13;
 let matchId;
 let draw;
 let winner;
@@ -95,7 +96,6 @@ async function initGame() {
     is_draw: draw
   }
   updateMatch(matchData);
-  startGame();
 }
 
 async function validateInput() {
@@ -128,6 +128,7 @@ function initVariables() {
   score1 = matchPoint;
   score2 = matchPoint;
   score3 = matchPoint;
+  begin = false;
   ballX = 10;
   ballY = 10;
   ballSpeedX = 5;
@@ -167,7 +168,7 @@ function chkIfInput(event) {
     document.getElementById("startGameBtn").click();
   }
 }
-  
+
 
 function init3PlyrPong() {
   initVariables();
@@ -184,11 +185,11 @@ function init3PlyrPong() {
 
   eventManager.addListener(document.getElementById("startGameBtn"), "click", validateInput);
   eventManager.addListener(document.getElementById("startGameModal"), "keypress", chkIfInput);
-  eventManager.addListener(document.getElementById("backToMenu"), "click", function() {
+  eventManager.addListener(document.getElementById("backToMenu"), "click", function () {
     gameInProgress3 = false;
     appRouter.navigate('/pong3', { force: true });
   });
-  
+
   restartGameBtn.addEventListener('click', async function (event) {
     initVariables();
     player2aliasPong3 = document.getElementById("player2aliasPong3").value;
@@ -275,21 +276,21 @@ function handleKeyUp(event) {
 function updatePaddles() {
   // Paddle 1 movement
   if (paddle1MovingUp && paddle1.offsetTop > 8)
-    paddle1.style.top = `${paddle1.offsetTop - 5}px`;
+    paddle1.style.top = `${paddle1.offsetTop - paddleSpeed}px`;
   if (paddle1MovingDown && paddle1.offsetTop + paddle1.offsetHeight < board.offsetHeight - 8)
-    paddle1.style.top = `${paddle1.offsetTop + 5}px`;
+    paddle1.style.top = `${paddle1.offsetTop + paddleSpeed}px`;
 
   // Paddle 2 movement
   if (paddle2MovingUp && paddle2.offsetTop > 8)
-    paddle2.style.top = `${paddle2.offsetTop - 5}px`;
+    paddle2.style.top = `${paddle2.offsetTop - paddleSpeed}px`;
   if (paddle2MovingDown && paddle2.offsetTop + paddle2.offsetHeight < board.offsetHeight - 8)
-    paddle2.style.top = `${paddle2.offsetTop + 5}px`;
+    paddle2.style.top = `${paddle2.offsetTop + paddleSpeed}px`;
 
   // Paddle 3 movement
   if (paddle3MovingLeft && paddle3.offsetLeft > 50)
-    paddle3.style.left = `${paddle3.offsetLeft - 5}px`;
+    paddle3.style.left = `${paddle3.offsetLeft - paddleSpeed}px`;
   if (paddle3MovingRight && paddle3.offsetLeft + paddle3.offsetWidth < board.offsetWidth - 50)
-    paddle3.style.left = `${paddle3.offsetLeft + 5}px`;
+    paddle3.style.left = `${paddle3.offsetLeft + paddleSpeed}px`;
 }
 
 function updateBall() {
