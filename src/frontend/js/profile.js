@@ -805,7 +805,7 @@ async function setupFriends() {
 
 function chkInpFriend() {
   const _elementBlock = [
-    new inputElement('friendUserName', 'name', true, 3, 10)
+    new inputElement('friendUserName', 'name', true, 3, 10, "")
   ];
   if (checkInput(_elementBlock))
     addFriend()

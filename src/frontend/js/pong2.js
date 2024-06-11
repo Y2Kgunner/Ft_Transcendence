@@ -1,7 +1,7 @@
 import { getCookie } from './profile.js';
 import { inputElement, checkInput, eventManager } from './inputValidation.js';
 
-const matchPoint = 1;
+const matchPoint = 11;
 let pongIntervalId;
 let gameOver;
 let modalInit;
@@ -58,18 +58,22 @@ function resetBall() {
 
 export function startGameSession() {
   gameInProgress = true;
+  console.log("gghatttttttttt");
   window.addEventListener('beforeunload', handleBeforeUnload);
 }
 
 export function endGameSession() {
   gameInProgress = false;
+  console.log("ffhatttttttttt");
   window.removeEventListener('beforeunload', handleBeforeUnload);
 }
 
 function handleBeforeUnload(event) {
+  console.log("whattttttttserftt");
   if (gameInProgress) {
+    console.log("whatttttttttt");
     const message = "You have an ongoing game. Are you sure you want to leave and lose your progress?";
-    document.body.removeChild(countdownElement);
+    // document.body.removeChild(countdownElement);
     event.returnValue = message;
     return message;
   }
@@ -215,25 +219,6 @@ function waitGameFinish(interval = 100) {
 }
 
 async function updateMatch(matchData) {
-  //     let matchData;
-  //     if (draw) {
-  //         matchData = {
-  //           match_id: matchId,
-  //           score_player: 0,
-  //           score_guest_player1: 0,
-  //           score_guest_player2: score3,
-  //           is_draw: draw,
-  //         };
-  //       } else {
-  //   matchData = {
-  //     match_id: matchId,
-  //     score_player: score1,
-  //     score_guest_player1: score2,
-  //     score_guest_player2: score3,
-  //     winner: winner,
-  //     is_draw : false
-  //   };
-  // }
   console.log(matchData)
   const response = await fetch('https://127.0.0.1:443/pongApp/update_match', {
     method: 'POST',
@@ -276,12 +261,6 @@ function fetchUserProfile() {
 }
 
 async function createMatch(matchData) {
-  //   const matchData = {
-  //     player_id: playerId,
-  //     guest_player1: player2Alias,
-  //     game_type: type
-  //   };
-  console.log(matchData);
   startGameSession();
   const response = await fetch('https://127.0.0.1:443/pongApp/create', {
     method: 'POST',
@@ -431,26 +410,16 @@ function haltGame(game_winner) {
 }
 
 function showCountdown(callback) {
-  const countdownElement = document.createElement('div');
-  countdownElement.id = 'countdown';
-  countdownElement.style.position = 'absolute';
-  countdownElement.style.top = '50%';
-  countdownElement.style.left = '50%';
-  countdownElement.style.transform = 'translate(-50%, -50%)';
-  countdownElement.style.fontSize = '48px';
-  countdownElement.style.fontWeight = 'bold';
-  countdownElement.style.zIndex = '1000';
-  countdownElement.style.color = '#07ed26';
-  countdownElement.textContent = '5';
-  document.body.appendChild(countdownElement);
-
   let count = 5;
+  var countdownElement = document.getElementById('countdown');
+  countdownElement.textContent = count;
+  countdownElement.style.display = "block";
   countdownIntervalPong2 = setInterval(() => {
     count--;
     countdownElement.textContent = count;
     if (count === 0) {
       clearInterval(countdownIntervalPong2);
-      document.body.removeChild(countdownElement);
+      countdownElement.style.display = "none";
       callback();
     }
   }, 1000);
@@ -459,12 +428,7 @@ function showCountdown(callback) {
 function cancelCountdown() {
   if (countdownIntervalPong2) {
     clearInterval(countdownIntervalPong2);
-    countdownIntervalPong2 = null;
-    const countdownElement = document.getElementById('countdown');
-    if (countdownElement) {
-      countdownElement.textContent = '';
-      document.body.removeChild(countdownElement);
-    }
+    document.getElementById('countdown').style.display = "none";
   }
 }
 
@@ -487,37 +451,6 @@ function isPrintableASCII(str) {
   var printableASCIIRegex = /^[!-~]+$/;
   return printableASCIIRegex.test(str);
 }
-
-//? modal input validation
-//?
-//?
-// function updateValidationIcon() {
-//   var invalidFeedback = inputField.nextElementSibling;
-//   var validFeedback = invalidFeedback.nextElementSibling;
-//   player2Alias = inputField.value.trim();
-
-//   invalidFeedback.style.display = "none";
-//   validFeedback.style.display = "none";
-//   inputField.classList.remove("is-invalid", "is-valid");
-
-//   if (!modalInit) modalInit = true;
-//   else if (player2Alias.length > 10 || player2Alias.length < 3) {
-//     inputField.classList.add("is-invalid");
-//     invalidFeedback.style.display = "block";
-//   } else if (!isPrintableASCII(player2Alias)) {
-//     inputField.classList.add("is-invalid");
-//     invalidFeedback.style.display = "block";
-//   } else if (player1Alias === player2Alias) {
-//     inputField.classList.add("is-invalid");
-//     invalidFeedback.style.display = "block";
-//   } else if (player2Alias === '') {
-//     inputField.classList.add("is-invalid");
-//     invalidFeedback.style.display = "block";
-//   } else {
-//     inputField.classList.add("is-valid");
-//     validFeedback.style.display = "block";
-//   }
-// }
 
 function closeModal() {
   var modal = document.getElementById('startGameModal');

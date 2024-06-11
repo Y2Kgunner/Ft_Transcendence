@@ -57,31 +57,6 @@ function handleKeyPress(event) {
     }
 }
 
-// async function createMatch(type) {
-//   const matchData = {
-//     player_id: playerId,
-//     guest_player1: player2Alias,
-//     game_type: type
-//   };
-//   console.log(matchData)
-//   const response = await fetch('https://127.0.0.1:443/pongApp/create', {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//       'Authorization': 'Bearer ' + getCookie('jwt')
-//     },
-//     body: JSON.stringify(matchData)
-//   })
-//   // if (!response.ok) {
-//   //     throw new Error('Network response was not ok');
-//   // }
-//   const data = await response.json();
-//   console.log(data.match_id);
-//   matchId = data.match_id;
-//   return data;
-// }
-
-
 function moveFocus(newIndex) {
     boxes[currentFocusIndex].classList.remove('focus');
     currentFocusIndex = newIndex;
