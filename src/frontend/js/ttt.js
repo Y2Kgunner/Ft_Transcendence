@@ -241,6 +241,7 @@ function waitGameFinish(gameStatus, interval = 100) {
 }
 
 function Game() {
+  player2Alias = document.getElementById('player2Name').value.trim();
   playerNamesElement.innerHTML = `${player1Name} vs ${player2Alias}`;
   nextMoveElement.innerHTML = nextMoveMessage();
   updateFocus();
