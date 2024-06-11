@@ -4,7 +4,7 @@ import { createTournament, startTournament, getTournamentDetails, getFirstRound,
 import { inputElement, eventManager, checkInput } from './inputValidation.js';
 
 
-const matchPoint = 1;
+const matchPoint = 11;
 const paddleSpeed = 12;
 let tournamentIntervalId = null;
 let gameOver = false;
@@ -77,9 +77,24 @@ function handleBeforeUnload(event) {
   }
 }
 
-function setupTournamentPage() {
-  // Get elements
-  roundMatchPreview = [];
+function initVariables() {
+  ballX = 10;
+  ballY = 10;
+  ballSpeedX = 5;
+  ballSpeedY = 5;
+  initialBallSpeedX = 10;
+  initialBallSpeedY = 10;
+  score1 = 0;
+  score2 = 0;
+  begin = false;
+  paddle1MovingUp = false;
+  paddle1MovingDown = false;
+  paddle2MovingUp = false;
+  paddle2MovingDown = false;
+  tournamentIntervalId = null;
+  gameOver = false;
+  gameInProgressTour = false;
+
   board = document.getElementById("board");
   paddle1 = document.getElementById("paddle_1");
   paddle2 = document.getElementById("paddle_2");
@@ -87,15 +102,18 @@ function setupTournamentPage() {
   ball = document.getElementById("ball");
   score1Element = document.getElementById("player_1_score");
   score2Element = document.getElementById("player_2_score");
-  player1AliasElement = document.getElementById("player_1_alias");
-  player2AliasElement = document.getElementById("player_2_alias");
-
-
-  ballX = board.offsetWidth / 2 - ball.offsetWidth / 2;
-  ballY = board.offsetHeight / 2 - ball.offsetHeight / 2;
-
   score1Element.textContent = score1;
   score2Element.textContent = score2;
+  player1AliasElement = document.getElementById("player_1_alias");
+  player2AliasElement = document.getElementById("player_2_alias");
+  document.getElementById('player_2_alias').value = "";
+  ballX = board.offsetWidth / 2 - ball.offsetWidth / 2;
+  ballY = board.offsetHeight / 2 - ball.offsetHeight / 2;
+}
+
+function setupTournamentPage() {
+  roundMatchPreview = [];
+  initVariables();
 
   detailsModal = new bootstrap.Modal(document.getElementById('enterTournamentDetails'));
   startModal = new bootstrap.Modal(document.getElementById('startGameModal'));

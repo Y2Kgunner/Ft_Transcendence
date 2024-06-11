@@ -4,7 +4,6 @@ import { inputElement, checkInput, eventManager } from './inputValidation.js';
 const matchPoint = 11;
 let pongIntervalId;
 let gameOver;
-let modalInit;
 
 let ballX;
 let ballY;
@@ -102,7 +101,6 @@ function initVariables() {
   paddle2MovingDown = false;
   pongIntervalId = null;
   gameOver = false;
-  modalInit = false;
   gameInProgress = false;
 
   board = document.getElementById("board");
