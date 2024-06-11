@@ -1,6 +1,6 @@
 import { setupAuthPage, logoutUser, isAuthenticated, hashPassword } from './auth.js';
 import { setUpProfile } from './profile.js';
-import { setupTournamentPage, gameInProgressTour, tournamentIntervalId } from './tournament.js';
+import { setupTournamentPage, gameInProgressTour, tournamentIntervalId, getTournamentId } from './tournament.js';
 import { init2PlyrPong, gameInProgress, pongIntervalId, countdownIntervalPong2 } from './pong2.js';
 import { init3PlyrPong, gameInProgress3, pong3IntervalId } from './pong3.js';
 import { setupTTT } from './ttt.js';
@@ -33,14 +33,17 @@ class Router {
       return;
     }
 
-    if ((gameInProgress || gameInProgressTour || gameInProgress3) && (this.lastPath == '/pong2' || this.lastPath == '/tournament' || this.lastPath == '/pong3')) {
-      // console.log("interval " + intervalId);
+    console.log("gameInProgress =>", gameInProgress);
+    console.log("gameInProgressTour =>", gameInProgressTour);
+    console.log("gameInProgress3 =>", gameInProgress3);
+    if ((gameInProgress && (this.lastPath == '/pong2')) || (gameInProgressTour && (this.lastPath == '/tournament')) || (gameInProgress3 && (this.lastPath == '/pong3'))) {
       if (!confirm('You have an ongoing game. Are you sure you want to leave and lose your progress?'))
         return;
       clearInterval(pongIntervalId);
       clearInterval(tournamentIntervalId);
       clearInterval(pong3IntervalId);
       if (countdownIntervalPong2) {
+        document.getElementById('countdown').style.display = "none";
         clearInterval(countdownIntervalPong2);
       }
     }
