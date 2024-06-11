@@ -20,6 +20,30 @@ const eventManager = {
   }
 };
 
+async function patchUserDetails(patchData) {
+  const response = await fetch(`https://127.0.0.1:443/api/profile`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + getCookie('jwt')
+    },
+    body: JSON.stringify(patchData)
+  })
+  if (!response.ok) {
+    if (response.status == 410)
+      alert('first name must be a non-empty string and cannot be numeric');
+    if (response.status == 420)
+      alert('Last name must be a non-empty string and cannot be numeric');
+    if (response.status == 430)
+      alert('Phone must be a non-empty string of digits');
+    return null;
+  }
+  alert("profile info updated!! ")
+  const data = await response.json();
+  return data;
+}
+
+
 //? ------------------->> setting the profile page! and ensuring only one event listener is active!
 function setUpProfile() {
   otpSuccess = false;
@@ -245,8 +269,24 @@ function chkInp() {
     new inputElement('phoneInput', 'phone', false, 10, 18, ""),
     new inputElement('addressInput', 'userName', false, 10, 25, "")
   ];
-  if (checkInput(_elementBlock))
+  if (checkInput(_elementBlock)) {
+    let patchData = {
+      'first_name': document.getElementById('firstNameInput').textContent,
+      'last_name': document.getElementById('lastNameInput').textContent,
+      'phone': document.getElementById('phoneInput').textContent,
+      'address': document.getElementById('addressInput').textContent,
+    }
+    console.log(patchData.first_name);
+    console.log(patchData.last_name);
+    console.log(patchData.phone);
+    console.log(patchData.address);
+    patchData.first_name.length ? "NA" : patchData.first_name;
+    patchData.last_name.length ? "NA" : patchData.last_name;
+    patchData.phone.length ? "NA" : patchData.phone;
+    patchData.address.length ? "NA" : patchData.address;
+    patchUserDetails(patchData);
     editModal.hide();
+  }
   return;
 }
 
@@ -269,7 +309,6 @@ async function openEditModal() {
 async function closeEditModal() {
   editModal.hide()
 }
-
 
 function getCookie(name) {
   const decodedCookies = decodeURIComponent(document.cookie);
