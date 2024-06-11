@@ -1,7 +1,7 @@
 import { getCookie } from './profile.js';
 import { inputElement, checkInput, eventManager } from './inputValidation.js';
 
-const matchPoint = 11;
+const matchPoint = 1;
 let pongIntervalId;
 let pauseModalVisible;
 let gameOver;
@@ -38,11 +38,12 @@ let paddle1MovingUp;
 let paddle1MovingDown;
 let paddle2MovingUp;
 let paddle2MovingDown;
-let pauseModalInstance;
 
-var startGameBtn;
-var startModal;
 var form;
+var startGameBtn;
+let pauseModalInstance;
+var startModal;
+var restartModal;
 
 let gameInProgress;
 let countdownIntervalId;
@@ -119,16 +120,25 @@ function initVariables() {
   score1Element = document.getElementById("player_1_score");
   score2Element = document.getElementById("player_2_score");
   player2AliasElement = document.getElementById("player_2_alias");
+  player2AliasElement.textContent = "Player-2";
+  document.getElementById('player2alias').value = "";
 
   score1Element.textContent = score1;
   score2Element.textContent = score2;
 
 }
 
+function bringMenu() {
+  initVariables();
+  restartModal.hide();
+  startModal.show();
+}
+
 function init2PlyrPong() {
   initVariables();
   pauseModalInstance = new bootstrap.Modal(document.getElementById('pauseGameModal'));
   startModal = new bootstrap.Modal(document.getElementById('startGameModal'));
+  restartModal = new bootstrap.Modal(document.getElementById('restartGame'));
   startModal.show();
 
   fetchUserProfile().then(data => {
@@ -138,11 +148,11 @@ function init2PlyrPong() {
     player1AliasElement.textContent = player1Alias;
   });
 
-
   eventManager.addListener(document.getElementById("pauseBtn"), "click", togglePause);
   eventManager.addListener(document.getElementById("startGameBtn"), "click", validateInput);
   eventManager.addListener(document.getElementById("pauseGameModal"), "keypress", pauseEnterKey);
   eventManager.addListener(document.getElementById("startGameModal"), "keypress", startEnterKey);
+  eventManager.addListener(document.getElementById("backToMenu"), "click", bringMenu);
 
   // inputField = document.getElementById("player2alias");
   // inputField.addEventListener('input', function () {
@@ -151,6 +161,7 @@ function init2PlyrPong() {
   const restartGameBtn = document.getElementById('restartGameBtn');
   restartGameBtn.addEventListener('click', async function (event) {
     initVariables();
+    player2AliasElement.textContent = player2Alias;
     let matchData = {
       player_id: playerId,
       guest_player1: player2Alias,
@@ -182,7 +193,7 @@ async function validateInput() {
   if (!checkInput(_elementBlock)) {
     return;
   }
-
+  player2Alias = document.getElementById("player2alias").value;
   closeModal();
   let matchData = {
     player_id: playerId,
@@ -442,7 +453,6 @@ function haltGame(game_winner) {
   paddle1.style.top = initialPaddlePos;
   paddle2.style.top = initialPaddlePos;
   endGameSession();
-  var restartModal = new bootstrap.Modal(document.getElementById('restartGame'));
   restartModal.show();
   clearInterval(pongIntervalId);
   pongIntervalId = null;
@@ -489,7 +499,6 @@ function cancelCountdown() {
 function startGame() {
   begin = true;
   gameOver = false;
-  player2Alias = document.getElementById("player2alias").value;
   player2AliasElement.textContent = player2Alias;
   if (pongIntervalId)
     clearInterval(pongIntervalId);
