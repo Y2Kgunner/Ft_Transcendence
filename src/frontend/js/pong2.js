@@ -3,10 +3,8 @@ import { inputElement, checkInput, eventManager } from './inputValidation.js';
 
 const matchPoint = 1;
 let pongIntervalId;
-let pauseModalVisible;
 let gameOver;
 let modalInit;
-let paused;
 
 let ballX;
 let ballY;
@@ -41,12 +39,11 @@ let paddle2MovingDown;
 
 var form;
 var startGameBtn;
-let pauseModalInstance;
 var startModal;
 var restartModal;
 
 let gameInProgress;
-let countdownIntervalId;
+let countdownIntervalPong2;
 
 function resetBall() {
   ballX = board.offsetWidth / 2 - ball.offsetWidth / 2;
@@ -72,15 +69,9 @@ export function endGameSession() {
 function handleBeforeUnload(event) {
   if (gameInProgress) {
     const message = "You have an ongoing game. Are you sure you want to leave and lose your progress?";
+    document.body.removeChild(countdownElement);
     event.returnValue = message;
     return message;
-  }
-}
-
-function pauseEnterKey(event) {
-  if (event.key === 'Enter') {
-    event.preventDefault();
-    document.getElementById("pauseBtn").click();
   }
 }
 
@@ -106,10 +97,8 @@ function initVariables() {
   paddle2MovingUp = false;
   paddle2MovingDown = false;
   pongIntervalId = null;
-  pauseModalVisible = false;
   gameOver = false;
   modalInit = false;
-  paused = false;
   gameInProgress = false;
 
   board = document.getElementById("board");
@@ -136,7 +125,6 @@ function bringMenu() {
 
 function init2PlyrPong() {
   initVariables();
-  pauseModalInstance = new bootstrap.Modal(document.getElementById('pauseGameModal'));
   startModal = new bootstrap.Modal(document.getElementById('startGameModal'));
   restartModal = new bootstrap.Modal(document.getElementById('restartGame'));
   startModal.show();
@@ -148,9 +136,7 @@ function init2PlyrPong() {
     player1AliasElement.textContent = player1Alias;
   });
 
-  eventManager.addListener(document.getElementById("pauseBtn"), "click", togglePause);
   eventManager.addListener(document.getElementById("startGameBtn"), "click", validateInput);
-  eventManager.addListener(document.getElementById("pauseGameModal"), "keypress", pauseEnterKey);
   eventManager.addListener(document.getElementById("startGameModal"), "keypress", startEnterKey);
   eventManager.addListener(document.getElementById("backToMenu"), "click", bringMenu);
 
@@ -317,8 +303,6 @@ function handleKeyDown(event) {
     paddle2MovingUp = true;
   } else if (event.key === "ArrowDown") {
     paddle2MovingDown = true;
-  } else if (event.key === " ") {
-    togglePause();
   }
 }
 
@@ -334,17 +318,8 @@ function handleKeyUp(event) {
   }
 }
 
-function togglePause() {
-  if (!pauseModalVisible && !gameOver) {
-    paused = true;
-    pauseGame();
-  } else {
-    continueGame();
-  }
-}
-
 function updateGame() {
-  if (begin && !pauseModalVisible) {
+  if (begin) {
     if (paddle1MovingUp && paddle1.offsetTop > 6) {
       paddle1.style.top = `${paddle1.offsetTop - paddleSpeed}px`;
     } else if (paddle1MovingDown && paddle1.offsetTop + paddle1.offsetHeight < (board.offsetHeight - 6)) {
@@ -435,8 +410,6 @@ function updateGame() {
 }
 
 function haltGame(game_winner) {
-  paused = false;
-  pauseModalVisible = false;
   gameOver = true;
   let winnerMsg = document.getElementById('GameWinner');
   winnerMsg.textContent = game_winner.toString() + " wins!";
@@ -470,11 +443,11 @@ function showCountdown(callback) {
   document.body.appendChild(countdownElement);
 
   let count = 5;
-  countdownIntervalId = setInterval(() => {
+  countdownIntervalPong2 = setInterval(() => {
     count--;
     countdownElement.textContent = count;
     if (count === 0) {
-      clearInterval(countdownIntervalId);
+      clearInterval(countdownIntervalPong2);
       document.body.removeChild(countdownElement);
       callback();
     }
@@ -482,9 +455,9 @@ function showCountdown(callback) {
 }
 
 function cancelCountdown() {
-  if (countdownIntervalId) {
-    clearInterval(countdownIntervalId);
-    countdownIntervalId = null;
+  if (countdownIntervalPong2) {
+    clearInterval(countdownIntervalPong2);
+    countdownIntervalPong2 = null;
     const countdownElement = document.getElementById('countdown');
     if (countdownElement) {
       countdownElement.textContent = '';
@@ -501,9 +474,6 @@ function startGame() {
     clearInterval(pongIntervalId);
   resetBall();
   cancelCountdown();
-  //   pongIntervalId = setInterval(updateGame, 16);
-  //   document.addEventListener("keydown", handleKeyDown);
-  //   document.addEventListener("keyup", handleKeyUp);
   showCountdown(() => {
     pongIntervalId = setInterval(updateGame, 1000 / 60);
     document.addEventListener("keydown", handleKeyDown);
@@ -514,23 +484,6 @@ function startGame() {
 function isPrintableASCII(str) {
   var printableASCIIRegex = /^[!-~]+$/;
   return printableASCIIRegex.test(str);
-}
-
-function pauseGame() {
-  clearInterval(pongIntervalId);
-  pongIntervalId = null;
-  pauseModalInstance.show();
-  pauseModalVisible = true;
-}
-
-function continueGame() {
-  pauseModalInstance._element.addEventListener('hidden.bs.modal', function () {
-    pauseModalVisible = false;
-    if (!pongIntervalId) {
-      pongIntervalId = setInterval(updateGame, 16);
-    }
-  }, { once: true });
-  pauseModalInstance.hide();
 }
 
 //? modal input validation
@@ -573,4 +526,4 @@ function closeModal() {
 //?
 //? end of modal input validation
 
-export { init2PlyrPong, fetchUserProfile, isPrintableASCII, waitGameFinish, updateMatch, createMatch, gameInProgress, pongIntervalId };
+export { init2PlyrPong, fetchUserProfile, isPrintableASCII, waitGameFinish, updateMatch, createMatch, gameInProgress, pongIntervalId, countdownIntervalPong2 };

@@ -44,6 +44,16 @@ const eventManager = {
   addListener(element, event, handler) {
     element.removeEventListener(event, handler);
     element.addEventListener(event, handler);
+  },
+
+  /**
+   * Removes an event listener from an element
+   * @param {Element} element - The element to remove the listener from
+   * @param {string} event - The event to stop listening for
+   * @param {Function} handler - The function to remove
+   */
+  removeListener(element, event, handler) {
+    element.removeEventListener(event, handler);
   }
 };
 
@@ -91,7 +101,7 @@ function passwordValidation(field) {
 // }
 
 function nameValidation(field) {
-  if (!(/^[a-zA-Z]+(?: [a-zA-Z]+)*$/).test(field.inputValue)) {
+  if ((field.inputValue.length !== 0) && !(/^[a-zA-Z]+(?: [a-zA-Z]+)*$/).test(field.inputValue)) {
     console.log('non printable');
     return printInvalidFeedback(field, "no elon musk typeof names only letter!! 💀");
   }
@@ -132,7 +142,7 @@ function checkInput(inputElements) {
     let currentElement = inputElements[i];
     if (currentElement.player1alias.length !== 0) {
       seenUsernames[inputElements[0].player1alias] = true;
-      continue ;
+      continue;
     }
     console.log("index = ", i, inputElements[i]);
     let currentElementStatus = true;

@@ -5,7 +5,6 @@ let begin;
 let initialVPaddlePos;
 let initialHPaddlePos;
 let pong3IntervalId;
-let pauseModalVisible;
 let gameOver;
 const matchPoint = 3;
 let matchId;
@@ -49,12 +48,9 @@ let paddle2MovingUp;
 let paddle2MovingDown;
 let paddle3MovingLeft;
 let paddle3MovingRight;
-let inputIds = ["player2aliasPong3", "player3aliasPong3"];
 
 var startModal;
 var form;
-var modalInit = false;
-let pauseModalInstance;
 let gameInProgress3;
 let countdownIntervalId;
 
@@ -75,34 +71,31 @@ function handleBeforeUnload(event) {
   }
 }
 
-async function initGame(){
-    player2aliasPong3 = document.getElementById("player2aliasPong3").value;
-    player3aliasPong3 = document.getElementById("player3aliasPong3").value;
-    // player2aliasPong3 = player2aliasPong3Element;
-    // player3aliasPong3 = player3aliasPong3Element.value;
-    // console.log(player2aliasPong3 + player3aliasPong3);
-    closeModal();
-    let matchData = {
-      player_id: playerId,
-      guest_player1: player2aliasPong3,
-      guest_player2: player3aliasPong3,
-      game_type: "Pong"
-    };
-    await createMatch(matchData).then(data => {
-      matchId = data.match_id;
-    });
-    startGame();
-    await waitGameFinish();
-    matchData = {
-      match_id: matchId,
-      score_player: score1,
-      score_guest_player1: score2,
-      score_guest_player: score3,
-      winner: draw ? null : winner,
-      is_draw: draw
-    }
-    updateMatch(matchData);
-    startGame();
+async function initGame() {
+  player2aliasPong3 = document.getElementById("player2aliasPong3").value;
+  player3aliasPong3 = document.getElementById("player3aliasPong3").value;
+  closeModal();
+  let matchData = {
+    player_id: playerId,
+    guest_player1: player2aliasPong3,
+    guest_player2: player3aliasPong3,
+    game_type: "Pong"
+  };
+  await createMatch(matchData).then(data => {
+    matchId = data.match_id;
+  });
+  startGame();
+  await waitGameFinish();
+  matchData = {
+    match_id: matchId,
+    score_player: score1,
+    score_guest_player1: score2,
+    score_guest_player: score3,
+    winner: draw ? null : winner,
+    is_draw: draw
+  }
+  updateMatch(matchData);
+  startGame();
 }
 
 async function validateInput() {
@@ -132,65 +125,52 @@ function waitGameFinish(gameStatus, interval = 100) {
 }
 
 function initVariables() {
-    score1 = matchPoint;
-    score2 = matchPoint;
-    score3 = matchPoint;
-    ballX = 5;
-    ballY = 5;
-    ballSpeedX = 5;
-    ballSpeedY = 5;
-    pong3IntervalId = null;
-    pauseModalVisible = false;
-    gameOver = false;
-    begin = false;
-    draw = false;
-    paddle1MovingUp = false;
-    paddle1MovingDown = false;
-    paddle2MovingUp = false;
-    paddle2MovingDown = false;
-    paddle3MovingLeft = false;
-    paddle3MovingRight = false;
-    gameInProgress3 = false;
-    board = document.getElementById("board");
-    paddle1 = document.getElementById("paddle_1");
-    paddle2 = document.getElementById("paddle_2");
-    paddle3 = document.getElementById("paddle_3");
-  
-    ball = document.getElementById("ball");
-    ballX = board.offsetWidth / 2 - ball.offsetWidth / 2;
-    ballY = board.offsetHeight / 2 - ball.offsetHeight / 2;
-  
-    score1Element = document.getElementById("player_1_score");
-    score1Element.textContent = score1;
-    score2Element = document.getElementById("player_2_score");
-    score2Element.textContent = score2;
-    score3Element = document.getElementById("player_3_score");
-    score3Element.textContent = score3;
-  
-    initialVPaddlePos = paddle1.style.top;
-    initialHPaddlePos = paddle3.style.left;
+  score1 = matchPoint;
+  score2 = matchPoint;
+  score3 = matchPoint;
+  ballX = 5;
+  ballY = 5;
+  ballSpeedX = 5;
+  ballSpeedY = 5;
+  pong3IntervalId = null;
+  gameOver = false;
+  begin = false;
+  draw = false;
+  paddle1MovingUp = false;
+  paddle1MovingDown = false;
+  paddle2MovingUp = false;
+  paddle2MovingDown = false;
+  paddle3MovingLeft = false;
+  paddle3MovingRight = false;
+  gameInProgress3 = false;
+  board = document.getElementById("board");
+  paddle1 = document.getElementById("paddle_1");
+  paddle2 = document.getElementById("paddle_2");
+  paddle3 = document.getElementById("paddle_3");
+
+  ball = document.getElementById("ball");
+  ballX = board.offsetWidth / 2 - ball.offsetWidth / 2;
+  ballY = board.offsetHeight / 2 - ball.offsetHeight / 2;
+
+  score1Element = document.getElementById("player_1_score");
+  score1Element.textContent = score1;
+  score2Element = document.getElementById("player_2_score");
+  score2Element.textContent = score2;
+  score3Element = document.getElementById("player_3_score");
+  score3Element.textContent = score3;
+
+  initialVPaddlePos = paddle1.style.top;
+  initialHPaddlePos = paddle3.style.left;
+}
+
+function chkIfInput(event) {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    document.getElementById("startGameBtn").click();
+  }
 }
 
 function init3PlyrPong() {
-//   score1 = matchPoint;
-//   score2 = matchPoint;
-//   score3 = matchPoint;
-//   ballX = 5;
-//   ballY = 5;
-//   ballSpeedX = 5;
-//   ballSpeedY = 5;
-//   pong3IntervalId = null;
-//   pauseModalVisible = false;
-//   gameOver = false;
-//   begin = false;
-//   draw = false;
-//   paddle1MovingUp = false;
-//   paddle1MovingDown = false;
-//   paddle2MovingUp = false;
-//   paddle2MovingDown = false;
-//   paddle3MovingLeft = false;
-//   paddle3MovingRight = false;
-//   gameInProgress3 = false;
   initVariables();
   restartModal = new bootstrap.Modal(document.getElementById('restartGame'));
   startModal = new bootstrap.Modal(document.getElementById('startGameModal'));
@@ -204,14 +184,12 @@ function init3PlyrPong() {
   });
 
   eventManager.addListener(document.getElementById("startGameBtn"), "click", validateInput);
+  eventManager.addListener(document.getElementById("startGameModal"), "keypress", chkIfInput);
 
   restartGameBtn.addEventListener('click', async function (event) {
     initVariables();
     player2aliasPong3 = document.getElementById("player2aliasPong3").value;
     player3aliasPong3 = document.getElementById("player3aliasPong3").value;
-    // player2aliasPong3 = player2aliasPong3Element;
-    // player3aliasPong3 = player3aliasPong3Element.value;
-    // console.log(player2aliasPong3 + player3aliasPong3);
     restartModal.hide();
     let matchData = {
       player_id: playerId,
@@ -224,7 +202,6 @@ function init3PlyrPong() {
     });
     startGame();
     await waitGameFinish();
-    // console.log(gameOver);
     matchData = {
       match_id: matchId,
       score_player: score1,
@@ -232,23 +209,10 @@ function init3PlyrPong() {
       score_guest_player: score3,
       winner: draw ? null : winner,
       is_draw: draw
-	}
+    }
     updateMatch(matchData);
     startGame();
   });
-
-  form = document.querySelector('.needs-validation');
-  if (form) {
-    form.addEventListener('keyup', function (event) {
-      if (event.key === 'Enter') {
-        event.preventDefault();
-        checkInput();
-      }
-    });
-  } else {
-    console.log("form not found");
-  }
-  // realTimeChecker();
 }
 
 function handleKeyDown(event) {
@@ -275,8 +239,6 @@ function handleKeyDown(event) {
     case "M":
       paddle3MovingRight = true;
       break;
-    case " ":
-      togglePause();
   }
 }
 
@@ -421,16 +383,16 @@ function resetBall() {
 }
 
 function updateGame() {
-  if (!begin && pauseModalVisible)
+  if (!begin)
     return;
   updatePaddles();
   updateBall();
 }
 
 function haltGame() {
-  pauseModalVisible = false;
   begin = false;
   gameOver = true;
+
   let winnerMsg = document.getElementById('GameWinner');
   // let player1Alias = "Player 1";
   // let player2aliasPong3 = "Player 2";
@@ -471,51 +433,51 @@ function haltGame() {
   paddle3.style.left = initialHPaddlePos;
   endGameSession();
   restartModal.show();
-//   restartGameBtn.addEventListener('click', function() {
-//     restartModal.hide();
-//     init3PlyrPong()
-// });
+  //   restartGameBtn.addEventListener('click', function() {
+  //     restartModal.hide();
+  //     init3PlyrPong()
+  // });
 
   clearInterval(pong3IntervalId);
   pong3IntervalId = null;
 }
 
 function showCountdown(callback) {
-	const countdownElement = document.createElement('div');
-	countdownElement.id = 'countdown';
-	countdownElement.style.position = 'absolute';
-	countdownElement.style.top = '50%';
-	countdownElement.style.left = '50%';
-	countdownElement.style.transform = 'translate(-50%, -50%)';
-	countdownElement.style.fontSize = '48px';
-	countdownElement.style.fontWeight = 'bold';
-	countdownElement.style.zIndex = '1000';
-	countdownElement.style.color = '#07ed26';
-	countdownElement.textContent = '5';
-	document.body.appendChild(countdownElement);
-  
-	let count = 5;
-	countdownIntervalId = setInterval(() => {
-	  count--;
-	  countdownElement.textContent = count;
-	  if (count === 0) {
-		clearInterval(countdownIntervalId);
-		document.body.removeChild(countdownElement);
-		callback();
-	  }
-	}, 1000);
+  const countdownElement = document.createElement('div');
+  countdownElement.id = 'countdown';
+  countdownElement.style.position = 'absolute';
+  countdownElement.style.top = '50%';
+  countdownElement.style.left = '50%';
+  countdownElement.style.transform = 'translate(-50%, -50%)';
+  countdownElement.style.fontSize = '48px';
+  countdownElement.style.fontWeight = 'bold';
+  countdownElement.style.zIndex = '1000';
+  countdownElement.style.color = '#07ed26';
+  countdownElement.textContent = '5';
+  document.body.appendChild(countdownElement);
+
+  let count = 5;
+  countdownIntervalId = setInterval(() => {
+    count--;
+    countdownElement.textContent = count;
+    if (count === 0) {
+      clearInterval(countdownIntervalId);
+      document.body.removeChild(countdownElement);
+      callback();
+    }
+  }, 1000);
 }
 
 function cancelCountdown() {
-	if (countdownIntervalId) {
-	  clearInterval(countdownIntervalId);
-	  countdownIntervalId = null;
-	  const countdownElement = document.getElementById('countdown');
-	  if (countdownElement) {
-		countdownElement.textContent = '';
-		document.body.removeChild(countdownElement);
-	  }
-	}
+  if (countdownIntervalId) {
+    clearInterval(countdownIntervalId);
+    countdownIntervalId = null;
+    const countdownElement = document.getElementById('countdown');
+    if (countdownElement) {
+      countdownElement.textContent = '';
+      document.body.removeChild(countdownElement);
+    }
+  }
 }
 
 function startGame() {
@@ -528,64 +490,11 @@ function startGame() {
   begin = true;
   gameOver = false;
   showCountdown(() => {
-	pong3IntervalId = setInterval(updateGame, 1000 / 60);
-	document.addEventListener("keydown", handleKeyDown);
-	document.addEventListener("keyup", handleKeyUp);
-  });	
+    pong3IntervalId = setInterval(updateGame, 1000 / 60);
+    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("keyup", handleKeyUp);
+  });
 }
-
-// Pause and Resume
-
-function togglePause() {
-  if (!pauseModalVisible && !gameOver) {
-    pauseGame();
-  } else {
-    continueGame();
-  }
-}
-
-function pauseGame() {
-  clearInterval(pong3IntervalId);
-  pong3IntervalId = null;
-  pauseModalInstance = new bootstrap.Modal(document.getElementById('pauseGameModal'));
-  pauseModalInstance.show();
-  pauseModalVisible = true;
-}
-
-function continueGame() {
-  pauseModalInstance.hide();
-  pauseModalInstance._element.addEventListener('hidden.bs.modal', function () {
-    pauseModalVisible = false;
-    if (!pong3IntervalId)
-      pong3IntervalId = setInterval(updateGame, 16);
-  }, { once: true });
-}
-
-// async function updateMatch() {
-//     const matchData = {
-//       match_id: matchId,
-//       score_player: score1,
-//       score_guest_player1: score2,
-//       winner: winner,
-//       is_draw : false
-//     };
-//     endGameSession();
-//     console.log(matchData)
-//     const response = await fetch('https://127.0.0.1:443/pongApp/update_match', {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//         'Authorization': 'Bearer ' + getCookie('jwt')
-//       },
-//       body: JSON.stringify(matchData)
-
-//     })
-//     if (!response.ok) {
-//       throw new Error('Network response was not ok');
-//     }
-//     const data = await response.json();
-//     return data;
-//   }
 
 function closeModal() {
   var modal = document.getElementById('startGameModal');

@@ -7,8 +7,6 @@ import { inputElement, eventManager, checkInput } from './inputValidation.js';
 const matchPoint = 1;
 const paddleSpeed = 12;
 let tournamentIntervalId = null;
-let paused = false;
-let pauseModalVisible = false;
 let gameOver = false;
 let winner;
 let winnerMsg;
@@ -18,7 +16,6 @@ let creator;
 let matchDetail;
 let round;
 let restartGameButton;
-let pauseModalInstance;
 let startModal;
 var restartModal;
 var finishTournamentModal;
@@ -292,8 +289,6 @@ function handleKeyDown(event) {
         paddle2MovingUp = true;
     } else if (event.key === "ArrowDown") {
         paddle2MovingDown = true;
-    } else if (event.key === " ") {
-        togglePause();
     }
 };
 
@@ -309,17 +304,9 @@ function handleKeyUp(event) {
     }
 };
 
-function togglePause() {
-    if (!pauseModalVisible && !gameOver) {
-        paused = true;
-        pauseGame();
-    } else {
-        continueGame();
-    }
-};
 
 function updateGame() {
-    if (begin && !pauseModalVisible) {
+    if (begin) {
         if (paddle1MovingUp && paddle1.offsetTop > 6) {
           paddle1.style.top = `${paddle1.offsetTop - paddleSpeed}px`;
         } else if (paddle1MovingDown && paddle1.offsetTop + paddle1.offsetHeight < (board.offsetHeight - 6)) {
@@ -411,8 +398,6 @@ function updateGame() {
 
 function haltGame(winning_player) {
     winner = winning_player;
-    paused = false;
-    pauseModalVisible = false;
     gameOver = true;
     endGameSession();
     winnerMsg = document.getElementById('GameWinner');
@@ -442,8 +427,6 @@ function resetBall() {
 }
 
 function startGame() {
-
-    pauseModalInstance = new bootstrap.Modal(document.getElementById('pauseGameModal'));
     restartModal = new bootstrap.Modal(document.getElementById('restartGame'));
     begin = true;
     gameOver = false;
@@ -459,58 +442,10 @@ function startGame() {
     document.addEventListener("keyup", handleKeyUp);
 }
 
-function isPrintableASCII(str) {
-    var printableASCIIRegex = /^[!-~]+$/;
-    return printableASCIIRegex.test(str);
-}
-
 function hideOverflow() {
     const content = document.getElementsById('board');
     content.style.opacity = 1;
 }
-
-// function checkInput() {
-//     var button = document.getElementById("continueBtn");
-//     tournamentName = document.getElementById("tournamentName").value;
-//     if (tournamentName.trim() === '') {
-//         button.disabled = true;
-//     } else if (tournamentName.length > 10 || tournamentName.length < 3) {
-//         tournamentNameElement = document.getElementById("tournamentName");
-//         button.disabled = false;
-//         // createAlert(notiAlert, 'Alias is between 3 and 10 characters!', 'alert-danger');
-//     } else if (!isPrintableASCII(tournamentName)) {
-//         tournamentNameElement = document.getElementById("tournamentName");
-//         button.disabled = false;
-//         // createAlert(notiAlert, 'Alias cannot contain spaces!', 'alert-danger');
-//     } else {
-//         tournamentNameElement = document.getElementById("tournamentName");
-//         button.disabled = false;
-//     }
-//     // return ;
-//     // else if (player1Alias === tournamentName) {
-//     //     tournamentNameElement = document.getElementById("player_2_alias");
-//     //     button.disabled = false;
-//     //     // createAlert(notiAlert, 'Alias cannot be the same as the user!', 'alert-danger');
-//     //   }
-// };
-
-
-function pauseGame() {
-    clearInterval(tournamentIntervalId);
-    tournamentIntervalId = null;
-    pauseModalInstance.show();
-    pauseModalVisible = true;
-}
-
-function continueGame() {
-    pauseModalInstance.hide();
-    pauseModalInstance._element.addEventListener('hidden.bs.modal', function () {
-        pauseModalVisible = false;
-        if (!tournamentIntervalId)
-            tournamentIntervalId = setInterval(updateGame, 16);
-    }, { once: true });
-}
-
 
 function waitGameFinish(interval = 100) {
     return new Promise(resolve => {

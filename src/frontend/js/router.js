@@ -1,7 +1,7 @@
 import { setupAuthPage, logoutUser, isAuthenticated, hashPassword } from './auth.js';
 import { setUpProfile } from './profile.js';
 import { setupTournamentPage, gameInProgressTour, tournamentIntervalId } from './tournament.js';
-import { init2PlyrPong, gameInProgress, pongIntervalId } from './pong2.js';
+import { init2PlyrPong, gameInProgress, pongIntervalId, countdownIntervalPong2 } from './pong2.js';
 import { init3PlyrPong, gameInProgress3, pong3IntervalId } from './pong3.js';
 import { setupTTT } from './ttt.js';
 
@@ -40,6 +40,9 @@ class Router {
       clearInterval(pongIntervalId);
       clearInterval(tournamentIntervalId);
       clearInterval(pong3IntervalId);
+      if (countdownIntervalPong2) {
+        clearInterval(countdownIntervalPong2);
+      }
     }
 
 
@@ -52,7 +55,16 @@ class Router {
         resolve();
       }, { once: true });
     }
+    // document.addEventListener('keydown', function (event) {
+    //   if (event.keyCode === 32) {
+    //     console.log('bruhhh');
+    //     event.stopPropagation();
+    //     event.preventDefault();
+    //   }
+    // });
+
     removeOpenModals();
+
 
     this.lastPath = path;
 

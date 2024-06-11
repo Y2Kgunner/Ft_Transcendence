@@ -230,10 +230,10 @@ function chkIfInput(event) {
 // fill the profile elements with the new values!!!
 function chkInp() {
   const _elementBlock = [
-    new inputElement('firstNameInput', 'name', false, 5, 20),
-    new inputElement('lastNameInput', 'name', false, 5, 20),
-    new inputElement('phoneInput', 'phone', false, 10, 18),
-    new inputElement('addressInput', 'userName', false, 10, 25),
+    new inputElement('firstNameInput', 'name', false, 5, 20, ""),
+    new inputElement('lastNameInput', 'name', false, 5, 20, ""),
+    new inputElement('phoneInput', 'phone', false, 10, 18, ""),
+    new inputElement('addressInput', 'userName', false, 10, 25, "")
   ];
   if (checkInput(_elementBlock))
     editModal.hide();
