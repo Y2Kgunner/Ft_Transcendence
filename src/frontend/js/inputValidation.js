@@ -2,7 +2,7 @@
 //? import { inputElement } from './inputElement.js';
 
 //? How to send an entire inputElementBlock?? ==> here u go!
-//? const _elementBlock = [
+//? const currentElementBlock = [
 //?   new inputElement('phone', 'phone', true, 10, 15),
 //?   new inputElement('name', 'name', true, 2, 50),
 //?   new inputElement('userName', 'userName', true, 4, 20),
@@ -19,15 +19,17 @@ class inputElement {
    * @param {boolean} isRequired - Whether the input is required { boolean }
    * @param {number} minLen - The minimum length of the input value { int }
    * @param {number} maxLen - The maximum length of the input value { int }
+   * @param {number} player1alias - The maximum length of the input value { int }
   //  * @param {boolean} isFormFloating - Whether the input is in form-floating { boolean }
    */
   // constructor(id, type, isRequired, minLen, maxLen, isFormFloating) {
-  constructor(id, type, isRequired, minLen, maxLen) {
+  constructor(id, type, isRequired, minLen, maxLen, player1alias) {
     this.id = id;
     this.type = type;
     this.isRequired = isRequired;
     this.minLen = minLen;
     this.maxLen = maxLen;
+    this.player1alias = player1alias;
     // this.isFormFloating = isFormFloating;
   }
 }
@@ -101,11 +103,10 @@ function visibilityValidation(field) {
   return printInvalidFeedback(field, "input can only contain printable ASCII characters! 😸");
 }
 
-function lengthValidation(field, _element) {
-  console.log("elllloooooo---------");
-  if ((field.inputValue.length > _element.maxLen) || (field.inputValue.length < _element.minLen)) {
-    console.log('length issue -->>', _element.isRequired);
-    return printInvalidFeedback(field, `${_element.type} must be between ${_element.minLen} and ${_element.maxLen} characters long! 😼`);
+function lengthValidation(field, currentElement) {
+  if ((field.inputValue.length > currentElement.maxLen) || (field.inputValue.length < currentElement.minLen)) {
+    console.log('length issue -->>', currentElement.isRequired);
+    return printInvalidFeedback(field, `${currentElement.type} must be between ${currentElement.minLen} and ${currentElement.maxLen} characters long! 😼`);
   }
   return true;
 }
@@ -127,9 +128,15 @@ function checkInput(inputElements) {
   const passwordGroup = {};
   const seenUsernames = {};
 
-  inputElements.forEach((_element) => {
+  for (let i = 0; i < inputElements.length; i++) {
+    let currentElement = inputElements[i];
+    if (currentElement.player1alias.length !== 0) {
+      seenUsernames[inputElements[0].player1alias] = true;
+      continue ;
+    }
+    console.log("index = ", i, inputElements[i]);
     let currentElementStatus = true;
-    const input_field = document.getElementById(_element.id);
+    const input_field = document.getElementById(currentElement.id);
     const field = {
       inputField: input_field,
       inputValue: input_field.value.trim(),
@@ -137,49 +144,41 @@ function checkInput(inputElements) {
       validFeedback: null
     }
     field.invalidFeedback = field.inputField.closest('.input-group').querySelector('.invalid-feedback');
-    // if (_element.isFormFloating) {
-    // field.invalidFeedback = field.inputField.parentNode.nextElementSibling;
-    // field.invalidFeedback.textContent = 'dafag';
-    // console.log('floating');
-    // } else {
-    // field.invalidFeedback = field.inputField.nextElementSibling;
-    // }
     if (bigBoiTruncation && !allInputsValid)
       return;
-    if (_element) {
+    if (currentElement) {
       field.invalidFeedback.textContent = "";
-
-      if (_element.isRequired && field.inputValue === '') {
-        field.invalidFeedback.textContent = `${_element.type} cannot be empty! 😾`;
+      if (currentElement.isRequired && field.inputValue === '') {
+        field.invalidFeedback.textContent = `${(currentElement.type === 'userName' ? 'name' : currentElement.type)} cannot be empty! 😾`;
         field.inputField.classList.add("is-invalid");
         clearTimeout(window.timeoutId);
         window.timeoutId = setTimeout(clearErrorMessage, 5000, field);
         currentElementStatus = false;
       }
-      else if (field.inputValue.length && !isPrintableASCII(field.inputValue) && _element.type !== 'name') {
+      else if (field.inputValue.length && !isPrintableASCII(field.inputValue) && currentElement.type !== 'name') {
         visibilityValidation(field);
         currentElementStatus = false;
       }
-      else if (_element.type !== 'phone' && (_element.isRequired || (field.inputValue.length !== 0))) {
-        currentElementStatus = lengthValidation(field, _element) ? currentElementStatus : false;
+      else if (currentElement.type !== 'phone' && (currentElement.isRequired || (field.inputValue.length !== 0))) {
+        currentElementStatus = lengthValidation(field, currentElement) ? currentElementStatus : false;
       }
-      if (currentElementStatus && (_element.type === 'phone')) {
-        currentElementStatus = (!_element.isRequired && field.inputValue.length === 0) ? currentElementStatus : (phoneValidation(field) ? currentElementStatus : false);
+      if (currentElementStatus && (currentElement.type === 'phone')) {
+        currentElementStatus = (!currentElement.isRequired && field.inputValue.length === 0) ? currentElementStatus : (phoneValidation(field) ? currentElementStatus : false);
         console.log('phone ternary check', field.inputValue.length);
       }
-      else if (currentElementStatus && (_element.type === 'name')) {
+      else if (currentElementStatus && (currentElement.type === 'name')) {
         currentElementStatus = nameValidation(field) ? currentElementStatus : false;
       }
-      else if (currentElementStatus && (_element.type === 'userName')) {
+      else if (currentElementStatus && (currentElement.type === 'userName')) {
         console.log("cur -> userName");
-        if (_element.isRequired && (field.inputValue.length !== 0) &&  !(/^[a-zA-Z]{4,}$/).test(field.inputValue))
+        if (currentElement.isRequired && (field.inputValue.length !== 0) && !(/^[a-zA-Z]{4,}$/).test(field.inputValue))
           currentElementStatus = printInvalidFeedback(field, 'Invalid Username {min 4, max 10} only letters');
         else if (seenUsernames[field.inputValue])
           currentElementStatus = printInvalidFeedback(field, 'Username already taken!');
         else
           seenUsernames[field.inputValue] = true;
       }
-      else if (currentElementStatus && (_element.type === 'password')) {
+      else if (currentElementStatus && (currentElement.type === 'password')) {
         console.log("pass ---->", Object.keys(passwordGroup).length);
         currentElementStatus = passwordValidation(field) ? currentElementStatus : false;
         if (!passwordGroup[field.inputValue] && Object.keys(passwordGroup).length == 1)
@@ -187,7 +186,7 @@ function checkInput(inputElements) {
         else
           passwordGroup[field.inputValue] = true;
       }
-      else if (currentElementStatus && (_element.type === 'email')) {
+      else if (currentElementStatus && (currentElement.type === 'email')) {
         console.log("email");
         currentElementStatus = emailValidation(field) ? currentElementStatus : false;
       }
@@ -195,7 +194,7 @@ function checkInput(inputElements) {
         allInputsValid = !true;
         field.inputField.classList.add('is-invalid');
         field.inputField.classList.remove('is-valid');
-        // if (_element.isFormFloating)
+        // if (currentElement.isFormFloating)
         field.invalidFeedback.style.display = 'block';
       } else {
         field.inputField.classList.remove('is-invalid');
@@ -203,9 +202,9 @@ function checkInput(inputElements) {
         clearTimeout(window.timeoutId);
       }
     } else {
-      console.error(`input field with ID ${_element} not found!`);
+      console.error(`input field with ID ${currentElement} not found!`);
     }
-  });
+  }
   if (!allInputsValid) {
     return !true;
   }

@@ -4,6 +4,7 @@ import { debounce } from './auth.js';
 var editModal;
 var deleteModal;
 var otpModal;
+var otpSuccess;
 
 const eventManager = {
   addListener(element, event, handler) {
@@ -14,9 +15,10 @@ const eventManager = {
 
 //? ------------------->> setting the profile page! and ensuring only one event listener is active!
 function setUpProfile() {
+  otpSuccess = false;
   deleteModal = new bootstrap.Modal(document.getElementById('deleteOtpModal'));
   editModal = new bootstrap.Modal(document.getElementById('editProfileModal'));
-  otpModal = new bootstrap.Modal(document.getElementById('editProfileModal'));
+  otpModal = new bootstrap.Modal(document.getElementById('otpModal'));
 
   eventManager.addListener(document.getElementById("editProfileModal"), "keypress", chkIfInput);
   eventManager.addListener(document.getElementById("editBtn"), "click", openEditModal);
@@ -50,19 +52,22 @@ async function check2FAStatus() {
     }
     const responseData = await response.json();
     const twoFAbtn = document.getElementById('twoFAbtn');
-    
+
     if (responseData.twofa_enabled) {
-      console.log('en came here');
+      handleBtnBlocker('twoFAbtn', 'deleteProfileButton', true);
+      open2FAOTP();
       disable2FA();
-      twoFAbtn.classList.add('TwoFAbtnEnable');
-      twoFAbtn.classList.remove('TwoFAbtnDisable');
-      twoFAbtn.textContent = 'Enable 2FA';
+      if (otpSuccess) {
+        twoFAbtn.classList.add('TwoFAbtnEnable');
+        twoFAbtn.classList.remove('TwoFAbtnDisable');
+        twoFAbtn.querySelector('.twoFAContent').textContent = 'Enable 2FA';
+      }
     } else {
       console.log('dis came here');
       enable2FA();
       twoFAbtn.classList.add('TwoFAbtnDisable');
       twoFAbtn.classList.remove('TwoFAbtnEnable');
-      twoFAbtn.textContent = 'Disable 2FA';
+      twoFAbtn.querySelector('.twoFAContent').textContent = 'Disable 2FA';
     }
   } catch (error) {
     console.error('Error checking 2FA status:', error);
@@ -91,10 +96,29 @@ async function enable2FA() {
   }
 }
 
+/**
+ * @param {button} button - button button element pressed!
+ * @param {button} other - other button to disable/enable!
+ * @param {boolean} block - disable or enable button!
+ */
+function handleBtnBlocker(button, other, block) {
+  var btn = document.getElementById(button);
 
-async function disable2FA() {
+  btn.disabled = block;
+  document.getElementById(other).disabled = block;
+  if (block) {
+    document.body.classList.add('no-pointer-events');
+    btn.querySelector('.spinner-grow').classList.remove('d-none');
+  }
+  else {
+    document.body.classList.remove('no-pointer-events');
+    btn.querySelector('.spinner-grow').classList.add('d-none');
+  }
+  
+}
+
+async function open2FAOTP() {
   try {
-    // Request the server to send an OTP to the user's email
     const sendOtpResponse = await fetch('https://127.0.0.1:443/api/send_otp_email', {
       method: 'POST',
       headers: {
@@ -109,37 +133,35 @@ async function disable2FA() {
       console.error('Failed to send OTP:', sendOtpData.error);
       return;
     }
-
-    // Show the OTP modal for user to enter the OTP
-    const otpModal = new bootstrap.Modal(document.getElementById('otpModal'));
     otpModal.show();
-
-    // Set up event listener for OTP verification button
-    document.getElementById('verifyOtpButton').onclick = async () => {
-      const otpInput = document.getElementById('otpInput').value;
-      const verifyOtpResponse = await fetch('https://127.0.0.1:443/api/verify_otp', {
-        method: 'POST',
-        headers: {
-          'Authorization': 'Bearer ' + getCookie('jwt'),
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ otp: otpInput }),
-        credentials: 'include'
-      });
-
-      const verifyOtpData = await verifyOtpResponse.json();
-      if (verifyOtpResponse.ok) {
-        console.log('OTP verified successfully');
-        otpModal.hide();
-        // Proceed with disabling 2FA
-        await performDisable2FA();
-      } else {
-        console.error('Failed to verify OTP:', verifyOtpData.error);
-      }
-    };
+      handleBtnBlocker('twoFAbtn', 'deleteProfileButton', false);
   } catch (error) {
     console.error('Error disabling 2FA:', error);
   }
+}
+
+function disable2FA() {
+  document.getElementById('verifyOtpButton').onclick = async () => {
+    const otpInput = document.getElementById('otpInput').value;
+    const verifyOtpResponse = await fetch('https://127.0.0.1:443/api/verify_otp', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + getCookie('jwt'),
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ otp: otpInput }),
+      credentials: 'include'
+    });
+    const verifyOtpData = await verifyOtpResponse.json();
+    if (verifyOtpResponse.ok) {
+      console.log('OTP verified successfully');
+      otpSuccess = true;
+      otpModal.hide();
+      await performDisable2FA();
+    } else {
+      console.error('Failed to verify OTP:', verifyOtpData.error);
+    }
+  };
 }
 
 async function performDisable2FA() {
@@ -160,39 +182,12 @@ async function performDisable2FA() {
   console.log(responseData);
 }
 
-
-// async function disable2FA() {
-//   try {
-//     const response = await fetch('https://127.0.0.1:443/api/disable_2fa', {
-//       method: 'POST',
-//       headers: {
-//         'Authorization': 'Bearer ' + getCookie('jwt')
-//       },
-//       credentials: 'include'
-//     });
-//     if (!response.ok) {
-//       if (response.status === 400)
-//         console.error('internal pointer variable error 🙈🙉🙊');
-//       else
-//         console.error('Unknown error');
-//     }
-//     const responseData = await response.json();
-//     console.log(responseData);
-//   } catch (error) {
-//     console.error('Error disabling 2FA:', error);
-//   }
-// }
-
 function setupDeleteProfileButton() {
   const debouncedDeleteFunc = debounce(deleteProfile, 3000);
 
   return function (event) {
     event.preventDefault();
-    const button = event.target;
-    button.disabled = true;
-    document.body.classList.add('no-pointer-events');
-    button.querySelector('.spinner-grow').classList.remove('d-none');
-
+    handleBtnBlocker('deleteProfileButton', 'twoFAbtn', true);
     debouncedDeleteFunc(event);
   };
 }
@@ -349,11 +344,11 @@ function updateProfilePage(userData) {
   if (userData.twofa_enabled) {
     twoFAbtn.classList.add('TwoFAbtnDisable');
     twoFAbtn.classList.remove('TwoFAbtnEnable');
-    twoFAbtn.textContent = 'Disable 2FA';
+    twoFAbtn.querySelector('.twoFAContent').textContent = 'Disable 2FA';
   } else {
     twoFAbtn.classList.add('TwoFAbtnEnable');
     twoFAbtn.classList.remove('TwoFAbtnDisable');
-    twoFAbtn.textContent = 'Enable 2FA';
+    twoFAbtn.querySelector('.twoFAContent').textContent = 'Enable 2FA';
   }
   const profilePicture = document.getElementById('profilePicture');
   const tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'));
@@ -456,9 +451,7 @@ function deleteProfile() {
     .then(response => response.json())
     .then(data => {
       deleteModal.show();
-      button.disabled = false;
-      document.body.classList.remove('no-pointer-events');
-      button.querySelector('.spinner-grow').classList.add('d-none');
+      handleBtnBlocker('deleteProfileButton', 'twoFAbtn', false);
     })
     .catch(error => console.error('Error initiating account deletion:', error));
 }
@@ -638,7 +631,7 @@ async function addUser(userId) {
   })
   if (!response.ok) {
     // 
-    
+
     // alert("cannot add yourself as friend");
     return null;
   }
@@ -658,11 +651,11 @@ async function checkUsername(username) {
   })
   if (!response.ok) {
     if (response.status == 401)
-    displayBootstrapAlert('editProfileAlert', 'You are already friends 😹', 'warning');
+      displayBootstrapAlert('editProfileAlert', 'You are already friends 😹', 'warning');
     if (response.status == 404)
-    displayBootstrapAlert('editProfileAlert', 'User not found 😹', 'warning');
+      displayBootstrapAlert('editProfileAlert', 'User not found 😹', 'warning');
     if (response.status == 400)
-    displayBootstrapAlert('editProfileAlert', 'You cannot add yourself as a friend 😹', 'warning');
+      displayBootstrapAlert('editProfileAlert', 'You cannot add yourself as a friend 😹', 'warning');
     return null;
   }
   const data = await response.json();
@@ -725,8 +718,7 @@ async function addFriend() {
   let username = friendUserName.value;
   console.log(username);
   const friendData = await checkUsername(username);
-  if (friendData != null)
-{
+  if (friendData != null) {
     console.log(friendData);
     userInfo = friendData.user_info;
     console.log(userInfo);
@@ -812,16 +804,16 @@ async function setupFriends() {
 }
 
 function chkInpFriend() {
-    const _elementBlock = [
-      new inputElement('friendUserName', 'name', true, 3, 10)
-    ];
-    if (checkInput(_elementBlock))
-        addFriend()
-    return;
-  }
+  const _elementBlock = [
+    new inputElement('friendUserName', 'name', true, 3, 10)
+  ];
+  if (checkInput(_elementBlock))
+    addFriend()
+  return;
+}
 
-  
-  
+
+
 async function getFriendslist() {
   const response = await fetch(`https://127.0.0.1:443/api/list_friends`, {
     method: 'GET',

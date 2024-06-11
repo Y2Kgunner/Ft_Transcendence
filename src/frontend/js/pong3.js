@@ -58,10 +58,6 @@ let pauseModalInstance;
 let gameInProgress3;
 let countdownIntervalId;
 
-
-
-
-
 export function startGameSession() {
   gameInProgress3 = true;
   window.addEventListener('beforeunload', handleBeforeUnload);
@@ -84,7 +80,7 @@ async function initGame(){
     player3aliasPong3 = document.getElementById("player3aliasPong3").value;
     // player2aliasPong3 = player2aliasPong3Element;
     // player3aliasPong3 = player3aliasPong3Element.value;
-    console.log(player2aliasPong3 + player3aliasPong3);
+    // console.log(player2aliasPong3 + player3aliasPong3);
     closeModal();
     let matchData = {
       player_id: playerId,
@@ -97,7 +93,6 @@ async function initGame(){
     });
     startGame();
     await waitGameFinish();
-    console.log(gameOver);
     matchData = {
       match_id: matchId,
       score_player: score1,
@@ -111,18 +106,16 @@ async function initGame(){
 }
 
 async function validateInput() {
-  // const US = document.createElement('div');
-  // formGroupUser.classList.add('input-group');
-  // formGroupUser.classList.add('d-flex');
-  // formGroupUser.classList.add('flex-column');
-
   const _elementBlock = [
-    // new inputElement(player1Alias, 'userName', true, 4, 10),
-    new inputElement('player2aliasPong3', 'userName', true, 4, 10),
-    new inputElement('player3aliasPong3', 'userName', true, 4, 10),
+    new inputElement('', '', !true, 69, 69, document.getElementById('player_1_alias').textContent),
+    new inputElement('player2aliasPong3', 'userName', true, 4, 10, ""),
+    new inputElement('player3aliasPong3', 'userName', true, 4, 10, "")
   ];
-  if (!checkInput(_elementBlock))
+  if (!checkInput(_elementBlock)) {
+    userGroup.remove();
     return;
+  }
+  userGroup.remove();
   initGame();
 }
 
@@ -220,7 +213,7 @@ function init3PlyrPong() {
     player3aliasPong3 = document.getElementById("player3aliasPong3").value;
     // player2aliasPong3 = player2aliasPong3Element;
     // player3aliasPong3 = player3aliasPong3Element.value;
-    console.log(player2aliasPong3 + player3aliasPong3);
+    // console.log(player2aliasPong3 + player3aliasPong3);
     restartModal.hide();
     let matchData = {
       player_id: playerId,
@@ -233,7 +226,7 @@ function init3PlyrPong() {
     });
     startGame();
     await waitGameFinish();
-    console.log(gameOver);
+    // console.log(gameOver);
     matchData = {
       match_id: matchId,
       score_player: score1,

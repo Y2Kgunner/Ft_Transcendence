@@ -4,10 +4,10 @@ import { appRouter } from './router.js';
 
 function showGdprConsentModal() {
   const _elementBlock = [
-    new inputElement('registerEmail', 'email', true, 5, 30),
-    new inputElement('registerUserName', 'userName', true, 4, 10),
-    new inputElement('registerPassword', 'password', true, 8, 15),
-    new inputElement('confirmPassword', 'password', true, 8, 15)
+    new inputElement('registerEmail', 'email', true, 5, 30, ""),
+    new inputElement('registerUserName', 'userName', true, 4, 10, ""),
+    new inputElement('registerPassword', 'password', true, 8, 15, ""),
+    new inputElement('confirmPassword', 'password', true, 8, 15, "")
   ];
   console.log("reg auth");
   if (!checkInput(_elementBlock))
@@ -50,8 +50,8 @@ function getAuthToken() {
 
 async function login(event) {
   const _elementBlock = [
-    new inputElement('LoginUserName', 'userName', true, 4, 8),
-    new inputElement('loginPassword', 'password', true, 8, 15)
+    new inputElement('LoginUserName', 'userName', true, 4, 8, ""),
+    new inputElement('loginPassword', 'password', true, 8, 15, "")
   ];
   if (!checkInput(_elementBlock))
     return;

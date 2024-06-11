@@ -40,7 +40,6 @@ let paddle2MovingUp;
 let paddle2MovingDown;
 let pauseModalInstance;
 
-var inputField;
 var startGameBtn;
 var startModal;
 var form;
@@ -91,9 +90,8 @@ function startEnterKey(event) {
   }
 }
 
-function initVariables()
-{
-    ballX = 10;
+function initVariables() {
+  ballX = 10;
   ballY = 10;
   ballSpeedX = 5;
   ballSpeedY = 5;
@@ -128,7 +126,7 @@ function initVariables()
 }
 
 function init2PlyrPong() {
-    initVariables();
+  initVariables();
   pauseModalInstance = new bootstrap.Modal(document.getElementById('pauseGameModal'));
   startModal = new bootstrap.Modal(document.getElementById('startGameModal'));
   startModal.show();
@@ -146,10 +144,10 @@ function init2PlyrPong() {
   eventManager.addListener(document.getElementById("pauseGameModal"), "keypress", pauseEnterKey);
   eventManager.addListener(document.getElementById("startGameModal"), "keypress", startEnterKey);
 
-  inputField = document.getElementById("player2alias");
-  inputField.addEventListener('input', function () {
-    updateValidationIcon();
-  });
+  // inputField = document.getElementById("player2alias");
+  // inputField.addEventListener('input', function () {
+  //   updateValidationIcon();
+  // });
   const restartGameBtn = document.getElementById('restartGameBtn');
   restartGameBtn.addEventListener('click', async function (event) {
     initVariables();
@@ -172,16 +170,19 @@ function init2PlyrPong() {
       is_draw: false
     }
     updateMatch(matchData);
-	startGame();
+    startGame();
   });
 }
 
 async function validateInput() {
   const _elementBlock = [
-    new inputElement('player2alias', 'userName', true, 4, 10),
+    new inputElement('', '', !true, 69, 69, player1Alias),
+    new inputElement('player2alias', 'userName', true, 4, 10, "")
   ];
-  if (!checkInput(_elementBlock))
+  if (!checkInput(_elementBlock)) {
     return;
+  }
+
   closeModal();
   let matchData = {
     player_id: playerId,
@@ -448,41 +449,41 @@ function haltGame(game_winner) {
 }
 
 function showCountdown(callback) {
-	const countdownElement = document.createElement('div');
-	countdownElement.id = 'countdown';
-	countdownElement.style.position = 'absolute';
-	countdownElement.style.top = '50%';
-	countdownElement.style.left = '50%';
-	countdownElement.style.transform = 'translate(-50%, -50%)';
-	countdownElement.style.fontSize = '48px';
-	countdownElement.style.fontWeight = 'bold';
-	countdownElement.style.zIndex = '1000';
-	countdownElement.style.color = '#07ed26';
-	countdownElement.textContent = '5';
-	document.body.appendChild(countdownElement);
-  
-	let count = 5;
-	countdownIntervalId = setInterval(() => {
-	  count--;
-	  countdownElement.textContent = count;
-	  if (count === 0) {
-		clearInterval(countdownIntervalId);
-		document.body.removeChild(countdownElement);
-		callback();
-	  }
-	}, 1000);
+  const countdownElement = document.createElement('div');
+  countdownElement.id = 'countdown';
+  countdownElement.style.position = 'absolute';
+  countdownElement.style.top = '50%';
+  countdownElement.style.left = '50%';
+  countdownElement.style.transform = 'translate(-50%, -50%)';
+  countdownElement.style.fontSize = '48px';
+  countdownElement.style.fontWeight = 'bold';
+  countdownElement.style.zIndex = '1000';
+  countdownElement.style.color = '#07ed26';
+  countdownElement.textContent = '5';
+  document.body.appendChild(countdownElement);
+
+  let count = 5;
+  countdownIntervalId = setInterval(() => {
+    count--;
+    countdownElement.textContent = count;
+    if (count === 0) {
+      clearInterval(countdownIntervalId);
+      document.body.removeChild(countdownElement);
+      callback();
+    }
+  }, 1000);
 }
 
 function cancelCountdown() {
-	if (countdownIntervalId) {
-	  clearInterval(countdownIntervalId);
-	  countdownIntervalId = null;
-	  const countdownElement = document.getElementById('countdown');
-	  if (countdownElement) {
-		countdownElement.textContent = '';
-		document.body.removeChild(countdownElement);
-	  }
-	}
+  if (countdownIntervalId) {
+    clearInterval(countdownIntervalId);
+    countdownIntervalId = null;
+    const countdownElement = document.getElementById('countdown');
+    if (countdownElement) {
+      countdownElement.textContent = '';
+      document.body.removeChild(countdownElement);
+    }
+  }
 }
 
 function startGame() {
@@ -494,13 +495,13 @@ function startGame() {
     clearInterval(pongIntervalId);
   resetBall();
   cancelCountdown();
-//   pongIntervalId = setInterval(updateGame, 16);
-//   document.addEventListener("keydown", handleKeyDown);
-//   document.addEventListener("keyup", handleKeyUp);
-showCountdown(() => {
-	pongIntervalId = setInterval(updateGame, 1000 / 60);
-	document.addEventListener("keydown", handleKeyDown);
-	document.addEventListener("keyup", handleKeyUp);
+  //   pongIntervalId = setInterval(updateGame, 16);
+  //   document.addEventListener("keydown", handleKeyDown);
+  //   document.addEventListener("keyup", handleKeyUp);
+  showCountdown(() => {
+    pongIntervalId = setInterval(updateGame, 1000 / 60);
+    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("keyup", handleKeyUp);
   });
 }
 
@@ -529,33 +530,33 @@ function continueGame() {
 //? modal input validation
 //?
 //?
-function updateValidationIcon() {
-  var invalidFeedback = inputField.nextElementSibling;
-  var validFeedback = invalidFeedback.nextElementSibling;
-  player2Alias = inputField.value.trim();
+// function updateValidationIcon() {
+//   var invalidFeedback = inputField.nextElementSibling;
+//   var validFeedback = invalidFeedback.nextElementSibling;
+//   player2Alias = inputField.value.trim();
 
-  invalidFeedback.style.display = "none";
-  validFeedback.style.display = "none";
-  inputField.classList.remove("is-invalid", "is-valid");
+//   invalidFeedback.style.display = "none";
+//   validFeedback.style.display = "none";
+//   inputField.classList.remove("is-invalid", "is-valid");
 
-  if (!modalInit) modalInit = true;
-  else if (player2Alias.length > 10 || player2Alias.length < 3) {
-    inputField.classList.add("is-invalid");
-    invalidFeedback.style.display = "block";
-  } else if (!isPrintableASCII(player2Alias)) {
-    inputField.classList.add("is-invalid");
-    invalidFeedback.style.display = "block";
-  } else if (player1Alias === player2Alias) {
-    inputField.classList.add("is-invalid");
-    invalidFeedback.style.display = "block";
-  } else if (player2Alias === '') {
-    inputField.classList.add("is-invalid");
-    invalidFeedback.style.display = "block";
-  } else {
-    inputField.classList.add("is-valid");
-    validFeedback.style.display = "block";
-  }
-}
+//   if (!modalInit) modalInit = true;
+//   else if (player2Alias.length > 10 || player2Alias.length < 3) {
+//     inputField.classList.add("is-invalid");
+//     invalidFeedback.style.display = "block";
+//   } else if (!isPrintableASCII(player2Alias)) {
+//     inputField.classList.add("is-invalid");
+//     invalidFeedback.style.display = "block";
+//   } else if (player1Alias === player2Alias) {
+//     inputField.classList.add("is-invalid");
+//     invalidFeedback.style.display = "block";
+//   } else if (player2Alias === '') {
+//     inputField.classList.add("is-invalid");
+//     invalidFeedback.style.display = "block";
+//   } else {
+//     inputField.classList.add("is-valid");
+//     validFeedback.style.display = "block";
+//   }
+// }
 
 function closeModal() {
   var modal = document.getElementById('startGameModal');

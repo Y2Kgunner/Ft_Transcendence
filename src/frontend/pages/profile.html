@@ -61,7 +61,11 @@
           <div class="row mb-3">
             <div class="col d-flex justify-content-center">
               <div class="rounded pt-3 mx-md-5">
-                <button id="twoFAbtn" class="btn">Enable 2FA</button>
+                <button id="twoFAbtn" class="btn">
+                  <span class="twoFAContent">Enable 2FA</span>
+                  <span class="spinner-grow spinner-grow-sm d-none" aria-hidden="true"></span>
+                  <span class="visually-hidden" role="status">Loading...</span>
+                </button>
               </div>
               <div class="rounded pt-3 mx-md-5">
                 <button id="anonymizeButton" class="btn">Anonymise profile (GDPR)</button>
@@ -172,19 +176,18 @@
           <h2 class="gradient-text">OTP Verification</h2>
         </div>
         <div class="modal-body">
-          <p>Please enter the OTP sent to your email: <input type="text" id="deleteOtpInput" class="rounded ms-2"
-              placeholder=" Enter OTP"></p>
+          <p class="ms-2">Please enter the OTP sent to your email:</p>
+          <input type="text" id="deleteOtpInput" class="form-control rounded" placeholder="Enter OTP">
         </div>
         <div class="modal-footer justify-content-center">
           <button type="button" class="btn btn-success custoModalbtn" id="verifyDeleteOtpButton"
-            data-bs-dismiss="modal">Verify OTP</button>
+          data-bs-dismiss="modal">Verify OTP</button>
         </div>
       </div>
     </div>
   </div>
   <div class="modal" id="otpModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="otpModalLabel"
-    aria-hidden="true">
-    <!-- aria-hidden="true" style="display: none;"> -->
+  aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content custoModal">
         <div class="modal-header">
@@ -192,8 +195,8 @@
           <h2 class="gradient-text">OTP Verification</h2>
         </div>
         <div class="modal-body">
-          <p>Please enter the OTP sent to your email: <input type="text" id="otpInput" class="form-control rounded ms-2"
-              placeholder="Enter OTP"></p>
+          <p class="ms-2">Please enter the OTP sent to your email:</p>
+          <input type="text" id="otpInput" class="form-control rounded" placeholder="Enter OTP">
         </div>
         <div class="modal-footer justify-content-center">
           <button type="button" class="btn btn-success custoModalbtn" id="verifyOtpButton">Verify OTP</button>

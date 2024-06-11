@@ -36,6 +36,7 @@ let initialBallSpeedX = 5;
 let initialBallSpeedY = 5;
 let score1 = 0;
 let score2 = 0;
+let mainPlayer;
 let player1Alias = "Player 1";
 let player2Alias = "";
 let initialPaddlePos;
@@ -170,7 +171,7 @@ function handleNewTournamentFormSubmit() {
 
 async function validateInputTournamentName(input) {
     const _elementBlock = [
-        new inputElement('tournamentName', 'userName', true, 3, 10)
+        new inputElement('tournamentName', 'userName', true, 3, 10, "")
     ];
     if (!checkInput(_elementBlock)) {
         // detailsModal.hide()
@@ -183,7 +184,11 @@ async function validateInputParticipants() {
     const _elementBlock = [];
     
     for (var i = 0; i < numParticipants; i++) {
-        _elementBlock.push(new inputElement(`input${i}`, 'userName', true, 3, 10));
+        if (i === 0) {
+          _elementBlock.push(new inputElement('', '', !true, 69, 69, mainPlayer));
+          continue ;
+        }
+        _elementBlock.push(new inputElement(`input${i}`, 'userName', true, 3, 10, ""));
     }
 
     if (!checkInput(_elementBlock))
@@ -226,6 +231,7 @@ function generateParticipantFields(num) {
         inputUser.classList.add('rounded-1');
         inputUser.classList.add('generatedInput');
         inputUser.value = data.username;
+        mainPlayer = data.username;
         inputUser.readOnly = true;
         inputUser.disabled = true;
         inputUser.id = `input0`;
