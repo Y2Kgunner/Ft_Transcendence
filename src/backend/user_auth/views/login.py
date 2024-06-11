@@ -34,17 +34,29 @@ def login(request):
         data = json.loads(request.body)
         username = data.get('username')
         password = data.get('password')
+        twofa_confirmed = data.get('twofa_confirmed', False)
         user = authenticate(username=username, password=password)
         if user:
-            if user.twofa_enabled:
+            if not user.twofa_enabled or twofa_confirmed:
+                django_login(request, user)
+                token = JWTHandler.generate_jwt(user)
+                response = JsonResponse({'message': 'Login successful', 'requires_otp': False})
+                response.set_cookie(
+                    key='jwt',
+                    value=token,
+                    max_age=3600,
+                    samesite='None',
+                    secure=True
+                )
+                user.is_active = True
+                return response
+            else:
                 otp = generate_otp()
                 send_otp_email(user, otp)
                 request.session['user_id'] = user.id
                 request.session['otp'] = otp
                 request.session.set_expiry(60)
                 return JsonResponse({'message': '2FA enabled, OTP sent', 'requires_otp': True}, status=200)
-            else:
-                return finalize_login(request, user)
         else:
             return JsonResponse({'error': 'Invalid credentials'}, status=401)
     else:
@@ -53,28 +65,17 @@ def login(request):
 @csrf_exempt
 def verify_otp(request):
     if request.method == "POST":
-        print("Verify1")
-        print(request.body)
         data = json.loads(request.body)
-        print("Verify2")
         received_otp = data.get('otp')
-        print("Verify3")
         stored_otp = request.session.get('otp')
-        print("Verify4")
         user_id = request.session.get('user_id')
-        print("Verify5")
         if not all([received_otp, stored_otp, user_id]):
-            print("OTP")
             return JsonResponse({'error': 'OTP verification failed'}, status=400)
         if received_otp == stored_otp:
-            print("Verify6")
             del request.session['otp']
-            print("Verify7")
             user = get_user_model().objects.get(id=user_id)
-            print("Verify6")
-            print(user)
             return JsonResponse({'message': '2FA confirmed'}, status=200)
-            #finalize_login(request, user)
+            # return finalize_login(request, user)
         else:
 
             return JsonResponse({'error': 'Invalid or expired OTP'}, status=400)
@@ -83,23 +84,15 @@ def verify_otp(request):
 
 @csrf_exempt
 def finalize_login(request, user):
-    print("Verify8")
-    print(request)
-    print(user)
     django_login(request, user)
-    print("Verify9")
     token = JWTHandler.generate_jwt(user)
-    print("Verify9")
     response = JsonResponse({'message': 'Login successful', 'requires_otp': False})
-    print("Verify9")
     response.set_cookie(
         key='jwt',
         value=token,
-        # httponly=True, this only for testing to prevent XXS attacks - NEED TO FIND ANOTHER WAY AROUND IT 
         max_age=3600,
         samesite='None',
         secure=True
     )
-    print("Verify9")
     user.is_active = True
     return response

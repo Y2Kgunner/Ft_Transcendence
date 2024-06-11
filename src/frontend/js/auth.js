@@ -3,6 +3,7 @@ import { navigateBasedOnAuth, updateMainContentVisibility } from './init.js';
 import { appRouter } from './router.js';
 import { getCookie } from './profile.js';
 let loginButtonTimeout = null;
+let loginData;
 
 function showGdprConsentModal() {
     const _elementBlock = [
@@ -63,13 +64,16 @@ async function login(event) {
     const username = document.getElementById('LoginUserName').value;
     const password = document.getElementById('loginPassword').value;
     const hashedPassword = await hashPassword(password);
+    if(!loginData)
+        loginData = { username, password: hashedPassword };
+    console.log(loginData);
     try {
         const response = await fetch('https://127.0.0.1:443/api/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ username, password: hashedPassword }),
+            body: JSON.stringify(loginData),
             credentials: 'include'
         });
         const data = await response.json();
@@ -211,6 +215,8 @@ async function submitOtp(event) {
 async function verifyOtp(event) {
     event.preventDefault();
     const otp = document.getElementById('otpInput').value;
+    // loginData.otp = otp;
+    // console.log(loginData);
     const otpModal = bootstrap.Modal.getInstance(document.getElementById('otpModal'));
     try {
         const response = await fetch('https://127.0.0.1:443/api/verify_otp_login', {
@@ -219,7 +225,7 @@ async function verifyOtp(event) {
                 // 'Content-Type': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ otp: otp }),
+            body: JSON.stringify({otp : otp}),
             credentials: 'include',
         });
 
@@ -227,7 +233,9 @@ async function verifyOtp(event) {
         if (response.ok) {
             otpModal.hide();
             handleBtnBlocker('loginButton', false);
-            
+            loginData.twofa_confirmed = true;
+            console.log(loginData);
+            await login(event);
             finalizeLogin(data);
         } else {
             throw new Error(data.error || 'Invalid or expired OTP. Please try again.');
@@ -236,7 +244,6 @@ async function verifyOtp(event) {
         enableLoginBtn();
         console.error('OTP verification failed:', error);
         alert(error.message);
-        // handleBtnBlocker('loginButton', false);
     }
 }
 
