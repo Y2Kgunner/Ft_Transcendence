@@ -20,6 +20,10 @@ body {
   background-color: #212121;
   width: 55vw;
   height: 55vh;
+  max-width: 1200px;
+  min-width: 1200px;
+  max-height: 700px;
+  min-height: 700px;
   position: relative;
 }
 
@@ -39,9 +43,11 @@ body {
   overflow: hidden;
   position: absolute;
   width: 0.5vw;
-  min-width: 5px;
+  min-width: 12px;
+  max-width: 12px;
+  min-height: 100px;
+  max-height: 100px;
   height: 7.5vh;
-  min-height: 40px;
   background-color: #1f7016;
 }
 
@@ -61,6 +67,10 @@ body {
 .ball {
   width: 2vmin;
   height: 2vmin;
+  min-width: 25px;
+  max-width: 25px;
+  min-height: 25px;
+  max-height: 25px;
   border-radius: 50%;
   position: absolute;
   background-color: #34a412;
