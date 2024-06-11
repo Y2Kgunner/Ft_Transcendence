@@ -182,7 +182,7 @@ function setupTTT() {
         gameOver = false;
         useMouse = true;
         currentFocusIndex = 0;
-
+  		draw = false;
         // Clear the board
         boxes.forEach(box => {
             box.innerHTML = "";
