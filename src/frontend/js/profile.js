@@ -262,7 +262,7 @@ function chkIfInput(event) {
 }
 
 // fill the profile elements with the new values!!!
-function chkInp() {
+async function chkInp() {
   const _elementBlock = [
     new inputElement('firstNameInput', 'name', false, 2, 20, ""),
     new inputElement('lastNameInput', 'name', false, 2, 20, ""),
@@ -270,21 +270,25 @@ function chkInp() {
     new inputElement('addressInput', 'userName', false, 10, 25, "")
   ];
   if (checkInput(_elementBlock)) {
-    let patchData = {
-      'first_name': document.getElementById('firstNameInput').textContent,
-      'last_name': document.getElementById('lastNameInput').textContent,
-      'phone': document.getElementById('phoneInput').textContent,
-      'address': document.getElementById('addressInput').textContent,
-    }
-    console.log(patchData.first_name);
-    console.log(patchData.last_name);
-    console.log(patchData.phone);
-    console.log(patchData.address);
-    patchData.first_name.length ? "NA" : patchData.first_name;
-    patchData.last_name.length ? "NA" : patchData.last_name;
-    patchData.phone.length ? "NA" : patchData.phone;
-    patchData.address.length ? "NA" : patchData.address;
-    patchUserDetails(patchData);
+    const firstNameInput = document.getElementById("firstNameInput");
+    const lastNameInput = document.getElementById("lastNameInput");
+    const phoneInput = document.getElementById("phoneInput");
+    const addressInput = document.getElementById("addressInput");
+    const userData = {};
+    if (firstNameInput.value)
+      userData.first_name = firstNameInput.value;
+    if(lastNameInput.value)
+      userData.last_name = lastNameInput.value;
+    if(phoneInput.value)
+      userData.phone = phoneInput.value;
+    if(addressInput.value)
+      userData.address = addressInput.value;
+    await patchUserDetails(userData);
+    fetchUserProfile();
+    firstNameInput.value = "";
+    lastNameInput.value = "";
+    phoneInput.value = "";
+    addressInput.value = "";
     editModal.hide();
   }
   return;
