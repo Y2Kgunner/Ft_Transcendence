@@ -57,22 +57,17 @@ function resetBall() {
 
 export function startGameSession() {
   gameInProgress = true;
-  console.log("gghatttttttttt");
   window.addEventListener('beforeunload', handleBeforeUnload);
 }
 
 export function endGameSession() {
   gameInProgress = false;
-  console.log("ffhatttttttttt");
   window.removeEventListener('beforeunload', handleBeforeUnload);
 }
 
 function handleBeforeUnload(event) {
-  console.log("whattttttttserftt");
   if (gameInProgress) {
-    console.log("whatttttttttt");
     const message = "You have an ongoing game. Are you sure you want to leave and lose your progress?";
-    // document.body.removeChild(countdownElement);
     event.returnValue = message;
     return message;
   }
