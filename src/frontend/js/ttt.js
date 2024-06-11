@@ -1,6 +1,5 @@
-import { fetchUserProfile, updateMatch, createMatch, isPrintableASCII } from './pong2.js';
+import { fetchUserProfile, updateMatch, createMatch } from './pong2.js';
 import { inputElement, checkInput, eventManager } from './inputValidation.js';
-import { getCookie } from './profile.js';
 import { appRouter } from './router.js';
 
 let player1Name = "";
@@ -22,17 +21,15 @@ let nextMoveElement;
 let boxes;
 let playerNamesElement;
 let isInputValid = false;
-
 let WinnerMessage;
 let nextMoveMessage;
 var restartTTTBtn;
 var startTTTBtn;
 var form;
-var modalInit = false;
 
 function handleKeyPress(event) {
-  if (useMouse || gameOver) return;
-
+  if (useMouse || gameOver) 
+    return;
   const key = event.key;
   switch (key) {
     case 'ArrowUp':
@@ -97,7 +94,6 @@ function setupTTT() {
   useMouse = true;
   currentFocusIndex = 0;
 
-  //   winnerMessageElement = document.getElementById('winner');
   nextMoveElement = document.querySelector('.turn');
   boxes = document.querySelectorAll('.box');
   playerNamesElement = document.querySelector('.player-names');
@@ -110,31 +106,46 @@ function setupTTT() {
   startModal.show();
 
   fetchUserProfile().then(data => {
-    console.log(data);
     playerId = data.id;
-    console.log(data.username);
     player1Name = data.username;
-    console.log(player1Name);
   });
 
   startTTTBtn = document.getElementById("startTTTBtn");
-  startTTTBtn = document.getElementById("startTTTBtn");
   if (startTTTBtn) {
-    startTTTBtn.addEventListener("click", function () {
+    startTTTBtn.addEventListener("click", async function () {
       const _elementBlock = [
         new inputElement('', '', !true, 69, 69, player1Name),
         new inputElement('player2Name', 'userName', true, 4, 10, "")
       ];
-      if (!checkInput(_elementBlock))
+      if (!checkInput(_elementBlock)) 
         return;
-        closeModal();
-        isInputValid = true;
-        document.getElementById('game-container').style.display = 'block';
-        document.getElementById('loading-screen').style.display = 'none';
-        player2Alias = document.getElementById('player2Name').value;
-        document.getElementById('player2Name').value = "";
+      closeModal();
+      player2Alias = document.getElementById('player2Name').value.trim();
+      isInputValid = true;
+      document.getElementById('game-container').style.display = 'block';
+      document.getElementById('loading-screen').style.display = 'none';
+
+      let matchData = {
+        player_id: playerId,
+        guest_player1: player2Alias,
+        game_type: "TTT"
+      };
+      await createMatch(matchData).then(data => {
+        matchId = data.match_id;
       });
-  } else {
+      Game();
+      await waitGameFinish(gameOver);
+      matchData = {
+        match_id: matchId,
+        score_player: 0,
+        score_guest_player1: 0,
+        is_draw: draw ? true : false,
+        winner: draw ? null : winner
+      };
+      updateMatch(matchData);
+    });
+  } 
+  else {
     console.error("startTTTBtn not found");
   }
 
@@ -149,38 +160,9 @@ function setupTTT() {
   }
 
   eventManager.addListener(document.getElementById("backToMenu"), "click", function() {
-    // gameInProgress3 = false;
     appRouter.navigate('/ttt', { force: true });
   });
 
-  startTTTBtn.addEventListener('click', async function (event) {
-    if (!isInputValid)
-      return;
-    let matchData = {
-      player_id: playerId,
-      guest_player1: player2Alias,
-      game_type: "TTT"
-    };
-    await createMatch(matchData).then(data => {
-      matchId = data.match_id;
-    });
-    Game();
-    await waitGameFinish(gameOver);
-    if (nextMove == "X")
-      winner = player2Alias;
-    else
-      winner = player1Name;
-    console.log(winner);
-    matchData = {
-      match_id: matchId,
-      score_player: 0,
-      score_guest_player1: 0,
-      is_draw: draw ? true : false,
-      winner: draw ? null : winner
-    }
-    console.log(matchData);
-    updateMatch(matchData);
-  });
   restartTTTBtn = document.getElementById("restartTTTBtn");
   restartTTTBtn.addEventListener('click', async function (event) {
     if (!isInputValid)
@@ -204,15 +186,11 @@ function setupTTT() {
       box.innerHTML = "";
     });
 
-    // Remove previous event listeners to avoid double-triggering
+    // Remove previous event listeners to avoid double trigger
     document.removeEventListener('keydown', handleKeyPress);
 
     Game();
     await waitGameFinish(gameOver);
-    if (nextMove == "X")
-      winner = player2Alias;
-    else
-      winner = player1Name;
     matchData = {
       match_id: matchId,
       score_player: 0,
@@ -252,8 +230,8 @@ function Game() {
   document.addEventListener('keydown', handleKeyPress);
 
   function handleBoxClick(event) {
-    if (!useMouse || gameOver) return;
-
+    if (!useMouse || gameOver)
+      return;
     const target = event.target;
     const boxIndex = target.dataset.boxIndex;
     if (boxIndexValues[boxIndex] !== "") {
@@ -282,9 +260,7 @@ function checkWinner() {
       else
         winner = player1Name;
       winnerMessageElement.innerHTML = WinnerMessage();
-
       restartModal.show();
-
       return;
     }
   }
@@ -303,5 +279,4 @@ function closeModal() {
   var modalInstance = bootstrap.Modal.getInstance(modal);
   modalInstance.hide();
 }
-
 export { setupTTT };
