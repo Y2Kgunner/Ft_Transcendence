@@ -1,4 +1,4 @@
-import { inputElement, checkInput, displayBootstrapAlert } from './inputValidation.js';
+import { inputElement, checkInput, displayBootstrapAlert, eventManager } from './inputValidation.js';
 import { appRouter } from './router.js';
 import { debounce } from './auth.js';
 
@@ -240,8 +240,8 @@ function chkIfInput(event) {
 // fill the profile elements with the new values!!!
 function chkInp() {
   const _elementBlock = [
-    new inputElement('firstNameInput', 'name', false, 5, 20, ""),
-    new inputElement('lastNameInput', 'name', false, 5, 20, ""),
+    new inputElement('firstNameInput', 'name', false, 2, 20, ""),
+    new inputElement('lastNameInput', 'name', false, 2, 20, ""),
     new inputElement('phoneInput', 'phone', false, 10, 18, ""),
     new inputElement('addressInput', 'userName', false, 10, 25, "")
   ];

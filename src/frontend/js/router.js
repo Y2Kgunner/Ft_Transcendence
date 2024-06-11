@@ -3,6 +3,7 @@ import { setUpProfile, addFriendBtnTimeout, addAnTt, addrd1Tt, addrd2Tt, addotpT
 import { setupTournamentPage, gameInProgressTour, tournamentIntervalId, getTournamentId } from './tournament.js';
 import { init2PlyrPong, gameInProgress, pongIntervalId, countdownIntervalPong2 } from './pong2.js';
 import { init3PlyrPong, gameInProgress3, pong3IntervalId, countdownIntervalIdPong3 } from './pong3.js';
+import { eventManager } from './inputValidation.js';
 import { setupTTT } from './ttt.js';
 
 async function removeOpenModals() {
@@ -61,7 +62,6 @@ class Router {
     } if (addotpTt) {
       clearTimeout(addotpTt);
     }
-
     const modal = document.getElementById('myModal');
     if (modal && !modal.hasAttribute('data-loaded')) {
       const modalInstance = bootstrap.Modal.getInstance(modal);
