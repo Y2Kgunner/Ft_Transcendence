@@ -10,6 +10,8 @@ let addFriendBtnTimeout = null;
 let addAnTt = null;
 let addrd1Tt = null;
 let addrd2Tt = null;
+// let adddotpTt = null;
+let addotpTt = null;
 
 const eventManager = {
   addListener(element, event, handler) {
@@ -146,6 +148,10 @@ async function open2FAOTP() {
 
 function disable2FA() {
   document.getElementById('verifyOtpButton').onclick = async () => {
+    document.getElementById('verifyOtpButton').disabled = true;
+    addotpTt = setTimeout(() => {
+      document.getElementById('verifyOtpButton').disabled = false;
+    }, 1000);
     const otpInput = document.getElementById('otpInput').value;
     const verifyOtpResponse = await fetch('https://127.0.0.1:443/api/verify_otp', {
       method: 'POST',
@@ -558,44 +564,6 @@ async function loadMatchHistory(playerData) {
   return data;
 }
 
-// function loadMatchHistory(playerData) {
-//   if (!playerData.id) {
-//     console.error("Player ID is undefined, cannot load match history.");
-//     return;
-//   }
-
-//   fetch('https://127.0.0.1:443/pongApp/player_match_history', {
-//     method: 'POST',
-//     headers: {
-//       'Authorization': `Bearer ${getCookie('jwt')}`,
-//       'Content-Type': 'application/json'
-//     },
-//     body: JSON.stringify({ player_id: playerData.id })
-//   })
-//     .then(response => response.json())
-//     .then(data => {
-//       if (!data.matches) {
-//         console.error("No matches data received:", data);
-//         return;
-//       }
-//       console.log("Match Data Received:", data);
-//       const table = document.getElementById('matchHistoryTable').getElementsByTagName('tbody')[0];
-//       table.innerHTML = "";
-//       data.matches.forEach(match => {
-//         let row = table.insertRow();
-//         row.insertCell(0).textContent = match.id;
-//         row.insertCell(1).textContent = match.game_type;
-//         row.insertCell(2).textContent = new Date(match.match_date).toLocaleString();
-//         row.insertCell(3).textContent = playerData.username;
-//         row.insertCell(4).textContent = match.guest_player1;
-//         row.insertCell(5).textContent = match.guest_player2 || 'N/A';
-//         row.insertCell(6).textContent = match.winner;
-//       });
-//       return data;
-//     })
-//     .catch(error => console.error('Error loading match history:', error));
-// };
-
 // ? ------------------------------------------>> friends stuff
 async function updateFriendList() {
   let friendList = await getFriendslist();
@@ -816,9 +784,6 @@ async function setupFriends() {
     });
   });
   eventManager.addListener(addFriendBtn, "click", chkInpFriend);
-  // addFriendBtn.addEventListener('click', async function () {
-  //   await addFriend();
-  // });
 }
 
 function chkInpFriend() {
@@ -853,4 +818,4 @@ async function getFriendslist() {
 }
 
 
-export { setUpProfile, getCookie, updateProfilePage, fetchUserProfile, addFriendBtnTimeout, addAnTt, addrd1Tt, addrd2Tt };
+export { setUpProfile, getCookie, updateProfilePage, fetchUserProfile, addFriendBtnTimeout, addAnTt, addrd1Tt, addrd2Tt, addotpTt };
