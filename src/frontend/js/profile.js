@@ -20,6 +20,30 @@ const eventManager = {
   }
 };
 
+async function patchUserDetails(patchData) {
+  const response = await fetch(`https://127.0.0.1:443/api/profile`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + getCookie('jwt')
+    },
+    body: JSON.stringify(patchData)
+  })
+  if (!response.ok) {
+    if (response.status == 410)
+      alert('first name must be a non-empty string and cannot be numeric');
+    if (response.status == 420)
+      alert('Last name must be a non-empty string and cannot be numeric');
+    if (response.status == 430)
+      alert('Phone must be a non-empty string of digits');
+    return null;
+  }
+  alert("profile info updated!! ")
+  const data = await response.json();
+  return data;
+}
+
+
 //? ------------------->> setting the profile page! and ensuring only one event listener is active!
 function setUpProfile() {
   otpSuccess = false;
@@ -238,15 +262,35 @@ function chkIfInput(event) {
 }
 
 // fill the profile elements with the new values!!!
-function chkInp() {
+async function chkInp() {
   const _elementBlock = [
     new inputElement('firstNameInput', 'name', false, 2, 20, ""),
     new inputElement('lastNameInput', 'name', false, 2, 20, ""),
     new inputElement('phoneInput', 'phone', false, 10, 18, ""),
     new inputElement('addressInput', 'userName', false, 10, 25, "")
   ];
-  if (checkInput(_elementBlock))
+  if (checkInput(_elementBlock)) {
+    const firstNameInput = document.getElementById("firstNameInput");
+    const lastNameInput = document.getElementById("lastNameInput");
+    const phoneInput = document.getElementById("phoneInput");
+    const addressInput = document.getElementById("addressInput");
+    const userData = {};
+    if (firstNameInput.value)
+      userData.first_name = firstNameInput.value;
+    if(lastNameInput.value)
+      userData.last_name = lastNameInput.value;
+    if(phoneInput.value)
+      userData.phone = phoneInput.value;
+    if(addressInput.value)
+      userData.address = addressInput.value;
+    await patchUserDetails(userData);
+    fetchUserProfile();
+    firstNameInput.value = "";
+    lastNameInput.value = "";
+    phoneInput.value = "";
+    addressInput.value = "";
     editModal.hide();
+  }
   return;
 }
 
@@ -269,7 +313,6 @@ async function openEditModal() {
 async function closeEditModal() {
   editModal.hide()
 }
-
 
 function getCookie(name) {
   const decodedCookies = decodeURIComponent(document.cookie);
