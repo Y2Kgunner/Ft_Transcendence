@@ -220,7 +220,7 @@ async function verifyOtp(event) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ otp: otp }),
-            // credentials: 'include',
+            credentials: 'include',
         });
 
         const data = await response.json();
@@ -232,6 +232,7 @@ async function verifyOtp(event) {
             throw new Error(data.error || 'Invalid or expired OTP. Please try again.');
         }
     } catch (error) {
+        enableLoginBtn();
         console.error('OTP verification failed:', error);
         alert(error.message);
         // handleBtnBlocker('loginButton', false);
@@ -243,17 +244,14 @@ async function verifyOtp(event) {
  * @param {boolean} block - disable or enable button!
  */
 function handleBtnBlocker(button, block) {
-    console.log('--------------> hehhehehehhe');
     var btn = document.getElementById(button);
 
     btn.disabled = block;
     if (block) {
-        console.log('--------------> haaaaaaaahhe');
         // document.body.classList.add('no-pointer-events');
         btn.querySelector('.spinner-grow').classList.remove('d-none');
     }
     else {
-        console.log('--------------> hbbbbbbbbbbhhe');
         // document.body.classList.remove('no-pointer-events');
         btn.querySelector('.spinner-grow').classList.add('d-none');
     }
@@ -261,7 +259,7 @@ function handleBtnBlocker(button, block) {
 
 function enableLoginBtn() {
     const otpModal = bootstrap.Modal.getInstance(document.getElementById('otpModal'));
-    
+    document.getElementById('otpInput').value = "";
     otpModal.hide();
     handleBtnBlocker('loginButton', false);
 }

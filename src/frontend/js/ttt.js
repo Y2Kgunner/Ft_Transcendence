@@ -131,6 +131,8 @@ function setupTTT() {
         isInputValid = true;
         document.getElementById('game-container').style.display = 'block';
         document.getElementById('loading-screen').style.display = 'none';
+        player2Alias = document.getElementById('player2Name').value;
+        document.getElementById('player2Name').value = "";
       });
   } else {
     console.error("startTTTBtn not found");
