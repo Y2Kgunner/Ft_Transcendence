@@ -112,10 +112,8 @@ async function validateInput() {
     new inputElement('player3aliasPong3', 'userName', true, 4, 10, "")
   ];
   if (!checkInput(_elementBlock)) {
-    userGroup.remove();
     return;
   }
-  userGroup.remove();
   initGame();
 }
 

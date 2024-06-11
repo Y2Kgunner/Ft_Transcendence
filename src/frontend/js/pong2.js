@@ -154,10 +154,7 @@ function init2PlyrPong() {
   eventManager.addListener(document.getElementById("startGameModal"), "keypress", startEnterKey);
   eventManager.addListener(document.getElementById("backToMenu"), "click", bringMenu);
 
-  // inputField = document.getElementById("player2alias");
-  // inputField.addEventListener('input', function () {
-  //   updateValidationIcon();
-  // });
+
   const restartGameBtn = document.getElementById('restartGameBtn');
   restartGameBtn.addEventListener('click', async function (event) {
     initVariables();
@@ -221,7 +218,7 @@ function waitGameFinish(interval = 100) {
         console.log("game over")
         resolve();
       } else {
-        console.log(gameOver);
+        // console.log(gameOver);
         setTimeout(check, interval);
       }
     };
