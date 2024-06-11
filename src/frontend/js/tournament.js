@@ -5,6 +5,7 @@ import { inputElement, eventManager, checkInput } from './inputValidation.js';
 
 
 const matchPoint = 1;
+const paddleSpeed = 12;
 let tournamentIntervalId = null;
 let paused = false;
 let pauseModalVisible = false;
