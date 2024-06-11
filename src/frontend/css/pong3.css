@@ -18,28 +18,32 @@ body {
   background-color: #212121;
   width: 69vmin;
   height: 69vmin;
+  max-width: 900px;
+  min-width: 900px;
+  max-height: 900px;
+  min-height: 900px;
   position: relative;
 }
 
 /*? score-board */
 
 .gameInfo-h3 {
-  font-size: 1vw;
+  font-size: 25px;
   word-wrap: break-word;
 }
 
 .gameInfo-h2 {
-  font-size: 1vw;
+  font-size: 20px;
   word-wrap: break-word;
 }
 
 .gameInfo-d6 {
-  font-size: 1.69vw;
+  font-size: 40px;
   word-wrap: break-word;
 }
 
 .gameInfo-d7 {
-  font-size: 1.3vw;
+  font-size: 35px;
   word-wrap: break-word;
   margin-left: 1.5vw;
   margin-right: 1.5vw;
@@ -54,7 +58,6 @@ body {
   padding-left: 5.2vw;
 }
 
-
 #player_3_alias {
   margin-left: 1.2vw;
 }
@@ -62,12 +65,13 @@ body {
 
 /*? paddlez */
 .paddle {
-
   position: absolute;
   width: 0.5vw;
-  /* min-width: 5px; */
   height: 7.5vh;
-  min-height: 40px;
+  min-width: 12px;
+  max-width: 12px;
+  min-height: 100px;
+  max-height: 100px;
   background-color: #1f7016;
 }
 
@@ -79,12 +83,11 @@ body {
 
 #paddle_2 {
   top: calc(50% - (7.5vh / 2));
-  left: calc(100% - (0.5vw + 5px));
+  left: calc(100% - (17px));
   position: absolute;
 }
 
 #paddle_3 {
-  /* top: calc(100vh - (18.5vh)); */
   left: calc(50% - (0.5vw / 2));
   bottom: calc(-4% - 0.5vh / 2);
   rotate: 90deg;
@@ -105,6 +108,10 @@ body {
 .ball {
   width: 2vmin;
   height: 2vmin;
+  min-width: 25px;
+  max-width: 25px;
+  min-height: 25px;
+  max-height: 25px;
   border-radius: 50%;
   position: absolute;
   background-color: #34a412;
