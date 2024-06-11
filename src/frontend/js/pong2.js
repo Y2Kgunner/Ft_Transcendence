@@ -155,11 +155,11 @@ function init2PlyrPong() {
     });
     startGame();
     await waitGameFinish(gameOver);
+    console.log("match :" +matchId);
     matchData = {
       match_id: matchId,
       score_player: score1,
       score_guest_player1: score2,
-      score_guest_player2: score3,
       winner: winner,
       is_draw: false
     }
@@ -183,7 +183,9 @@ async function validateInput() {
     guest_player1: player2Alias,
     game_type: "Pong"
   };
-  await createMatch(matchData);
+  await createMatch(matchData).then(data => {
+    matchId = data.match_id;
+  });
   startGame();
   await waitGameFinish();
   console.log(gameOver);
