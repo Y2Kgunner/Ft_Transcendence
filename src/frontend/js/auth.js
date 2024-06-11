@@ -186,7 +186,7 @@ async function verifyOtp(event) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ otp }),
+      body: JSON.stringify({ otp : otp }),
       credentials: 'include',
     });
 
@@ -367,33 +367,33 @@ function showOtpForm(show) {
   otpForm.style.display = show ? 'block' : 'none';
 }
 
-async function submitOtp(event) {
-  event.preventDefault();
-  const otp = document.getElementById('otpInput').value;
+// async function submitOtp(event) {
+//   event.preventDefault();
+//   const otp = document.getElementById('otpInput').value;
 
-  const response = await fetch('https://127.0.0.1:443/api/verify_otp', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ otp }),
-  });
+//   const response = await fetch('https://127.0.0.1:443/api/verify_otp', {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify({ otp }),
+//   });
 
-  if (response.ok) {
-    const data = await response.json();
-    if (data.message === 'Login successful') {
-      updateMainContentVisibility(true);
-      appRouter.navigate('/');
-    } else {
-      alert('Invalid or expired OTP. Please try again.');
-      showOtpForm(true);
-    }
-  } else {
-    const error = await response.json();
-    console.error('OTP verification failed:', error);
-    alert(error.error || 'OTP verification failed');
-  }
-}
+//   if (response.ok) {
+//     const data = await response.json();
+//     if (data.message === 'Login successful') {
+//       updateMainContentVisibility(true);
+//       appRouter.navigate('/');
+//     } else {
+//       alert('Invalid or expired OTP. Please try again.');
+//       showOtpForm(true);
+//     }
+//   } else {
+//     const error = await response.json();
+//     console.error('OTP verification failed:', error);
+//     alert(error.error || 'OTP verification failed');
+//   }
+// }
 
 function setUserId(userId) {
   localStorage.setItem('userId', userId);
