@@ -2,6 +2,8 @@ import { inputElement, checkInput, displayBootstrapAlert } from './inputValidati
 import { navigateBasedOnAuth, updateMainContentVisibility } from './init.js';
 import { appRouter } from './router.js';
 
+let loginButtonTimeout = null;
+
 function showGdprConsentModal() {
   const _elementBlock = [
     new inputElement('registerEmail', 'email', true, 5, 30, ""),
@@ -74,6 +76,10 @@ async function login(event) {
       if (data.requires_otp) {
         showOtpModal();
       } else {
+        if (loginButtonTimeout) {
+          clearTimeout(loginButtonTimeout);
+          loginButtonTimeout = null;
+        }
         finalizeLogin(data);
       }
     } else {
@@ -264,42 +270,6 @@ async function verifyOtp(event) {
   }
 }
 
-// function setupEventListeners() {
-//     document.getElementById('showRegisterForm')?.addEventListener('click', function(event) {
-//         event.preventDefault();
-//         showRegisterForm();
-//     });
-
-//     document.getElementById('showLoginForm')?.addEventListener('click', function(event) {
-//         event.preventDefault();
-//         showLoginForm();
-//     });
-
-//     const debouncedLogin = debounce(login, 3000);
-//     document.getElementById('loginButton')?.addEventListener('click', function(event) {
-//         event.preventDefault();
-//         debouncedLogin(event);
-//     });
-
-//     const debouncedVerifyOtp = debounce(verifyOtp, 3000);
-//     document.getElementById('otpButton')?.addEventListener('click', function(event) {
-//         event.preventDefault();
-//         debouncedVerifyOtp(event);
-//     });
-
-//     const fortyTwoButtonLog = document.getElementById("fortytwoLoginButton");
-//     if (fortyTwoButtonLog) {
-//         fortyTwoButtonLog.addEventListener('click', function(event) {
-//             window.location.href = "https://127.0.0.1/api/fortytwo";
-//         });
-//     }
-
-//     document.getElementById('registerButton')?.addEventListener('click', register);
-//     document.getElementById('registerForm')?.addEventListener('submit', register);
-//     document.getElementById('forgotPasswordLink')?.addEventListener('click', forgetPassword);
-//     initializeModals();
-// }
-
 function setupEventListeners() {
   document.getElementById('showRegisterForm')?.addEventListener('click', function (event) {
     event.preventDefault();
@@ -310,19 +280,13 @@ function setupEventListeners() {
     event.preventDefault();
     showLoginForm();
   });
-
-  // const debouncedLogin = debounce(login, 3000);
-  // document.getElementById('loginButton')?.addEventListener('click', function (event) {
-  //   event.preventDefault();
-  //   debouncedLogin(event);
-  // });
-  document.getElementById('loginButton').addEventListener('click', function (event) {
+  document.getElementById('loginButton').addEventListener('click', async function (event) {
     event.preventDefault();
-    document.getElementById('loginButton').disabled = true; // disable the button
-    login(event);
-    setTimeout(() => {
-      document.getElementById('loginButton').disabled = false; // re-enable the button after 3 seconds
-    }, 3000);
+    document.getElementById('loginButton').disabled = true;
+    loginButtonTimeout = setTimeout(() => {
+      document.getElementById('loginButton').disabled = false;
+    }, 1000);
+    await login(event);
   });
 
   const debouncedVerifyOtp = debounce(verifyOtp, 3000);

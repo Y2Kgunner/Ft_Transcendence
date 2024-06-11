@@ -1,10 +1,12 @@
 import { inputElement, checkInput, displayBootstrapAlert } from './inputValidation.js';
 import { appRouter } from './router.js';
 import { debounce } from './auth.js';
+
 var editModal;
 var deleteModal;
 var otpModal;
 var otpSuccess;
+let addFriendBtnTimeout = null;
 
 const eventManager = {
   addListener(element, event, handler) {
@@ -804,11 +806,16 @@ async function setupFriends() {
 }
 
 function chkInpFriend() {
+  document.getElementById('addFriendBtn').disabled = true;
   const _elementBlock = [
     new inputElement('friendUserName', 'name', true, 3, 10, "")
   ];
-  if (checkInput(_elementBlock))
+  addFriendBtnTimeout = setTimeout(() => {
+    document.getElementById('addFriendBtn').disabled = false;
+  }, 2000);
+  if (checkInput(_elementBlock)) {
     addFriend()
+  }
   return;
 }
 
@@ -830,4 +837,4 @@ async function getFriendslist() {
 }
 
 
-export { setUpProfile, getCookie, updateProfilePage, fetchUserProfile };
+export { setUpProfile, getCookie, updateProfilePage, fetchUserProfile, addFriendBtnTimeout };

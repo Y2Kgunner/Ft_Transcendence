@@ -1,5 +1,5 @@
 import { setupAuthPage, logoutUser, isAuthenticated, hashPassword } from './auth.js';
-import { setUpProfile } from './profile.js';
+import { setUpProfile, addFriendBtnTimeout } from './profile.js';
 import { setupTournamentPage, gameInProgressTour, tournamentIntervalId, getTournamentId } from './tournament.js';
 import { init2PlyrPong, gameInProgress, pongIntervalId, countdownIntervalPong2 } from './pong2.js';
 import { init3PlyrPong, gameInProgress3, pong3IntervalId, countdownIntervalIdPong3 } from './pong3.js';
@@ -50,7 +50,10 @@ class Router {
       }
     }
 
-
+    if (addFriendBtnTimeout) {
+      clearTimeout(addFriendBtnTimeout);
+    }
+``
     const modal = document.getElementById('myModal');
     if (modal && !modal.hasAttribute('data-loaded')) {
       const modalInstance = bootstrap.Modal.getInstance(modal);
