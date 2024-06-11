@@ -6,15 +6,13 @@ import { inputElement, eventManager, checkInput } from './inputValidation.js';
 
 const matchPoint = 11;
 const paddleSpeed = 12;
-let tournamentIntervalId = null;
-let gameOver = false;
+let tournamentIntervalId;
 let winner;
 let winnerMsg;
 let win;
 let participants;
 let creator;
 let matchDetail;
-let round;
 let restartGameButton;
 let startModal;
 var restartModal;
@@ -22,24 +20,22 @@ var finishTournamentModal;
 var matchModal;
 let roundDetails;
 let roundMsg, matchMsg;
-let roundMatchPreview = [];
-let paddle1Y = 0;
-let paddle2Y = 0;
-let ballX = 5;
-let ballY = 5;
-let ballSpeedX = 5;
-let ballSpeedY = 5;
-let initialBallSpeedX = 5;
-let initialBallSpeedY = 5;
-let score1 = 0;
-let score2 = 0;
+let roundMatchPreview;
+let gameOver;
+
+let ballX;
+let ballY;
+let ballSpeedX;
+let ballSpeedY;
+let initialBallSpeedX;
+let initialBallSpeedY;
+let score1;
+let score2;
 let mainPlayer;
 let player1Alias = "Player 1";
 let player2Alias = "";
 let initialPaddlePos;
-let tournamentName = "";
-let matchNumber;
-let p1, p2;
+
 let paddle1;
 let paddle2;
 let ball;
@@ -48,8 +44,7 @@ let score1Element;
 let score2Element;
 let player1AliasElement;
 let player2AliasElement;
-let roundComplete = true;
-let tournamentNameElement;
+
 let begin = false;
 let paddle1MovingUp = false;
 let paddle1MovingDown = false;
@@ -59,6 +54,7 @@ let numParticipants = 0;
 var detailsModal;
 
 let gameInProgressTour = false;
+let countdownIntervalIdPongTour;
 
 export function startGameSession() {
   gameInProgressTour = true;
@@ -94,6 +90,14 @@ function initVariables() {
   tournamentIntervalId = null;
   gameOver = false;
   gameInProgressTour = false;
+  participants = null;
+  creator = null;
+  matchDetail = null;
+  roundMsg = "";
+  matchMsg = "";
+  winner = "";
+  winnerMsg = "";
+  roundMatchPreview = [];
 
   board = document.getElementById("board");
   paddle1 = document.getElementById("paddle_1");
@@ -136,13 +140,18 @@ function setupTournamentPage() {
     value = Math.min(value + 1, 8);
     input.value = value;
   }
-  minusButton.addEventListener('click', handleMinusButtonClick);
-  plusButton.addEventListener('click', handlePlusButtonClick);
-  tournamentName = document.getElementById("tournamentName");
+
+  eventManager.addListener(minusButton, "click", handleMinusButtonClick);
+  eventManager.addListener(plusButton, "click", handlePlusButtonClick);
+  eventManager.addListener(continueBtn, "click", validateInputTournamentName);
+
+  // minusButton.addEventListener('click', handleMinusButtonClick);
+  // plusButton.addEventListener('click', handlePlusButtonClick);
+  // let tournamentName = document.getElementById("tournamentName");
   // tournamentName.addEventListener('input', checkInput);
   // numParticipants = parseInt(input.value, 10);
   // console.log(numParticipants);
-  continueBtn.addEventListener('click', validateInputTournamentName);
+  // continueBtn.addEventListener('click', validateInputTournamentName);
 
   console.log(numParticipants);
   gameInProgressTour = false;
@@ -182,7 +191,8 @@ function handleNewTournamentFormSubmit() {
   startModal.show();
   generateParticipantFields(numParticipants);
   const startGameBtn = document.getElementById('startGameBtn')
-  startGameBtn.addEventListener('click', validateInputParticipants);
+  eventManager.addListener(startGameBtn, "click", validateInputParticipants);
+  // startGameBtn.addEventListener('click', validateInputParticipants);
 }
 
 async function validateInputTournamentName(input) {
@@ -445,20 +455,48 @@ function resetBall() {
   ballSpeedY = initialBallSpeedY * (Math.random() * 2 - 1);
 }
 
+function showCountdown(callback) {
+  let count = 5;
+  var countdownElement = document.getElementById('countdown');
+  countdownElement.textContent = count;
+  countdownElement.style.display = "block";
+  countdownIntervalIdPongTour = setInterval(() => {
+    count--;
+    countdownElement.textContent = count;
+    if (count === 0) {
+      clearInterval(countdownIntervalIdPongTour);
+      countdownElement.style.display = "none";
+      callback();
+    }
+  }, 1000);
+}
+
+function cancelCountdown() {
+  if (countdownIntervalIdPongTour) {
+    clearInterval(countdownIntervalIdPongTour);
+    document.getElementById('countdown').style.display = "none";
+  }
+}
+
 function startGame() {
   restartModal = new bootstrap.Modal(document.getElementById('restartGame'));
   begin = true;
   gameOver = false;
   startGameSession();
-  tournamentName = document.getElementById("tournamentName").value;
+  // let tournamentName = document.getElementById("tournamentName").value;
   player1AliasElement.textContent = player1Alias;
   player2AliasElement.textContent = player2Alias;
   if (tournamentIntervalId) {
     clearInterval(tournamentIntervalId);
   }
-  tournamentIntervalId = setInterval(updateGame, 16);
-  document.addEventListener("keydown", handleKeyDown);
-  document.addEventListener("keyup", handleKeyUp);
+  cancelCountdown();
+  showCountdown(() => {
+    tournamentIntervalId = setInterval(updateGame, 16);
+    eventManager.addListener(document, "keydown", handleKeyDown);
+    eventManager.addListener(document, "keyup", handleKeyUp);
+    // document.addEventListener("keydown", handleKeyDown);
+    // document.addEventListener("keyup", handleKeyUp);
+  });
 }
 
 function hideOverflow() {
@@ -600,11 +638,19 @@ async function startGameLoop() {
   finishTournamentModal.toggle();
   gameInProgressTour = false;
   var restartTournament = document.getElementById("restartTournament");
-  restartTournament.addEventListener('click', function () {
+
+  eventManager.addListener(restartTournament, "click",function () {
+    
     finishTournamentModal.hide();
     restartModal.hide();
     appRouter.navigate('/tournament', { force: true });
   });
+  // restartTournament.addEventListener('click', function () {
+    
+  //   finishTournamentModal.hide();
+  //   restartModal.hide();
+  //   appRouter.navigate('/tournament', { force: true });
+  // });
 }
 function waitSubmission(element) {
   return new Promise(resolve => {
@@ -623,4 +669,4 @@ function getTournamentId() {
   return localStorage.getItem('currentTournamentId');
 }
 
-export { setupTournamentPage, gameInProgressTour, setTournamentId, getTournamentId, tournamentIntervalId };
+export { setupTournamentPage, gameInProgressTour, setTournamentId, getTournamentId, tournamentIntervalId, countdownIntervalIdPongTour };
