@@ -11,7 +11,7 @@ function showGdprConsentModal() {
   ];
   console.log("reg auth");
   if (!checkInput(_elementBlock))
-    return ;
+    return;
   const gdprModalElement = document.getElementById('gdprModal');
   const gdprModal = new bootstrap.Modal(gdprModalElement);
   gdprModal.show();

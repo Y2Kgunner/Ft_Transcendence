@@ -52,7 +52,7 @@ let paddle3MovingRight;
 var startModal;
 var form;
 let gameInProgress3;
-let countdownIntervalId;
+let countdownIntervalIdPong3;
 
 export function startGameSession() {
   gameInProgress3 = true;
@@ -133,8 +133,6 @@ function initVariables() {
   ballSpeedX = 5;
   ballSpeedY = 5;
   pong3IntervalId = null;
-  gameOver = false;
-  begin = false;
   draw = false;
   paddle1MovingUp = false;
   paddle1MovingDown = false;
@@ -394,9 +392,6 @@ function haltGame() {
   gameOver = true;
 
   let winnerMsg = document.getElementById('GameWinner');
-  // let player1Alias = "Player 1";
-  // let player2aliasPong3 = "Player 2";
-  // let player3aliasPong3 = "Player 3";
   if (score1 === 0) {
     winner = (score2 > score3) ? player2aliasPong3 : player3aliasPong3;
     if (score2 == score3) {
@@ -419,9 +414,6 @@ function haltGame() {
 
   winnerMsg.textContent = `${winner} wins!`;
 
-  // score1 = matchPoint;
-  // score2 = matchPoint;
-  // score3 = matchPoint;
   resetBall();
 
   score1Element.textContent = score1;
@@ -433,62 +425,46 @@ function haltGame() {
   paddle3.style.left = initialHPaddlePos;
   endGameSession();
   restartModal.show();
-  //   restartGameBtn.addEventListener('click', function() {
-  //     restartModal.hide();
-  //     init3PlyrPong()
-  // });
 
   clearInterval(pong3IntervalId);
   pong3IntervalId = null;
 }
 
 function showCountdown(callback) {
-  const countdownElement = document.createElement('div');
-  countdownElement.id = 'countdown';
-  countdownElement.style.position = 'absolute';
-  countdownElement.style.top = '50%';
-  countdownElement.style.left = '50%';
-  countdownElement.style.transform = 'translate(-50%, -50%)';
-  countdownElement.style.fontSize = '48px';
-  countdownElement.style.fontWeight = 'bold';
-  countdownElement.style.zIndex = '1000';
-  countdownElement.style.color = '#07ed26';
-  countdownElement.textContent = '5';
-  document.body.appendChild(countdownElement);
-
   let count = 5;
-  countdownIntervalId = setInterval(() => {
+  var countdownElement = document.getElementById('countdown');
+  countdownElement.textContent = count;
+  countdownElement.style.display = "block";
+  countdownIntervalIdPong3 = setInterval(() => {
     count--;
     countdownElement.textContent = count;
     if (count === 0) {
-      clearInterval(countdownIntervalId);
-      document.body.removeChild(countdownElement);
+      clearInterval(countdownIntervalIdPong3);
+      countdownElement.style.display = "none";
       callback();
     }
   }, 1000);
 }
 
 function cancelCountdown() {
-  if (countdownIntervalId) {
-    clearInterval(countdownIntervalId);
-    countdownIntervalId = null;
-    const countdownElement = document.getElementById('countdown');
-    if (countdownElement) {
-      countdownElement.textContent = '';
-      document.body.removeChild(countdownElement);
-    }
+  if (countdownIntervalIdPong3) {
+    clearInterval(countdownIntervalIdPong3);
+    document.getElementById('countdown').style.display = "none";
   }
 }
 
 function startGame() {
+  begin = true;
+  gameOver = false;
   player2aliasPong3Element = document.getElementById("player_2_alias");
   player3aliasPong3Element = document.getElementById("player_3_alias");
   player2aliasPong3Element.textContent = player2aliasPong3;
   player3aliasPong3Element.textContent = player3aliasPong3;
+  if (pong3IntervalId)
+    clearInterval(pong3IntervalId);
+  resetBall();
   cancelCountdown();
   startGameSession();
-  begin = true;
-  gameOver = false;
   showCountdown(() => {
     pong3IntervalId = setInterval(updateGame, 1000 / 60);
     document.addEventListener("keydown", handleKeyDown);
@@ -502,4 +478,4 @@ function closeModal() {
   modalInstance.hide();
 }
 
-export { init3PlyrPong, gameInProgress3, isPrintableASCII, pong3IntervalId };
+export { init3PlyrPong, gameInProgress3, isPrintableASCII, pong3IntervalId, countdownIntervalIdPong3 };

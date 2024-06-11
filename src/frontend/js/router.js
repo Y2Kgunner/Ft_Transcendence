@@ -2,7 +2,7 @@ import { setupAuthPage, logoutUser, isAuthenticated, hashPassword } from './auth
 import { setUpProfile } from './profile.js';
 import { setupTournamentPage, gameInProgressTour, tournamentIntervalId, getTournamentId } from './tournament.js';
 import { init2PlyrPong, gameInProgress, pongIntervalId, countdownIntervalPong2 } from './pong2.js';
-import { init3PlyrPong, gameInProgress3, pong3IntervalId } from './pong3.js';
+import { init3PlyrPong, gameInProgress3, pong3IntervalId, countdownIntervalIdPong3 } from './pong3.js';
 import { setupTTT } from './ttt.js';
 
 async function removeOpenModals() {
@@ -27,7 +27,6 @@ class Router {
   }
 
   async navigate(path, { replace = false, force = false } = {}) {
-
     if (!force && this.lastPath === path && !replace) {
       //console.log(`Already navigated to: ${path}`);
       return;
@@ -45,6 +44,9 @@ class Router {
       if (countdownIntervalPong2) {
         document.getElementById('countdown').style.display = "none";
         clearInterval(countdownIntervalPong2);
+      } if (countdownIntervalIdPong3) {
+        document.getElementById('countdown').style.display = "none";
+        clearInterval(countdownIntervalIdPong3);
       }
     }
 
