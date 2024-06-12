@@ -691,7 +691,7 @@ async function rejectRequest(userId) {
   if (!response.ok) {
     return null;
   }
-  // alert("freind request rejected")
+  console.log(userId, "->", document.getElementById(userId));
   displayBootstrapAlert('editProfileAlert', 'freind request rejected 🙀', 'info');
   const data = await response.json();
   return data;
@@ -774,6 +774,8 @@ async function showInvites() {
       button.addEventListener("click",
         async function () {
           await rejectRequest(pendingFriends.notifications[index].id);
+          updateFriendList();
+          showInvites();
         });
     });
     const acceptButtons = document.querySelectorAll(".acceptInvitationBtn");
