@@ -184,34 +184,6 @@ async function hashPassword(password) {
 }
 
 
-async function submitOtp(event) {
-  event.preventDefault();
-  const otp = document.getElementById('otpInput').value;
-
-  const response = await fetch('https://127.0.0.1:443/api/verify_otp', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ otp }),
-  });
-
-  if (response.ok) {
-    const data = await response.json();
-    if (data.message === 'Login successful') {
-      updateMainContentVisibility(true);
-      appRouter.navigate('/');
-    } else {
-      alert('Invalid or expired OTP. Please try again.');
-      showOtpForm(true);
-    }
-  } else {
-    const error = await response.json();
-    console.error('OTP verification failed:', error);
-    alert(error.error || 'OTP verification failed');
-  }
-}
-
 async function verifyOtp(event) {
     event.preventDefault();
     const otp = document.getElementById('otpInput').value;
@@ -222,7 +194,6 @@ async function verifyOtp(event) {
         const response = await fetch('https://127.0.0.1:443/api/verify_otp_login', {
             method: 'POST',
             headers: {
-                // 'Content-Type': 'application/json',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({otp : otp}),
@@ -236,13 +207,12 @@ async function verifyOtp(event) {
             loginData.twofa_confirmed = true;
             console.log(loginData);
             await login(event);
-            // loginData= {};
-            // finalizeLogin(data);
+
         } else {
             throw new Error(data.error || 'Invalid or expired OTP. Please try again.');
         }
     } catch (error) {
-        enableLoginBtn();
+        document.getElementById('otpInput').value = "";
         console.error('OTP verification failed:', error);
         alert(error.message);
     }
@@ -265,6 +235,7 @@ function handleBtnBlocker(button, block) {
         btn.querySelector('.spinner-grow').classList.add('d-none');
     }
 }
+
 
 function enableLoginBtn() {
     const otpModal = bootstrap.Modal.getInstance(document.getElementById('otpModal'));
