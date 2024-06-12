@@ -97,7 +97,6 @@ async function login(event) {
         console.error('Login failed:', error);
         displayBootstrapAlert('loginAlert', error.message || 'Login failed', 'danger');
     }
-    loginData = null;
 }
 
 function showOtpModal() {
@@ -137,6 +136,7 @@ function disableButtonTemporarily(button, duration) {
 function finalizeLogin(data) {
     setCookie('authToken', data.token, 1, true, 'None');
     updateMainContentVisibility(true);
+    // loginData = {};
     appRouter.navigate('/');
 }
 
@@ -236,7 +236,6 @@ async function verifyOtp(event) {
             loginData.twofa_confirmed = true;
             console.log(loginData);
             await login(event);
-            twofa_confirmed = false;
             // loginData= {};
             // finalizeLogin(data);
         } else {
@@ -405,6 +404,7 @@ async function logoutUser() {
         if (!response.ok) {
             throw new Error('Logout failed');
         }
+        loginData = null;
         updateMainContentVisibility(false);
         await appRouter.navigate('/login');
     } catch (error) {
