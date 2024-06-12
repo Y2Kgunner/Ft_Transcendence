@@ -236,7 +236,9 @@ async function verifyOtp(event) {
             loginData.twofa_confirmed = true;
             console.log(loginData);
             await login(event);
-            finalizeLogin(data);
+            twofa_confirmed = false;
+            // loginData= {};
+            // finalizeLogin(data);
         } else {
             throw new Error(data.error || 'Invalid or expired OTP. Please try again.');
         }
