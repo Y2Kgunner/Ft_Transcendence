@@ -88,11 +88,12 @@ async function check2FAStatus() {
       handleBtnBlocker('twoFAbtn', 'deleteProfileButton', true);
       open2FAOTP();
       disable2FA();
-      if (otpSuccess) {
-        twoFAbtn.classList.add('TwoFAbtnEnable');
-        twoFAbtn.classList.remove('TwoFAbtnDisable');
-        twoFAbtn.querySelector('.twoFAContent').textContent = 'Enable 2FA';
-      }
+      // console.log("otpSuccess", otpSuccess);
+      // if (otpSuccess) {
+      //   twoFAbtn.classList.add('TwoFAbtnEnable');
+      //   twoFAbtn.classList.remove('TwoFAbtnDisable');
+      //   twoFAbtn.querySelector('.twoFAContent').textContent = 'Enable 2FA';
+      // }
     } else {
       enable2FA();
       twoFAbtn.classList.add('TwoFAbtnDisable');
@@ -213,6 +214,11 @@ async function performDisable2FA() {
       console.error('Unknown error');
   }
   const responseData = await response.json();
+  if (otpSuccess) {
+    twoFAbtn.classList.add('TwoFAbtnEnable');
+    twoFAbtn.classList.remove('TwoFAbtnDisable');
+    twoFAbtn.querySelector('.twoFAContent').textContent = 'Enable 2FA';
+  }
   console.log(responseData);
 }
 
