@@ -262,7 +262,7 @@ async function chkInp() {
     new inputElement('firstNameInput', 'name', false, 2, 20, ""),
     new inputElement('lastNameInput', 'name', false, 2, 20, ""),
     new inputElement('phoneInput', 'phone', false, 10, 18, ""),
-    new inputElement('addressInput', 'userName', false, 10, 25, "")
+    new inputElement('addressInput', 'name', false, 10, 25, "")
   ];
   if (checkInput(_elementBlock)) {
     const firstNameInput = document.getElementById("firstNameInput");
