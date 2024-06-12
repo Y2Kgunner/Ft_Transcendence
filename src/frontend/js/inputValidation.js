@@ -102,7 +102,7 @@ function visibilityValidation(field) {
 
 function lengthValidation(field, currentElement) {
   if ((field.inputValue.length > currentElement.maxLen) || (field.inputValue.length < currentElement.minLen)) {
-    return printInvalidFeedback(field, `${currentElement.type} must be between ${currentElement.minLen} and ${currentElement.maxLen} characters long! 😼`);
+    return printInvalidFeedback(field, `${(currentElement.type === 'userName') ? 'name' : currentElement.type} must be between ${currentElement.minLen} and ${currentElement.maxLen} characters long! 😼`);
   }
   return true;
 }
