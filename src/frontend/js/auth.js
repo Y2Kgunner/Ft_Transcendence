@@ -96,8 +96,8 @@ async function login(event) {
     } catch (error) {
         console.error('Login failed:', error);
         displayBootstrapAlert('loginAlert', error.message || 'Login failed', 'danger');
-
     }
+    loginData = null;
 }
 
 function showOtpModal() {
