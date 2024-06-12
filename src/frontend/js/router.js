@@ -17,18 +17,31 @@ async function removeOpenModals() {
     }, { once: true });
   });
 }
+
+function destroyToolTips() {
+  var tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+  tooltips.forEach(function (tooltip) {
+    var instance = bootstrap.Tooltip.getInstance(tooltip);
+    if (instance) {
+      instance.dispose();
+    }
+  });
+}
+
 class Router {
   constructor(routes) {
     this.routes = routes;
   }
 
+  
   async init() {
     window.addEventListener('popstate', () => this.handleLocationChange());
     this.setupLinks();
     await this.handleLocationChange();
   }
-
+  
   async navigate(path, { replace = false, force = false } = {}) {
+    destroyToolTips();
     if (!force && this.lastPath === path && !replace) {
       //console.log(`Already navigated to: ${path}`);
       return;
