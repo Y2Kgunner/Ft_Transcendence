@@ -1,38 +1,3 @@
-
-// const users = [
-//   {
-//     id: 'AmroImg',
-//     imgSrcs: ['../assets/images/literallyAmro.gif', '../assets/images/againAmro.gif', '../assets/images/amro_actual.gif']
-//   },
-//   {
-//     id: 'OmarImg',
-//     imgSrcs: ['../assets/images/omar.gif', '../assets/images/amro.gif', '../assets/images/PONG.svg']
-//   },
-//   {
-//     id: 'AikrImg',
-//     imgSrcs: ['../assets/images/racoon.gif', '../assets/images/aikm.gif', '../assets/images/aikm3.gif']
-//   },
-//   {
-//     id: 'YkulImg',
-//     imgSrcs: ['../assets/images/yash.gif', '../assets/images/yash.gif', '../assets/images/yash.gif']
-//   },
-//   {
-//     id: 'MasrImg',
-//     imgSrcs: ['../assets/images/masr.gif', '../assets/images/masr.gif', '../assets/images/masr.gif']
-//   }
-// ];
-
-// let currentIndex = 0;
-
-// setInterval(() => {
-//   users.forEach((user) => {
-//     const imgElement = document.getElementById(user.id);
-//     imgElement.src = user.imgSrcs[currentIndex];
-//   });
-//   currentIndex = (currentIndex + 1) % users[0].imgSrcs.length;
-// }, 5000);
-
-
 export async function aboutPage() {
   const users = [
     {

@@ -1,18 +1,18 @@
 @font-face {
   font-family: 'PixelatedFont';
-  src: url('../assets/Pixelated/pix/pix.ttf') format('truetype'); /* Update the path to your font file */
+  src: url('../assets/Pixelated/pix/pix.ttf') format('truetype');
 }
 
 body {
-  font-family: 'PixelatedFont', sans-serif; /* Use the custom font as the default font */
+  font-family: 'PixelatedFont', sans-serif;
   overflow: hidden;
 }
 
 .mainContext {
   /* background-color: brown; */
-  min-height: calc(100vh - 71px); /* Subtract navbar height */
+  min-height: calc(100vh - 71px);
   max-width: 100vw;
-  margin-top: 71px; /* Start after the navbar */
+  margin-top: 71px;
   padding-top: 10vh;
   overflow:hidden;
 }
@@ -22,7 +22,6 @@ body {
   width: 55vw;
   height: 55vh;
   position: relative;
-  /* margin-bottom: 50px; */
 }
 
 .dottedLine {
@@ -55,16 +54,16 @@ body {
   height: 300%;
   width: 150%;
   background-image: linear-gradient(to bottom, #705f16, #e8d821, #705f16, #e8d821, #705f16, #e8d821, #705f16, #e8d821, #705f16, #e8d821, #705f16, #e8d821, #705f16);
-  background-size: 100% 200%; /* Add this line */
+  background-size: 100% 200%;
   animation: paddleGradient 1s infinite linear;
 }
 
 @keyframes paddleGradient {
   0% {
-    background-position: 50% 100%; /* changed from 100% 50% to 50% 100% */
+    background-position: 50% 100%;
   }
   100% {
-    background-position: 50% 0%; /* changed from 0% 50% to 50% 0% */
+    background-position: 50% 0%;
   }
 }
 
@@ -184,13 +183,11 @@ body {
   top: -200%;
   height: 500%;
   width: 550%;
-  /* background-image: conic-gradient(#07b66d, #d6095b, #07b66d, #d6095b, #07b66d, #d6095b, #07b66d); */
   background-image: conic-gradient(#705f16, #e8d821, #705f16, #d3c318, #705f16, #dadd4c, #705f16, #d3c318, #705f16, #dadd4c, #705f16, #d3c318, #705f16, #dadd4c, #705f16, #dadd4c, #705f16, #d3c318, #705f16, #dadd4c, #705f16);
   animation: spin 5s infinite linear;
 }
 
 .gradientText {
-  /* font-style: oblique; */
   font-style: italic;
   background: linear-gradient(to right,#705f16, #d3c318, #705f16, #d3c318, #705f16, #d3c318, #705f16,#d3c318, #705f16, #dadd4c, #705f16, #d3c318, #705f16, #dadd4c, #705f16, #dadd4c, #705f16);
   background-clip: text;
@@ -217,7 +214,7 @@ body {
 }
 
 #player2alias:focus {
-  box-shadow: 0 0 5px #e8d821; /* Add a box shadow for a more prominent effect */
+  box-shadow: 0 0 5px #e8d821;
 }
 
 .modal-content {

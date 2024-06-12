@@ -62,7 +62,6 @@ function printInvalidFeedback(field, msg) {
   field.inputField.classList.add("is-invalid");
   const timeoutId = setTimeout(clearErrorMessage, 5000, field);
   window.timeoutId = timeoutId;
-  console.log('printttt err');
   return false;
 }
 
@@ -77,7 +76,6 @@ function phoneValidation(field) {
 
 function emailValidation(field) {
   if (!(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/).test(field.inputValue)) {
-    console.log('non printable');
     return printInvalidFeedback(field, "Invalid email format");
   }
   return true;
@@ -85,37 +83,25 @@ function emailValidation(field) {
 
 function passwordValidation(field) {
   if (!(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/).test(field.inputValue)) {
-    console.log('non printable');
     return printInvalidFeedback(field, "Weak password! 🔒️ {8+ chars, 1 UPPER, 1 lower, 1 num}");
   }
   return true;
 }
 
-// function userNameValidation(field, seenUsernames) {
-//   const username = field.inputValue.trim();
-//   if (seenUsernames[username])
-//     return printInvalidFeedback(field, 'Username already taken!');
-//   else
-//     seenUsernames[username] = true;
-//   return true;
-// }
 
 function nameValidation(field) {
   if ((field.inputValue.length !== 0) && !(/^[a-zA-Z]+(?: [a-zA-Z]+)*$/).test(field.inputValue)) {
-    console.log('non printable');
     return printInvalidFeedback(field, "no elon musk typeof names only letter!! 💀");
   }
   return true;
 }
 
 function visibilityValidation(field) {
-  console.log('non printable');
   return printInvalidFeedback(field, "input can only contain printable ASCII characters! 😸");
 }
 
 function lengthValidation(field, currentElement) {
   if ((field.inputValue.length > currentElement.maxLen) || (field.inputValue.length < currentElement.minLen)) {
-    console.log('length issue -->>', currentElement.isRequired);
     return printInvalidFeedback(field, `${currentElement.type} must be between ${currentElement.minLen} and ${currentElement.maxLen} characters long! 😼`);
   }
   return true;
@@ -132,7 +118,6 @@ function clearErrorMessage(field) {
 }
 
 function checkInput(inputElements) {
-  console.log("input valz");
   let allInputsValid = true;
   let bigBoiTruncation = (inputElements.length > 4) ? true : false;
   const passwordGroup = {};
@@ -144,7 +129,6 @@ function checkInput(inputElements) {
       seenUsernames[inputElements[0].player1alias] = true;
       continue;
     }
-    console.log("index = ", i, inputElements[i]);
     let currentElementStatus = true;
     const input_field = document.getElementById(currentElement.id);
     const field = {
@@ -174,13 +158,11 @@ function checkInput(inputElements) {
       }
       if (currentElementStatus && (currentElement.type === 'phone')) {
         currentElementStatus = (!currentElement.isRequired && field.inputValue.length === 0) ? currentElementStatus : (phoneValidation(field) ? currentElementStatus : false);
-        console.log('phone ternary check', field.inputValue.length);
       }
       else if (currentElementStatus && (currentElement.type === 'name')) {
         currentElementStatus = nameValidation(field) ? currentElementStatus : false;
       }
       else if (currentElementStatus && (currentElement.type === 'userName')) {
-        console.log("cur -> userName");
         if (currentElement.isRequired && (field.inputValue.length !== 0) && !(/^[a-zA-Z]{4,}$/).test(field.inputValue))
           currentElementStatus = printInvalidFeedback(field, 'Invalid Username {min 4, max 10} only letters');
         else if (seenUsernames[field.inputValue])
@@ -189,7 +171,6 @@ function checkInput(inputElements) {
           seenUsernames[field.inputValue] = true;
       }
       else if (currentElementStatus && (currentElement.type === 'password')) {
-        console.log("pass ---->", Object.keys(passwordGroup).length);
         currentElementStatus = passwordValidation(field) ? currentElementStatus : false;
         if (!passwordGroup[field.inputValue] && Object.keys(passwordGroup).length == 1)
           currentElementStatus = printInvalidFeedback(field, 'passwords don\'t match!');
@@ -197,18 +178,15 @@ function checkInput(inputElements) {
           passwordGroup[field.inputValue] = true;
       }
       else if (currentElementStatus && (currentElement.type === 'email')) {
-        console.log("email");
         currentElementStatus = emailValidation(field) ? currentElementStatus : false;
       }
       if (!currentElementStatus) {
         allInputsValid = !true;
         field.inputField.classList.add('is-invalid');
         field.inputField.classList.remove('is-valid');
-        // if (currentElement.isFormFloating)
         field.invalidFeedback.style.display = 'block';
       } else {
         field.inputField.classList.remove('is-invalid');
-        // field.inputField.classList.add('is-valid');
         clearTimeout(window.timeoutId);
       }
     } else {

@@ -114,7 +114,6 @@ function waitGameFinish(gameStatus, interval = 100) {
   return new Promise(resolve => {
     const check = () => {
       if (gameOver) {
-        console.log("game over");
         resolve();
       } else {
         setTimeout(check, interval);

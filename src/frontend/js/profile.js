@@ -10,7 +10,6 @@ let addFriendBtnTimeout = null;
 let addAnTt = null;
 let addrd1Tt = null;
 let addrd2Tt = null;
-// let adddotpTt = null;
 let addotpTt = null;
 
 const eventManager = {
@@ -88,12 +87,6 @@ async function check2FAStatus() {
       handleBtnBlocker('twoFAbtn', 'deleteProfileButton', true);
       open2FAOTP();
       disable2FA();
-      // console.log("otpSuccess", otpSuccess);
-      // if (otpSuccess) {
-      //   twoFAbtn.classList.add('TwoFAbtnEnable');
-      //   twoFAbtn.classList.remove('TwoFAbtnDisable');
-      //   twoFAbtn.querySelector('.twoFAContent').textContent = 'Enable 2FA';
-      // }
     } else {
       enable2FA();
       twoFAbtn.classList.add('TwoFAbtnDisable');
@@ -121,7 +114,6 @@ async function enable2FA() {
         console.error('Unknown error');
     }
     const responseData = await response.json();
-    console.log(responseData);
   } catch (error) {
     console.error('Error enabling 2FA:', error);
   }
@@ -189,7 +181,6 @@ function disable2FA() {
     });
     const verifyOtpData = await verifyOtpResponse.json();
     if (verifyOtpResponse.ok) {
-      console.log('OTP verified successfully');
       otpSuccess = true;
       otpModal.hide();
       await performDisable2FA();
@@ -219,7 +210,6 @@ async function performDisable2FA() {
     twoFAbtn.classList.remove('TwoFAbtnDisable');
     twoFAbtn.querySelector('.twoFAContent').textContent = 'Enable 2FA';
   }
-  console.log(responseData);
 }
 
 function setupDeleteProfileButton() {
@@ -267,7 +257,6 @@ function chkIfInput(event) {
   }
 }
 
-// fill the profile elements with the new values!!!
 async function chkInp() {
   const _elementBlock = [
     new inputElement('firstNameInput', 'name', false, 2, 20, ""),
@@ -435,14 +424,11 @@ function fetchProfilePicture() {
       if (data.error) {
         throw new Error('No image URL provided in the response.');
       } else {
-        // const image = document.createElement('img');
-        // image.src = `data:image/jpeg;base64,${data.profile_picture_base64}`;
         const profilePicture = document.getElementById('profilePicture');
         profilePicture.src = `data:image/jpeg;base64,${data.profile_picture_base64}`;
       }
     })
     .catch(error => {
-      //   console.error('Error fetching the profile picture:', error);
       document.getElementById('profilePicture').src = '../assets/profile_pictures/default.png';
     });
 }
@@ -468,7 +454,6 @@ function uploadProfilePicture(file) {
       .then(data => {
         if (data.message) {
           document.getElementById('profilePicture').src = URL.createObjectURL(file);
-          console.log('Success:', data.message);
         } else {
           console.error('Error:', data.error);
           document.getElementById('profilePicture').src = '/assets/profile_pictures/default.png';
@@ -482,7 +467,6 @@ function uploadProfilePicture(file) {
 };
 
 function editPfp() {
-  console.log('im here!');
   const fileInput = document.createElement('input');
   fileInput.type = 'file';
   fileInput.id = 'profilePictureInput';
@@ -565,7 +549,6 @@ function anonymizeUser() {
       return response.json();
     })
     .then(data => {
-      // alert('Your data has been anonymized.');
       displayBootstrapAlert('editProfileAlert', 'Your data has been anonymized 🙀', 'anonymize');
       setUpProfile();
     })
@@ -597,7 +580,6 @@ async function loadMatchHistory(playerData) {
     console.error("No matches data received:", data);
     return;
   }
-  console.log("Match Data Received:", data);
   const table = document.getElementById('matchHistoryTable').getElementsByTagName('tbody')[0];
   table.innerHTML = "";
   data.matches.forEach(match => {
@@ -616,7 +598,6 @@ async function loadMatchHistory(playerData) {
 // ? ------------------------------------------>> friends stuff
 async function updateFriendList() {
   let friendList = await getFriendslist();
-  console.log(friendList);
   const friendsList = document.getElementById('friendsList');
   friendsList.innerHTML = "";
   if (friendList.friends.length) {
@@ -697,7 +678,6 @@ async function rejectRequest(userId) {
   if (!response.ok) {
     return null;
   }
-  console.log(userId, "->", document.getElementById(userId));
   displayBootstrapAlert('editProfileAlert', 'freind request rejected 🙀', 'info');
   const data = await response.json();
   return data;
@@ -715,7 +695,6 @@ async function acceptRequest(userId) {
     return null;
   }
   displayBootstrapAlert('editProfileAlert', 'freind request accepted 😽', 'primary');
-  // alert("freind request accepted")
   const data = await response.json();
   return data;
 }
@@ -738,25 +717,19 @@ async function getPendingFriends() {
 async function addFriend() {
   let userInfo
   const friendUserName = document.getElementById('friendUserName');
-  console.log(friendUserName);
   let username = friendUserName.value;
-  console.log(username);
   const friendData = await checkUsername(username);
   if (friendData != null) {
-    console.log(friendData);
     userInfo = friendData.user_info;
-    console.log(userInfo);
     await addUser(userInfo.user_id);
   }
 }
 
 async function showInvites() {
   const pendingFriends = await getPendingFriends();
-  console.log(pendingFriends);
   const invitationz = document.getElementById('invitationz');
   invitationz.innerHTML = "";
   if (pendingFriends.notifications.length) {
-    console.log("has requests");
     for (let i = 0; i < pendingFriends.notifications.length; i++) {
       let buttonsDiv = Array.from({ length: pendingFriends.notifications.length },
         () => ({
@@ -775,7 +748,6 @@ async function showInvites() {
       invitationz.innerHTML += freindRequestDiv;
     }
     const rejectButtons = document.querySelectorAll(".rejectInvitationBtn");
-    console.log(rejectButtons);
     rejectButtons.forEach((button, index) => {
       button.addEventListener("click",
         async function () {
@@ -788,7 +760,6 @@ async function showInvites() {
     acceptButtons.forEach((button, index) => {
       button.addEventListener("click",
         async function () {
-          console.log("accept " + index);
           await acceptRequest(pendingFriends.notifications[index].id);
           updateFriendList();
           showInvites();
@@ -796,10 +767,8 @@ async function showInvites() {
     });
   }
   else {
-    // invitationz.innerHTML = "<div class='no-invites-message'>No pending friend requests</div>";
     invitationz.innerHTML = "<div id='NoInvitesMsg' class='text-center pt-md-5 h5' style='color: #a6a6a6'>No pending friend requests</div>";
     document.getElementById('NoInvitesMsg').innerHTML = "<div class='no-invites-message'>No pending friend requests</div>";
-    console.log("empty");
   }
 }
 
@@ -819,7 +788,6 @@ async function setupFriends() {
         }, 2000);
         addFriendForm.style.display = 'block';
         invitationzDiv.style.display = 'none'
-        //show invites
         updateFriendList();
       } else if (e.target.id === 'btnradio3') {
         if (invitationzDiv.style.display === 'block') return;
@@ -849,8 +817,6 @@ function chkInpFriend() {
   }
   return;
 }
-
-
 
 async function getFriendslist() {
   const response = await fetch(`https://127.0.0.1:443/api/list_friends`, {

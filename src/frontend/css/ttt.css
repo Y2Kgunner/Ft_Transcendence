@@ -142,7 +142,6 @@ input[type="text"]::placeholder {
 .Lbox {
   width: 14vmin;
   height: 14vmin;
-  /* color: #017701; */
   background: #000;
   font-size: 11rem;
   font-weight: 600;
@@ -165,7 +164,7 @@ input[type="text"]::placeholder {
   padding-bottom: .35vw;
   font-size: 7vw;
   position: relative;
-  z-index: 2; /* Ensure this is higher than .boxBg */
+  z-index: 2;
   color: transparent;
   background-clip: text;
   -webkit-background-clip: text;
@@ -176,7 +175,7 @@ input[type="text"]::placeholder {
   height: 14vmin;
   background-color: black;
   position: absolute;
-  z-index: 1; /* Ensure this is lower than .box */
+  z-index: 1;
 }
 
 p {
@@ -193,7 +192,6 @@ p {
 
 
 .box.focus {
-  /* background-color: #12d712; */
   box-shadow: inset 0 0 15px 10px #d4fcd4, 0 0 5px #017701, 0 0 5px #ffffff;
 }
 
@@ -215,5 +213,5 @@ p {
 }
 
 .grid-fade {
-  /* opacity: 0; */
+  opacity: 0.6;
 }

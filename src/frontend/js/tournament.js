@@ -145,54 +145,18 @@ function setupTournamentPage() {
   eventManager.addListener(plusButton, "click", handlePlusButtonClick);
   eventManager.addListener(continueBtn, "click", validateInputTournamentName);
 
-  // minusButton.addEventListener('click', handleMinusButtonClick);
-  // plusButton.addEventListener('click', handlePlusButtonClick);
-  // let tournamentName = document.getElementById("tournamentName");
-  // tournamentName.addEventListener('input', checkInput);
-  // numParticipants = parseInt(input.value, 10);
-  // console.log(numParticipants);
-  // continueBtn.addEventListener('click', validateInputTournamentName);
-
-  console.log(numParticipants);
   gameInProgressTour = false;
-  // eventManager.addListener(document.getElementById("continueBtn"), "click", validateInputTournamentName);
-  // eventManager.addListener(document.getElementById('submitBtn'), "click", validateInputParticipants);
-  // 
-
-  // continueBtn.addEventListener('click', validateInputTournamentName(input));
-  // colorPickRed.addEventListener('change', changeColor("red"));
-  // colorPickBlue.addEventListener('change', changeColor("blue"));
-  // document.getElementById('colorPickRed').addEventListener('change', function () {
-  //     document.getElementById('gradientHousing').classList.remove('blue');
-  //     document.getElementById('gradientHousing').classList.add('red');
-  //     document.getElementById('pongHousing').classList.remove('blue');
-  //     document.getElementById('pongHousing').classList.add('red');
-  // });
-  // document.getElementById('colorPickBlue').addEventListener('change', function () {
-  //     document.getElementById('gradientHousing').classList.remove('red');
-  //     document.getElementById('gradientHousing').classList.add('blue');
-  //     document.getElementById('pongHousing').classList.remove('red');
-  //     document.getElementById('pongHousing').classList.add('blue');
-  // });
-  // document.getElementById('colorPickGreen').addEventListener('change', function () {
-  //     document.getElementById('gradientHousing').classList.remove('red', 'blue');
-  //     document.getElementById('pongHousing').classList.remove('red', 'blue');
-  // });
-  // continueBtn.addEventListener('submit', validateInput(numParticipants));
-  // setupcreateTournamentForm();
 };
 
 function handleNewTournamentFormSubmit() {
   const input = document.getElementById('numParticipants');
   numParticipants = parseInt(input.value, 10);
-  console.log(numParticipants);
   detailsModal.hide();
 
   startModal.show();
   generateParticipantFields(numParticipants);
   const startGameBtn = document.getElementById('startGameBtn')
   eventManager.addListener(startGameBtn, "click", validateInputParticipants);
-  // startGameBtn.addEventListener('click', validateInputParticipants);
 }
 
 async function validateInputTournamentName(input) {
@@ -200,7 +164,6 @@ async function validateInputTournamentName(input) {
     new inputElement('tournamentName', 'userName', true, 3, 10, "")
   ];
   if (!checkInput(_elementBlock)) {
-    // detailsModal.hide()
     return;
   }
   handleNewTournamentFormSubmit();
@@ -239,7 +202,6 @@ async function setupcreateTournamentForm() {
 
 function generateParticipantFields(num) {
   const form = document.getElementById('participantDetailsForm');
-  console.log(form)
   form.innerHTML = '';
   fetchUserProfile().then(data => {
     const formGroupUser = document.createElement('div');
@@ -483,7 +445,6 @@ function startGame() {
   begin = true;
   gameOver = false;
   startGameSession();
-  // let tournamentName = document.getElementById("tournamentName").value;
   player1AliasElement.textContent = player1Alias;
   player2AliasElement.textContent = player2Alias;
   if (tournamentIntervalId) {
@@ -494,8 +455,6 @@ function startGame() {
     tournamentIntervalId = setInterval(updateGame, 16);
     eventManager.addListener(document, "keydown", handleKeyDown);
     eventManager.addListener(document, "keyup", handleKeyUp);
-    // document.addEventListener("keydown", handleKeyDown);
-    // document.addEventListener("keyup", handleKeyUp);
   });
 }
 
@@ -527,7 +486,6 @@ async function getRoundDetails(round) {
     roundDetails = await getSecondRound();
     matchDetail = roundDetails.second_round_matches;
   }
-  console.log(roundDetails);
 }
 
 function showRoundPreview(round, match, roundMsg = "") {
@@ -546,7 +504,6 @@ function showRoundPreview(round, match, roundMsg = "") {
     }
     else {
       if (win && !matchDetail[j].is_bye && j < match) {
-        console.log("winner!")
         if (win.username == pl1.username)
           roundMatchPreview[j] = '<span id="winnerColour">' + pl1.username + "</span>" + " vs " + '<span id="loserColour" class ="text-decoration-line-through">' + pl2.username + "</span>";
         else if (win.username == pl2.username)
@@ -583,7 +540,6 @@ async function startGameLoop() {
   for (let i = 1; i <= totalRounds; i++) {
     try {
       await getRoundDetails(i);
-      console.log("currentround:" + i + " totalrounds:" + totalRounds);
 
       matchesInRound = matchDetail.filter(match => match.is_bye == false).length;
       for (let j = 0; j < matchesInRound; j++) {
@@ -604,7 +560,6 @@ async function startGameLoop() {
           matchModal.show();
           await waitSubmission(startNextGameBtn);
         }
-        console.log("currentmatch:" + j + " totalmatches:" + matchesInRound);
         player1Alias = p1.username;
         player2Alias = p2.username;
         remaining = data.next_match.remaining_matches;
@@ -623,7 +578,6 @@ async function startGameLoop() {
       console.error('Failed to get next match:', error);
     }
     if (i != totalRounds) {
-      console.log("rooound end modal")
       matchModal.show();
       showRoundPreview(i, matchDetail.length, "Round " + i + " Finished!\n\n");
       await waitSubmission(startNextGameBtn);
@@ -639,19 +593,14 @@ async function startGameLoop() {
   gameInProgressTour = false;
   var restartTournament = document.getElementById("restartTournament");
 
-  eventManager.addListener(restartTournament, "click",function () {
-    
+  eventManager.addListener(restartTournament, "click", function () {
+
     finishTournamentModal.hide();
     restartModal.hide();
     appRouter.navigate('/tournament', { force: true });
   });
-  // restartTournament.addEventListener('click', function () {
-    
-  //   finishTournamentModal.hide();
-  //   restartModal.hide();
-  //   appRouter.navigate('/tournament', { force: true });
-  // });
 }
+
 function waitSubmission(element) {
   return new Promise(resolve => {
     element.addEventListener('click', function onClick(event) {

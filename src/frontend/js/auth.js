@@ -2,7 +2,7 @@ import { inputElement, checkInput, eventManager, displayBootstrapAlert } from '.
 import { navigateBasedOnAuth, updateMainContentVisibility } from './init.js';
 import { appRouter } from './router.js';
 import { getCookie } from './profile.js';
-let loginButtonTimeout = null;
+
 let loginData;
 
 function showGdprConsentModal() {
@@ -12,7 +12,6 @@ function showGdprConsentModal() {
         new inputElement('registerPassword', 'password', true, 8, 15, ""),
         new inputElement('confirmPassword', 'password', true, 8, 15, "")
     ];
-    console.log("reg auth");
     if (!checkInput(_elementBlock))
         return;
     const gdprModalElement = document.getElementById('gdprModal');
@@ -45,8 +44,6 @@ async function isAuthenticated() {
 
 function getAuthToken() {
     const token = localStorage.getItem('authToken');
-    //console.log("this from auth.js", token);
-    //console.log('Token:', token);
     return token ? token : null;
 }
 
@@ -66,7 +63,6 @@ async function login(event) {
     const hashedPassword = await hashPassword(password);
     if(!loginData)
         loginData = { username, password: hashedPassword };
-    console.log(loginData);
     try {
         const response = await fetch('https://127.0.0.1:443/api/login', {
             method: 'POST',
@@ -82,10 +78,6 @@ async function login(event) {
                 document.getElementById('loginButton').disabled = true;
                 showOtpModal();
             } else {
-                // if (loginButtonTimeout) {
-                //     clearTimeout(loginButtonTimeout);
-                //     loginButtonTimeout = null;
-                // }
                 handleBtnBlocker('loginButton', false);
                 finalizeLogin(data);
             }
@@ -101,7 +93,6 @@ async function login(event) {
 
 function showOtpModal() {
     const otpModalElement = document.getElementById('otpModal');
-    // console.log(otpModalElement);
     const otpModal = new bootstrap.Modal(otpModalElement, {
         keyboard: false,
         backdrop: 'static'
@@ -136,12 +127,10 @@ function disableButtonTemporarily(button, duration) {
 function finalizeLogin(data) {
     setCookie('authToken', data.token, 1, true, 'None');
     updateMainContentVisibility(true);
-    // loginData = {};
     appRouter.navigate('/');
 }
 
 async function register() {
-    // Assume all validation passed and the user agreed to GDPR terms
     const email = document.getElementById('registerEmail').value;
     const username = document.getElementById('registerUserName').value;
     const password = document.getElementById('registerPassword').value;
@@ -187,8 +176,6 @@ async function hashPassword(password) {
 async function verifyOtp(event) {
     event.preventDefault();
     const otp = document.getElementById('otpInput').value;
-    // loginData.otp = otp;
-    // console.log(loginData);
     const otpModal = bootstrap.Modal.getInstance(document.getElementById('otpModal'));
     try {
         const response = await fetch('https://127.0.0.1:443/api/verify_otp_login', {
@@ -205,7 +192,6 @@ async function verifyOtp(event) {
             otpModal.hide();
             handleBtnBlocker('loginButton', false);
             loginData.twofa_confirmed = true;
-            console.log(loginData);
             await login(event);
 
         } else {
@@ -227,11 +213,9 @@ function handleBtnBlocker(button, block) {
 
     btn.disabled = block;
     if (block) {
-        // document.body.classList.add('no-pointer-events');
         btn.querySelector('.spinner-grow').classList.remove('d-none');
     }
     else {
-        // document.body.classList.remove('no-pointer-events');
         btn.querySelector('.spinner-grow').classList.add('d-none');
     }
 }
@@ -259,20 +243,11 @@ function setupEventListeners() {
     });
     document.getElementById('loginButton').addEventListener('click', async function (event) {
         event.preventDefault();
-        // document.getElementById('loginButton').disabled = true;
-        // loginButtonTimeout = setTimeout(() => {
-        //     document.getElementById('loginButton').disabled = false;
-        // }, 1000);
         handleBtnBlocker('loginButton', true);
         await login(event);
     });
     
     eventManager.addListener(document.getElementById('otpButton'), "click", verifyOtp);
-    //   const debouncedVerifyOtp = debounce(verifyOtp, 3000);
-    //   document.getElementById('otpButton')?.addEventListener('click', function (event) {
-    // event.preventDefault();
-    // debouncedVerifyOtp(event);
-    //   });
 
     const fortyTwoButtonLog = document.getElementById("fortytwoLoginButton");
     if (fortyTwoButtonLog) {
@@ -344,7 +319,6 @@ async function handleOAuthCallback(code) {
         }
 
         const data = await response.json();
-        console.log('OAuth callback data:', data);
         if (data.success) {
             setCookie('authToken', data.token, 1, true, 'None');
             updateMainContentVisibility(true);
@@ -388,7 +362,6 @@ function forgetPassword() {
     const username = document.getElementById('LoginUserName').value;
     if (!username) {
         displayBootstrapAlert('loginAlert', 'Please enter your username to reset your password.', 'danger');
-        // alert('Please enter your username to reset your password.');
         return;
     }
 
@@ -413,34 +386,6 @@ function showOtpForm(show) {
     const otpForm = document.getElementById('otp-form');
     otpForm.style.display = show ? 'block' : 'none';
 }
-
-// async function submitOtp(event) {
-//   event.preventDefault();
-//   const otp = document.getElementById('otpInput').value;
-
-//   const response = await fetch('https://127.0.0.1:443/api/verify_otp', {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//     body: JSON.stringify({ otp }),
-//   });
-
-//   if (response.ok) {
-//     const data = await response.json();
-//     if (data.message === 'Login successful') {
-//       updateMainContentVisibility(true);
-//       appRouter.navigate('/');
-//     } else {
-//       alert('Invalid or expired OTP. Please try again.');
-//       showOtpForm(true);
-//     }
-//   } else {
-//     const error = await response.json();
-//     console.error('OTP verification failed:', error);
-//     alert(error.error || 'OTP verification failed');
-//   }
-// }
 
 function setUserId(userId) {
     localStorage.setItem('userId', userId);

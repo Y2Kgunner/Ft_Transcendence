@@ -24,10 +24,6 @@ section {
   box-shadow: 0 0 15px 3px #12190e;
 }
 
-/* .icon:hover {
-  box-shadow: 0 0 10px 5px #585f51;
-} */
-
 .icon:hover {
   filter: drop-shadow(0 0 3px #bbf99c);
 }
@@ -107,7 +103,3 @@ section {
 .grid-fade {
   opacity: 0.8;
 }
-
-/* 
-I want it to be having the front face only when hover flip and reveal the back part! the code provided by u keeps back in default and flip back to the back!
-*/

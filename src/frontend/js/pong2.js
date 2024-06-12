@@ -151,7 +151,6 @@ function init2PlyrPong() {
     });
     startGame();
     await waitGameFinish(gameOver);
-    console.log("match :" +matchId);
     matchData = {
       match_id: matchId,
       score_player: score1,
@@ -184,7 +183,6 @@ async function validateInput() {
   });
   startGame();
   await waitGameFinish();
-  console.log(gameOver);
   matchData = {
     match_id: matchId,
     score_player: score1,
@@ -199,10 +197,8 @@ function waitGameFinish(interval = 100) {
   return new Promise(resolve => {
     const check = () => {
       if (gameOver) {
-        console.log("game over")
         resolve();
       } else {
-        // console.log(gameOver);
         setTimeout(check, interval);
       }
     };
@@ -211,7 +207,6 @@ function waitGameFinish(interval = 100) {
 }
 
 async function updateMatch(matchData) {
-  console.log(matchData)
   const response = await fetch('https://127.0.0.1:443/pongApp/update_match', {
     method: 'POST',
     headers: {
@@ -243,7 +238,6 @@ function fetchUserProfile() {
       return response.json();
     })
     .then(data => {
-      console.log(data);
       return data;
     })
     .catch(error => {
@@ -449,8 +443,5 @@ function closeModal() {
   var modalInstance = bootstrap.Modal.getInstance(modal);
   modalInstance.hide();
 }
-//?
-//?
-//? end of modal input validation
 
 export { init2PlyrPong, fetchUserProfile, isPrintableASCII, waitGameFinish, updateMatch, createMatch, gameInProgress, pongIntervalId, countdownIntervalPong2 };

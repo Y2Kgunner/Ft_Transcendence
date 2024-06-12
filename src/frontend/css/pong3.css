@@ -245,8 +245,3 @@ input[type="text"]::placeholder {
   animation: spin 5s infinite linear;
 }
 /*! -----------------> end of gradient pongTable border */
-
-/* .input-group .valid-feedback,
-.input-group .invalid-feedback {
-  display: none;
-} */

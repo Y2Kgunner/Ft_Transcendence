@@ -1,13 +1,10 @@
 @font-face {
   font-family: 'PixelatedFont';
   src: url('../assets/Pixelated/pix/pix.ttf') format('truetype');
-  /* Update the path to your font file */
 }
 
 body {
   font-family: 'PixelatedFont', sans-serif;
-  /* Use the custom font as the default font */
-  /* overflow: hidden; */
 }
 
 #navbar {
@@ -55,7 +52,6 @@ body {
   --bs-navbar-active-color: #9fcc0b;
 }
 
-/* to stop the icons from appearing in the navbar! */
 .navbar-nav .nav-link .offcanvas-icon {
   display: none;
 }
@@ -108,8 +104,6 @@ body {
 
 /* ------------------------------------------------- */
 
-
-/* justify navBar elements center when in navbar and start when in offcanvas */
 .navbar-nav {
   justify-content: center;
 }

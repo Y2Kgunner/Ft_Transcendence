@@ -17,7 +17,6 @@ body {
 
 .carousel-item {
   height: calc(100vh - 60px);
-  /* min-height: 300px; */
   background: no-repeat scroll center center;
   -webkit-background-size: cover;
   background-size: cover;
@@ -41,10 +40,6 @@ body {
   padding-right: 100px;
   text-align: start;
 }
-
-/* .carousel-caption .slider-btn {
-  justify-content: center;
-} */
 
 .gradientText {
   background: linear-gradient(110deg, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00, #095809, #00ff00);
@@ -149,7 +144,6 @@ body {
   overflow: hidden;
   opacity: 0;
   transition: .5s;
-  /* z-index: 5; */
 }
 
 @keyframes showContent {
@@ -167,7 +161,6 @@ body {
 
 .carousel-item.active .carousel-caption .floor {
   transform: translateY(30px);
-  /* filter: blur(20px); */
   opacity: 1;
   animation: showContent .5s .7s ease-in-out 1 forwards;
 }
@@ -223,10 +216,6 @@ body {
   animation: spin 15s infinite linear;
 }
 
-#tttSlide.carousel-item.active {
-  
-}
-
 #tttFloor.floor {
   background-color: #000000da;
 }
@@ -240,12 +229,6 @@ body {
 }
 
 
-
-
-
-
-
-
 .carousel-item.active .fakeCarouselCaption {
   opacity: 1;
   z-index: 10;
@@ -253,7 +236,6 @@ body {
 
 .carousel-item.active .fakeCarouselCaption .floor {
   transform: translateY(30px);
-  /* filter: blur(20px); */
   opacity: 1;
   animation: showContent .5s .7s ease-in-out 1 forwards;
 }

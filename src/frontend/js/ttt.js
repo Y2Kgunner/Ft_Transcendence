@@ -181,12 +181,10 @@ function setupTTT() {
     useMouse = true;
     currentFocusIndex = 0;
     draw = false;
-    // Clear the board
     boxes.forEach(box => {
       box.innerHTML = "";
     });
 
-    // Remove previous event listeners to avoid double trigger
     document.removeEventListener('keydown', handleKeyPress);
 
     Game();
@@ -198,7 +196,6 @@ function setupTTT() {
       is_draw: draw ? true : false,
       winner: draw ? null : winner
     }
-    console.log(matchData);
     updateMatch(matchData);
   });
 }
@@ -208,7 +205,6 @@ function waitGameFinish(gameStatus, interval = 100) {
     const check = () => {
       checkWinner();
       if (gameOver) {
-        console.log("game over");
         resolve();
       } else {
         setTimeout(check, interval);

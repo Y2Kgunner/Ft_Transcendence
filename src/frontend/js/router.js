@@ -10,7 +10,6 @@ import { aboutPage } from './about.js';
 async function removeOpenModals() {
   const modals = document.querySelectorAll('.modal.show');
   modals.forEach((modal) => {
-    console.log("found modal", modal);
     const modalInstance = bootstrap.Modal.getInstance(modal);
     modalInstance.hide();
     modalInstance._element.addEventListener('hidden.bs.modal', function () {
@@ -43,13 +42,9 @@ class Router {
   async navigate(path, { replace = false, force = false } = {}) {
     destroyToolTips();
     if (!force && this.lastPath === path && !replace) {
-      //console.log(`Already navigated to: ${path}`);
       return;
     }
 
-    console.log("gameInProgress =>", gameInProgress);
-    console.log("gameInProgressTour =>", gameInProgressTour);
-    console.log("gameInProgress3 =>", gameInProgress3);
     if ((gameInProgress && (this.lastPath == '/pong2')) || (gameInProgressTour && (this.lastPath == '/tournament')) || (gameInProgress3 && (this.lastPath == '/pong3'))) {
       if (!confirm('You have an ongoing game. Are you sure you want to leave and lose your progress?'))
         return;
@@ -198,7 +193,6 @@ async function setupPasswordResetPage() {
     })
       .then(response => response.json())
       .then(data => {
-        console.log(data);
         appRouter.navigate('/login', { replace: true });
       })
       .catch(error => console.error('Error:', error));
