@@ -277,11 +277,11 @@ async function chkInp() {
     const userData = {};
     if (firstNameInput.value)
       userData.first_name = firstNameInput.value;
-    if(lastNameInput.value)
+    if (lastNameInput.value)
       userData.last_name = lastNameInput.value;
-    if(phoneInput.value)
+    if (phoneInput.value)
       userData.phone = phoneInput.value;
-    if(addressInput.value)
+    if (addressInput.value)
       userData.address = addressInput.value;
     await patchUserDetails(userData);
     fetchUserProfile();
@@ -649,9 +649,8 @@ async function addUser(userId) {
     }
   })
   if (!response.ok) {
-    // 
-
-    // alert("cannot add yourself as friend");
+    if (response.status == 400)
+      displayBootstrapAlert('editProfileAlert', 'Friend request already sent!', 'warning');
     return null;
   }
   displayBootstrapAlert('editProfileAlert', 'request has been sent to user! 😸', 'success');
@@ -670,9 +669,9 @@ async function checkUsername(username) {
   })
   if (!response.ok) {
     if (response.status == 401)
-      displayBootstrapAlert('editProfileAlert', 'You are already friends 😹', 'warning');
+      displayBootstrapAlert('editProfileAlert', 'You are already friends 🙉', 'warning');
     if (response.status == 404)
-      displayBootstrapAlert('editProfileAlert', 'User not found 😹', 'warning');
+      displayBootstrapAlert('editProfileAlert', 'User not found 🙈', 'warning');
     if (response.status == 400)
       displayBootstrapAlert('editProfileAlert', 'You cannot add yourself as a friend 😹', 'warning');
     return null;
